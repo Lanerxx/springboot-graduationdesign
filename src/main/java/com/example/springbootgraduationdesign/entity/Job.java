@@ -28,7 +28,7 @@ public class Job {
 
     @NotNull
     @Column(length = 80)
-    private String location;
+    private String j_location;
 
     @NotNull
     @Column(length = 200)

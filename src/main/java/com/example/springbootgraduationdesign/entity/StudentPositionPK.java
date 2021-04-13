@@ -13,9 +13,9 @@ import java.io.Serializable;
 public class StudentPositionPK implements Serializable {
     @OneToOne
     @JoinColumn(name = "s_id")
-    private Student s_id;
+    private Student sp_student;
 
     @OneToOne
     @JoinColumn(name = "po_id")
-    private Position po_id;
+    private Position sp_position;
 }

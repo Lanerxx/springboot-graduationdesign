@@ -12,10 +12,10 @@ import java.io.Serializable;
 public class StudentIndustryPK implements Serializable {
     @OneToOne
     @JoinColumn(name = "s_id")
-    private Student student;
+    private Student si_student;
 
     @OneToOne
     @JoinColumn(name = "i_id")
-    private Industry industry;
+    private Industry si_industry;
 
 }

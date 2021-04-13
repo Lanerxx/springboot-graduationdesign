@@ -22,12 +22,12 @@ public class JobSMR {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "smr_c_id")
-    private Company smr_comapny;
+    private Company smr_company;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "smr_s_id")
-    private Student smr_student;
+    @JoinColumn(name = "smr_j_id")
+    private Job smr_job;
 
     @NotNull
     @ManyToOne

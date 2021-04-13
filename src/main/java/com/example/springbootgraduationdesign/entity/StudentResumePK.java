@@ -12,9 +12,9 @@ import java.io.Serializable;
 public class StudentResumePK implements Serializable {
     @OneToOne
     @JoinColumn(name = "s_id")
-    private Student student;
+    private Student sr_student;
 
     @OneToOne
     @JoinColumn(name = "r_id")
-    private Resume resume;
+    private Resume sr_resume;
 }
