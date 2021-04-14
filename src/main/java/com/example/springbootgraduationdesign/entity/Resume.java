@@ -73,4 +73,7 @@ public class Resume {
 
     @NotNull
     private int r_count;
+
+    @NotNull
+    private boolean posted;
 }

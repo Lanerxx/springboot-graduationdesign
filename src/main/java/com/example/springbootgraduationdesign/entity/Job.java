@@ -14,7 +14,6 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int j_id;
 
-
     @NotNull
     @ManyToOne
     @JoinColumn(name = "j_c_id")
@@ -44,6 +43,9 @@ public class Job {
 
     @NotNull
     private int j_count;
+
+    @NotNull
+    private boolean posted;
 
 
     @NotNull
