@@ -18,10 +18,10 @@ public interface JobSMRRepository extends BaseRepository<JobSMR, Integer>{
     Optional<List<JobSMR>> getJobSMRsByCompany (@Param("cid")int cid);
 
     @Modifying
-    @Query("DELETE  FROM JobSMR  smr WHERE smr.smr_company.c_id=:cid AND smr.smr_job.j_id=:jid ")
-    void deleteJobSMRByCompanyAndJob (@Param("cid")int cid,@Param("jid")int jid);
+    @Query("DELETE  FROM JobSMR  smr WHERE smr.smr_job.j_id=:jid ")
+    void deleteJobSMRsByJob (@Param("jid")int jid);
 
     @Modifying
     @Query("DELETE  FROM JobSMR  smr WHERE smr.smr_resume.r_id=:rid ")
-    void deleteJobSMRByResume (@Param("rid")int rid);
+    void deleteJobSMRsByResume (@Param("rid")int rid);
 }

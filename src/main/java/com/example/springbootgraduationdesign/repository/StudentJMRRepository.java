@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public interface StudentJMRRepository extends BaseRepository<StudentJMR, Integer>{
     @Modifying
-    @Query("DELETE  FROM StudentJMR jmr WHERE jmr.jmr_company.c_id=:cid AND jmr.jmr_job.j_id=:jid ")
-    void deleteStudentJMRsByCompanyAndJob (@Param("cid")int cid, @Param("jid")int jid);
+    @Query("DELETE  FROM StudentJMR jmr WHERE jmr.jmr_job.j_id=:jid ")
+    void deleteStudentJMRsByJob (@Param("jid")int jid);
 
     @Query("SELECT jmr FROM StudentJMR  jmr WHERE jmr.jmr_student.s_id=:sid")
     Optional<List<StudentJMR>> getStudentJMRsByStudent (@Param("sid")int sid);

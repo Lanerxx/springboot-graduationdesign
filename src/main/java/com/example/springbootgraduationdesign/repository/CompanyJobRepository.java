@@ -17,11 +17,11 @@ public interface CompanyJobRepository extends BaseRepository<CompanyJob, Integer
     @Query("SELECT cj FROM CompanyJob  cj WHERE cj.companyJobPk.cj_company.c_id=:cid")
     Optional<List<CompanyJob>> getCompanyJobByCompany (@Param("cid")int cid);
 
-    @Query("SELECT cj FROM CompanyJob  cj WHERE cj.companyJobPk.cj_company.c_id=:cid AND cj.companyJobPk.cj_job.j_id=:jid ")
-    Optional<CompanyJob> getCompanyJobByCompanyAndJob (@Param("cid")int cid,@Param("jid")int jid);
+    @Query("SELECT cj FROM CompanyJob  cj WHERE cj.companyJobPk.cj_job.j_id=:jid ")
+    Optional<CompanyJob> getCompanyJobByJob (@Param("jid")int jid);
 
     @Modifying
-    @Query("DELETE  FROM CompanyJob  cj WHERE cj.companyJobPk.cj_company.c_id=:cid AND cj.companyJobPk.cj_job.j_id=:jid ")
-    void deleteCompanyJobByCompanyAndJob (@Param("cid")int cid,@Param("jid")int jid);
+    @Query("DELETE  FROM CompanyJob  cj WHERE cj.companyJobPk.cj_job.j_id=:jid ")
+    void deleteCompanyJobByJob (@Param("jid")int jid);
 
 }
