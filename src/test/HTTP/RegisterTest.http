@@ -1,0 +1,95 @@
+###
+//COMPANY:register
+POST http://localhost:8080/api/register/company
+Content-Type: application/json
+
+{
+  "c_name": "百度",
+  "c_industry": {
+    "i_id": 1
+  },
+  "c_location": "上海市",
+  "c_password": "baidu123",
+  "c_s_code": "CDASD12312JHH2HU76",
+  "c_description": "本公司是大hi是大红啊岬都is就发is发货",
+  "c_f_contact": "张三",
+  "c_f_telephone": "618239",
+  "c_s_contact": "李四",
+  "c_s_telephone": "612339",
+  "c_email": "23479sda@xx.cn",
+  "c_e_date": "20200304",
+  "c_scale": 10000
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+###
+//STUDENT:register
+POST http://localhost:8080/api/register/student
+Content-Type: application/json
+
+{
+  "s_name": "久久",
+  "s_password": "Qrter122",
+  "s_id_card": "510842199910238762",
+  "s_sex": "男",
+  "s_birthday": "199910",
+  "s_college": "东北林业大学",
+  "s_c_level": "_211",
+  "s_profession": {
+    "p_s_class": "软件工程"
+  },
+  "s_e_history": "本科",
+  "s_n_province": "湖北省",
+  "s_n_city": "武汉市",
+  "s_f_language": 5,
+  "s_s_range": "_4_6K",
+  "s_e_position": {
+    "p_name": "高级程序员"
+  },
+  "s_e_city": "其他",
+  "s_g_time": "202106",
+  "s_telephone": "13923894423",
+  "s_email": "214487233@qq.com",
+  "s_s_attachment": null,
+  "s_if_work": "已就业",
+  "s_w_city": "北京市",
+  "s_company": "阿里旺旺"
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+###
+//STUDENT:register
+POST http://localhost:8080/api/register/student
+Content-Type: application/json
+
+{
+  "s_name": "兰二",
+  "s_password": "lanerxx00",
+  "s_id_card": null,
+  "s_sex": "女",
+  "s_birthday": "199910",
+  "s_college": "东北林业大学",
+  "s_c_level": "_211",
+  "s_profession": {
+    "p_s_class": "软件工程"
+  },
+  "s_e_history": "本科",
+  "s_n_province": "四川省",
+  "s_n_city": "德阳市",
+  "s_f_language": 1,
+  "s_s_range": "_4_6K",
+  "s_e_position": {
+    "p_name": "高级程序员"
+  },
+  "s_e_city": "其他",
+  "s_g_time": "202106",
+  "s_telephone": "15338492374",
+  "s_email": "893948244@qq.com",
+  "s_s_attachment": null,
+  "s_if_work": "未就业",
+  "s_w_city": null,
+  "s_company": null
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+###
