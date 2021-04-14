@@ -1,6 +1,7 @@
 package com.example.springbootgraduationdesign.service;
 
 import com.example.springbootgraduationdesign.entity.Profession;
+import com.example.springbootgraduationdesign.repository.JobProfessionRepository;
 import com.example.springbootgraduationdesign.repository.ProfessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class ProfessionService {
     @Autowired
     private ProfessionRepository professtionRepository;
     @Autowired
+    private JobProfessionRepository jobProfessionRepository;
+    @Autowired
     private ProfessionService professionService;
     /*--------------专业信息（Profession）---------------
     -------检索：管理员
@@ -36,6 +39,8 @@ public class ProfessionService {
     public void deleteProfession(int pid){
         professtionRepository.deleteById(pid);
     }
+
+
     public void deleteAllProfessions(){
         professtionRepository.deleteAll();
     }
@@ -86,5 +91,10 @@ public class ProfessionService {
     }
     public List<Profession> getProfessionsByMClass(String mClass){
         return professtionRepository.getProfessionByMClass(mClass).orElse(new ArrayList<>());
+    }
+
+
+    public void deleteJobProfession(int jid, int pid){
+        jobProfessionRepository.deleteById(pid);
     }
 }

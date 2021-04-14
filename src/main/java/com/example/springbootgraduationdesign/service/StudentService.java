@@ -165,8 +165,8 @@ public class StudentService {
         studentJMRRepository.save(job_match_result);
         return job_match_result;
     }
-    public void deleteStudentJMRByCompanyAndJob(int cid,int jid){
-        studentJMRRepository.deleteStudentJMRsByCompanyAndJob(cid, jid);
+    public void deleteStudentJMRByJob(int jid){
+        studentJMRRepository.deleteStudentJMRsByJob(jid);
     }
     public List<StudentJMR> getAllJobMatchResults(){
         return studentJMRRepository.findAll();

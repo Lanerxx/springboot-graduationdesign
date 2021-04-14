@@ -30,6 +30,7 @@ public class AdminService {
     public Admin getAdmin(int aid){
         return adminRepository.findById(aid).orElse(null);
     }
-
-
+    public Admin getAdmin(String name){
+        return adminRepository.getAdminByName(name).orElse(null);
+    }
 }
