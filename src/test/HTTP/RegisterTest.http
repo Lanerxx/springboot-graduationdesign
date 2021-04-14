@@ -66,28 +66,28 @@ Content-Type: application/json
   "s_name": "兰二",
   "s_password": "lanerxx00",
   "s_id_card": null,
-  "s_sex": "女",
+  "s_gender": "FEMALE",
   "s_birthday": "199910",
   "s_college": "东北林业大学",
   "s_c_level": "_211",
   "s_profession": {
-    "p_s_class": "软件工程"
+    "pr_id": 1
   },
-  "s_e_history": "本科",
-  "s_n_province": "四川省",
-  "s_n_city": "德阳市",
-  "s_f_language": 1,
-  "s_s_range": "_4_6K",
-  "s_e_position": {
-    "p_name": "高级程序员"
-  },
+  "s_e_history": "BACHELOR",
+  "s_place": "四川省",
+  "s_e_language": "TOEFL_IELTS",
+  "s_f_language": "NONE",
+  "s_s_range": "_4_6",
   "s_e_city": "其他",
   "s_g_time": "202106",
   "s_telephone": "15338492374",
   "s_email": "893948244@qq.com",
-  "s_s_attachment": null,
-  "s_if_work": "未就业",
-  "s_w_city": null,
+  "s_if_fresh": "YES",
+  "s_if_project_experience": "YES",
+  "s_if_career": "NO",
+  "s_ranking": "_0_10",
+  "s_if_work": "NO",
+  "s_w_province": null,
   "s_company": null
 }
 

@@ -15,10 +15,10 @@ public interface StudentResumeRepository extends  BaseRepository<StudentResume, 
     Optional<List<StudentResume>> getStudentResumesByStudent (@Param("sid")int sid);
 
     @Modifying
-    @Query("DELETE  FROM StudentResume  sr WHERE sr.studentResumePK.sr_student.s_id=:sid AND sr.studentResumePK.sr_resume.r_id=:rid ")
-    void deleteStudentResumeByStudentAndResume (@Param("sid")int sid,@Param("rid")int rid);
+    @Query("DELETE  FROM StudentResume  sr WHERE sr.studentResumePK.sr_resume.r_id=:rid ")
+    void deleteStudentResumeByResume (@Param("rid")int rid);
 
-    @Query("SELECT sr FROM StudentResume  sr WHERE sr.studentResumePK.sr_student.s_id=:sid AND sr.studentResumePK.sr_resume.r_id=:rid ")
-    Optional<StudentResume> getStudentResumeByStudentAndResume (@Param("sid")int sid, @Param("rid")int rid);
+    @Query("SELECT sr FROM StudentResume  sr WHERE sr.studentResumePK.sr_resume.r_id=:rid ")
+    Optional<StudentResume> getStudentResumeByResume (@Param("rid")int rid);
 
 }

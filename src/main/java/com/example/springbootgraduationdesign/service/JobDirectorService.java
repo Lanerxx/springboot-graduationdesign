@@ -27,16 +27,19 @@ public class JobDirectorService {
         jobDirectorRepository.save(job_director);
         return job_director;
     }
+
     public void deleteJobDirector(int jbid){
         jobDirectorRepository.deleteById(jbid);
     }
     public void deleteAllJobDirectors(){
         jobDirectorRepository.deleteAll();
     }
+
     public JobDrector updateJobDirector(JobDrector job_director){
         jobDirectorRepository.save(job_director);
         return job_director;
     }
+
     public List<JobDrector> getAllJobDirectors(){
         return jobDirectorRepository.findAll();
     }

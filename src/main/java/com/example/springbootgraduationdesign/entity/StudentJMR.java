@@ -26,8 +26,8 @@ public class StudentJMR {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "jmr_c_id")
-    private Company jmr_company;
+    @JoinColumn(name = "jmr_r_id")
+    private Resume jmr_resume;
 
     @NotNull
     @ManyToOne

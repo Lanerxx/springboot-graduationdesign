@@ -10,5 +10,4 @@ import java.util.List;
 public class JobVo {
     private Job job;
     private List<Profession> professions;
-    private boolean post;
 }

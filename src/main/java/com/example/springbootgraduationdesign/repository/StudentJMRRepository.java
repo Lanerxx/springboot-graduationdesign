@@ -15,6 +15,11 @@ public interface StudentJMRRepository extends BaseRepository<StudentJMR, Integer
     @Query("DELETE  FROM StudentJMR jmr WHERE jmr.jmr_job.j_id=:jid ")
     void deleteStudentJMRsByJob (@Param("jid")int jid);
 
+    @Modifying
+    @Query("DELETE  FROM StudentJMR jmr WHERE jmr.jmr_resume.r_id=:rid ")
+    void deleteStudentJMRsByResume (@Param("rid")int rid);
+
+
     @Query("SELECT jmr FROM StudentJMR  jmr WHERE jmr.jmr_student.s_id=:sid")
     Optional<List<StudentJMR>> getStudentJMRsByStudent (@Param("sid")int sid);
 

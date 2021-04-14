@@ -58,12 +58,14 @@ public class CompanyService {
         companyRepository.save(company);
         return company;
     }
+
     public void deleteCompany(int cid){
         companyRepository.deleteById(cid);
     }
     public void deleteAllCompanies(){
         companyRepository.deleteAll();
     }
+
     public Company updateCompany(Company company){
         companyRepository.save(company);
         return company;
@@ -84,12 +86,7 @@ public class CompanyService {
         companyRepository.save(companyOld);
         return companyOld;
     }
-    public List<Company> getAllCompanies(){
-        return companyRepository.findAll();
-    }
-    public List<Company> getCompaniesByName(String name){
-        return companyRepository.getCompanyByName(name).orElse(new ArrayList<>());
-    }
+
     public Company getCompanyByCode(String code){
         return companyRepository.getCompanyBySCode(code).orElse(null);
     }
@@ -99,6 +96,13 @@ public class CompanyService {
     public Company getCompany(int cid){
         return companyRepository.findById(cid).orElse(null);
     }
+    public List<Company> getAllCompanies(){
+        return companyRepository.findAll();
+    }
+    public List<Company> getCompaniesByName(String name){
+        return companyRepository.getCompanyByName(name).orElse(new ArrayList<>());
+    }
+
 
     /*-----------------职位信息（Job）-------------------
     -------检索：公司
@@ -123,32 +127,28 @@ public class CompanyService {
             jobProfession.setJobProfessionPK(jobProfessionPK);
             companyService.addJobProfession(jobProfession);
         }
-        //存岗位的发布状态信息
-        if (jobVo.isPost()) {
-            job.setPosted(true);
-        } else {
-            job.setPosted(false);
-        }
         //存岗位到数据库
         companyService.addJob(job);
         return job;
     }
+
     public void deleteJob(int jid){
         jobRepository.deleteById(jid);
     }
     public void deleteJobAndRelated(Job job){
         int jid = job.getJ_id();
         if (job.isPosted()){
-            studentService.deleteStudentJMRByJob(jid);
+            studentService.deleteStudentJMRsByJob(jid);
             companyService.deleteJobSMRsByJob(jid);
+            companyService.deleteCompanyJobByJob(jid);
         }
-        companyService.deleteCompanyJobByJob(jid);
         companyService.deleteJobProfessionsByJob(jid);
         companyService.deleteJob(jid);
     }
     public void deleteAllJobs(){
         jobRepository.deleteAll();
     }
+
     public Job updateJob(Job job){
         jobRepository.save(job);
         return job;
@@ -208,9 +208,7 @@ public class CompanyService {
         jobProfessionRepository.save(jobProfession);
         return jobProfession;
     }
-    public void deleteJobProfession(int jid, int pid){
-        jobProfessionRepository.deleteJobProfession(jid, pid);
-    }
+
     public void deleteJobProfessionsByJob(int jid){
         jobProfessionRepository.deleteJobProfessionsByJob(jid);
     }
@@ -235,12 +233,13 @@ public class CompanyService {
         companyService.updateJob(job);
         companyService.addCompanyJob(companyJob);
     }
+
     public void deleteCompanyJobByJob(int jid){
         companyJobRepository.deleteCompanyJobByJob(jid);
     }
     public void deleteCompanyJobAndRelatedByJob(Job job){
         int jid = job.getJ_id();
-        studentService.deleteStudentJMRByJob(jid);
+        studentService.deleteStudentJMRsByJob(jid);
         companyService.deleteJobSMRsByJob(jid);
         companyService.deleteCompanyJobByJob(jid);
         job.setPosted(false);
@@ -249,9 +248,11 @@ public class CompanyService {
     public void deleteAllCompanyJobs(){
         companyJobRepository.deleteAll();
     }
+
     public void updateCompanyJob(CompanyJob companyJob){
         companyJobRepository.save(companyJob);
     }
+
     public List<CompanyJob> getAllCompanyJobs(){
         return companyJobRepository.findAll();
     }
@@ -265,18 +266,7 @@ public class CompanyService {
         return companyJobRepository.getCompanyJobByJob(jid).orElse(null);
     }
 
-    /*---------企业匹配的学生信息的各项数值（JmrBase）---------
-    -------检索：管理员，公司，就业专员
-    -------更新：服务器
-    -------创建：服务器
-    -------删除：服务器
-    --------------------------------------------------*/
-    public JobSMRBase addSmrBase(JobSMRBase smr_base){
-        jobSMRBaseRepository.save(smr_base);
-        return smr_base;
-    }
-
-    /*------企业匹配的学生信息（StudentMatchResult）-------
+    /*------企业匹配的学生信息（JobSMR）-------
     -------检索：管理员，公司，就业专员
     -------更新：服务器
     -------创建：服务器
@@ -286,20 +276,33 @@ public class CompanyService {
         jobSMRRepository.save(jobSMR);
         return jobSMR;
     }
+
     public void deleteJobSMRsByJob(int jid){
         jobSMRRepository.deleteJobSMRsByJob(jid);
     }
     public void deleteJobSMRsByResume(int rid){
         jobSMRRepository.deleteJobSMRsByResume(rid);
     }
+
     public List<JobSMR> getAllJobSMR(){
         return jobSMRRepository.findAll();
     }
     public List<JobSMR> getJobSMRByJob(int jid){
         return jobSMRRepository.getJobSMRsByJob(jid).orElse(new ArrayList<>());
     }
-    public List<JobSMR> getStudentMatchResultByCompany(int cid){
+    public List<JobSMR> getJobSMRsByCompany(int cid){
         return jobSMRRepository.getJobSMRsByCompany(cid).orElse(new ArrayList<>());
+    }
+
+    /*---------企业匹配的学生信息的各项数值（JobSMRBase）---------
+    -------检索：管理员，公司，就业专员
+    -------更新：服务器
+    -------创建：服务器
+    -------删除：服务器
+    --------------------------------------------------*/
+    public JobSMRBase addSmrBase(JobSMRBase smr_base){
+        jobSMRBaseRepository.save(smr_base);
+        return smr_base;
     }
 
 

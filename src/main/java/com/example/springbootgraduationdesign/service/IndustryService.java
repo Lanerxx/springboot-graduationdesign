@@ -31,16 +31,19 @@ public class IndustryService {
     public List<Industry> addIndustry(List<Industry> industrys){
         return null;
     }
+
     public void deleteIndustry(int pid){
         industryRepository.deleteById(pid);
     }
     public void deleteAllIndustries(){
         industryRepository.deleteAll();
     }
+
     public Industry updateIndustry(Industry industry){
         industryRepository.save(industry);
         return industry;
     }
+
     public List<Industry> getAllIndustries(){
         return industryRepository.findAll();
     }

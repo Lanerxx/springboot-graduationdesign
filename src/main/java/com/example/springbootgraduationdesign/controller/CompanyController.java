@@ -25,17 +25,18 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
     @Autowired
-    private RequestComponent requestComponent;
+    private StudentService studentService;
     @Autowired
     private PositionService positionService;
     @Autowired
     private IndustryService industryService;
     @Autowired
     private ProfessionService professionService;
+
     @Autowired
     private CheckIsNullComponent checkIsNullComponent;
     @Autowired
-    private StudentService studentService;
+    private RequestComponent requestComponent;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -79,21 +80,7 @@ public class CompanyController {
         );
     }
 
-    @GetMapping("jobs")
-    public Map getJobs(){
-        List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());
-        List<Position> positions = positionService.getAllPositions();
-        List<Profession> professions = professionService.getAllProfessions();
-        List<String> positionsName = positionService.listPositionsName();
-        Set<String> professionsMClass = professionService.getProfessionsMClass();
-        return Map.of(
-                "jobs",jobs,
-                "positions",positions,
-                "professions",professions,
-                "positionsName",positionsName,
-                "professionsMClass",professionsMClass
-        );
-    }
+
 
     @PostMapping("job")
     public Map addJob(@Valid @RequestBody JobVo jobVo){
@@ -142,7 +129,7 @@ public class CompanyController {
     @PatchMapping("job")
     public Map updateJob(@RequestBody JobVo jobVo){
         //检验岗位的发布状态信息
-        if (jobVo.isPost()) {
+        if (jobVo.getJob().isPosted()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "请您收回已发布的职位后再做修改");
         }
@@ -180,6 +167,23 @@ public class CompanyController {
         );
     }
 
+    @GetMapping("jobs")
+    public Map getJobs(){
+        List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());
+        List<Position> positions = positionService.getAllPositions();
+        List<Profession> professions = professionService.getAllProfessions();
+        List<String> positionsName = positionService.listPositionsName();
+        Set<String> professionsMClass = professionService.getProfessionsMClass();
+        return Map.of(
+                "jobs",jobs,
+                "positions",positions,
+                "professions",professions,
+                "positionsName",positionsName,
+                "professionsMClass",professionsMClass
+        );
+    }
+
+
     @PostMapping("companyJob")
     public Map addCompanyJob(@RequestBody int jid){
         Job job = companyService.getJob(jid);
@@ -209,6 +213,16 @@ public class CompanyController {
         );
     }
 
+
+    @PostMapping("smr/{jid}")
+    public Map getJmr(@PathVariable int jid, @RequestBody List<Map<String,Integer>> focus){
+        //calculate(...)
+        List<JobSMR> jobSMRs = companyService.getJobSMRByJob(jid);
+        return Map.of(
+                "jobSMRs", jobSMRs
+        );
+    }
+
     @GetMapping("smr/{jid}")
     public Map getSmr(@PathVariable int jid){
         CompanyJob companyJob = companyService.getCompanyJobByJob(jid);
@@ -225,16 +239,5 @@ public class CompanyController {
                 "jobSMRs", jobSMRs
         );
     }
-
-    @PostMapping("smr/{jid}")
-    public Map getJmr(@PathVariable int jid, @RequestBody List<Map<String,Integer>> focus){
-        //calculate(...)
-        List<JobSMR> jobSMRs = companyService.getJobSMRByJob(jid);
-        return Map.of(
-                "jobSMRs", jobSMRs
-        );
-    }
-
-
 
 }

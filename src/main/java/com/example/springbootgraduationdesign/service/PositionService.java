@@ -30,16 +30,19 @@ public class PositionService {
     public List<Position> addPositions(List<Position> positions){
         return null;
     }
+
     public void deletePosition(int pid){
         positionRepository.deleteById(pid);
     }
     public void deleteAllPositions(){
         positionRepository.deleteAll();
     }
+
     public Position updatePosition(Position position){
         positionRepository.save(position);
         return position;
     }
+
     public List<Position> getAllPositions(){
         return positionRepository.findAll();
     }

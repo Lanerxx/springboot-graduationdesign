@@ -21,6 +21,7 @@ public class ProfessionService {
     private ProfessionRepository professtionRepository;
     @Autowired
     private JobProfessionRepository jobProfessionRepository;
+
     @Autowired
     private ProfessionService professionService;
     /*--------------专业信息（Profession）---------------
@@ -36,18 +37,22 @@ public class ProfessionService {
     public List<Profession> addProfessions(List<Profession> professions){
         return null;
     }
+
     public void deleteProfession(int pid){
         professtionRepository.deleteById(pid);
     }
-
-
     public void deleteAllProfessions(){
         professtionRepository.deleteAll();
     }
+    public void deleteJobProfession(int jid, int pid){
+        jobProfessionRepository.deleteById(pid);
+    }
+
     public Profession updateProfession(Profession profession){
         professtionRepository.save(profession);
         return profession;
     }
+
     public List<Profession> getAllProfessions(){
         return professtionRepository.findAll();
     }
@@ -93,8 +98,4 @@ public class ProfessionService {
         return professtionRepository.getProfessionByMClass(mClass).orElse(new ArrayList<>());
     }
 
-
-    public void deleteJobProfession(int jid, int pid){
-        jobProfessionRepository.deleteById(pid);
-    }
 }
