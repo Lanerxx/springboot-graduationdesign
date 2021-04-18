@@ -3,6 +3,7 @@ package com.example.springbootgraduationdesign.service;
 import com.example.springbootgraduationdesign.entity.Industry;
 import com.example.springbootgraduationdesign.entity.Position;
 import com.example.springbootgraduationdesign.repository.IndustryRepository;
+import com.example.springbootgraduationdesign.repository.StudentIndustryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.List;
 public class IndustryService {
     @Autowired
     private IndustryRepository industryRepository;
+    @Autowired
+    private StudentIndustryRepository studentIndustryRepository;
 
     /*---------------行业信息（Position）----------------
     -------检索：管理员
@@ -60,5 +63,11 @@ public class IndustryService {
             industriesName.add(industry.getI_name());
         });
         return industriesName;
+    }
+    public List<String> listIndustryNameByStudent(int sid){
+        return studentIndustryRepository.listIndustryNameByStudent(sid).orElse(new ArrayList<>());
+    }
+    public List<Industry> getIndustriesByStudent(int sid){
+        return studentIndustryRepository.getIndustriesByStudent(sid).orElse(new ArrayList<>());
     }
 }

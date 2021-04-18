@@ -1,20 +1,17 @@
 package com.example.springbootgraduationdesign.service;
 
-import com.example.springbootgraduationdesign.component.EnumComponent;
+import com.example.springbootgraduationdesign.component.ValueComponent;
 import com.example.springbootgraduationdesign.component.vo.StudentVo;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -46,7 +43,7 @@ public class StudentService {
     private IndustryService industryService;
 
     @Autowired
-    private EnumComponent enumComponent;
+    private ValueComponent valueComponent;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -80,18 +77,23 @@ public class StudentService {
     }
     public Student updateStudent(StudentVo studentVo){
         Student student = studentVo.getStudent();
+//        studentService.deleteStudentPositionsByStudent(studentOld.getS_id());
+        studentIndustryRepository.deleteStudentIndustriesByStudent(student.getS_id());
+//        studentService.deleteStudentIndustriesByStudent(studentOld.getS_id());
+        studentPositionRepository.deleteStudentPositionsByStudent(student.getS_id());
         studentService.updateStudent(student);
-        studentService.deleteStudentPositionsByStudent(student.getS_id());
-        studentService.deleteStudentIndustriesByStudent(student.getS_id());
+
         List<Position> positions = studentVo.getPositions();
         List<Industry> industries = studentVo.getIndustries();
         for (Position po : positions){
+            log.debug(po.getPo_name());
             StudentPosition studentPosition = new StudentPosition();
             StudentPositionPK studentPositionPK = new StudentPositionPK();
             studentPositionPK.setSp_position(po);
             studentPositionPK.setSp_student(student);
             studentPosition.setStudentPositionPK(studentPositionPK);
-            studentService.addStudentPositions(studentPosition);
+//            studentService.addStudentPositions(studentPosition);
+            studentPositionRepository.save(studentPosition);
         }
         for (Industry i : industries){
             StudentIndustry studentIndustry = new StudentIndustry();
@@ -99,7 +101,8 @@ public class StudentService {
             studentIndustryPK.setSi_industry(i);
             studentIndustryPK.setSi_student(student);
             studentIndustry.setStudentIndustryPK(studentIndustryPK);
-            studentService.addStudentIndustries(studentIndustry);
+//            studentService.addStudentIndustries(studentIndustry);
+            studentIndustryRepository.save(studentIndustry);
         }
         return student;
     }
@@ -119,6 +122,9 @@ public class StudentService {
     public Student getStudentByTelephone(String telephone){
         return studentRepository.getStudentByS_telephone(telephone).orElse(null);
     }
+    public List<Student> getStudentByCLevelAndHistory(EnumWarehouse.C_LEVEL level, EnumWarehouse.E_HISTORY history){
+        return studentRepository.getStudentByCLevelAndHistory(level, history).orElse(new ArrayList<>());
+    }
 
     private StudentIndustry addStudentIndustries(StudentIndustry studentIndustry) {
         studentIndustryRepository.save(studentIndustry);
@@ -132,7 +138,7 @@ public class StudentService {
         studentIndustryRepository.deleteStudentIndustriesByStudent(sid);
     }
     private void deleteStudentPositionsByStudent(int sid) {
-        studentPositionRepository.deleteStudentPositionsByStudent(sid);
+            studentPositionRepository.deleteStudentPositionsByStudent(sid);
     }
 
 
@@ -174,6 +180,10 @@ public class StudentService {
     public List<Resume> getResumesByStudentId(int sid){
         return resumeRepository.getResumesByStudent(sid).orElse(new ArrayList<>());
     }
+    public List<Resume> getSimilarResumes(Resume resume){
+        return null;
+    }
+
 
     /*--------学生已发布简历信息（StudentResume）----------
     -------检索：管理员，学生，就业专员
@@ -212,10 +222,24 @@ public class StudentService {
     public List<StudentResume> getStudentResumes(int sid){
         return studentResumeRepository.getStudentResumesByStudent(sid).orElse(new ArrayList<>());
     }
+
     public List<StudentResume> getAllStudentResumes(){
         return studentResumeRepository.findAll();
     }
-//    public List<StudentResumeVo> getStudentResumeVoByStudent(int sid){
+
+    public List<StudentResume> getStudentResumesByStudents(List<Student> students){
+        List<StudentResume> studentResumes = new ArrayList<>();
+        students.forEach(student -> {
+            List<StudentResume> sr = studentService.getStudentResumesByStudent(student.getS_id());
+            if (sr.size() != 0) studentResumes.addAll(sr);
+        });
+        return studentResumes.size() == 0 ? new ArrayList<>() : studentResumes;
+    }
+
+    public List<StudentResume> getStudentResumesByStudent(int sid){
+        return studentResumeRepository.getStudentResumesByStudent(sid).orElse(new ArrayList<>());
+    }
+    //    public List<StudentResumeVo> getStudentResumeVoByStudent(int sid){
 //        List<Resume> resumes = studentService.getResumesByStudentId(sid);
 //        List<Student_Resume> student_resumes = studentService.getStudentResumes(sid);
 //        List<StudentResumeVo> studentResumeVos = new ArrayList<>();
@@ -235,6 +259,7 @@ public class StudentService {
 //        });
 //        return studentResumeVos;
 //    }
+
 
 
 

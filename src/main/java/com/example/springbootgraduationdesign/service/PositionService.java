@@ -2,6 +2,8 @@ package com.example.springbootgraduationdesign.service;
 
 import com.example.springbootgraduationdesign.entity.Position;
 import com.example.springbootgraduationdesign.repository.PositionRepository;
+import com.example.springbootgraduationdesign.repository.StudentPositionRepository;
+import javafx.geometry.Pos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.util.List;
 public class PositionService {
     @Autowired
     private PositionRepository positionRepository;
+    @Autowired
+    private StudentPositionRepository studentPositionRepository;
 
     /*---------------岗位信息（Position）----------------
     -------检索：管理员
@@ -60,4 +64,12 @@ public class PositionService {
         });
         return positionsName;
     }
+    public List<String> listPositionNameByStudent(int sid){
+        return studentPositionRepository.listPositionNameByStudent(sid).orElse(new ArrayList<>());
+    }
+    public List<Position> getPositionsByStudent(int sid){
+        return studentPositionRepository.getPositionsByStudent(sid).orElse(new ArrayList<>());
+    }
+
+
 }

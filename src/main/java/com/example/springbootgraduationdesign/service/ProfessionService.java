@@ -3,6 +3,7 @@ package com.example.springbootgraduationdesign.service;
 import com.example.springbootgraduationdesign.entity.Profession;
 import com.example.springbootgraduationdesign.repository.JobProfessionRepository;
 import com.example.springbootgraduationdesign.repository.ProfessionRepository;
+import com.example.springbootgraduationdesign.repository.StudentIndustryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class ProfessionService {
     private ProfessionRepository professtionRepository;
     @Autowired
     private JobProfessionRepository jobProfessionRepository;
+
 
     @Autowired
     private ProfessionService professionService;
@@ -97,5 +99,10 @@ public class ProfessionService {
     public List<Profession> getProfessionsByMClass(String mClass){
         return professtionRepository.getProfessionByMClass(mClass).orElse(new ArrayList<>());
     }
+    public List<Profession> getProfessionsByJob(int jid){
+        return jobProfessionRepository.getProfessionsByJob(jid).orElse(new ArrayList<>());
+    }
+
+
 
 }
