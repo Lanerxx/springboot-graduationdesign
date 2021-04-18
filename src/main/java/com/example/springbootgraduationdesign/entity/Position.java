@@ -17,4 +17,9 @@ public class Position {
     @NotNull
     @Column(length = 20)
     private String po_name;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "po_i_id")
+    private Industry po_industry;
 }

@@ -21,9 +21,6 @@ public class JobSMRBase {
     private int smr_b_ranking;
 
     @NotNull
-    private int smr_b_gpa;
-
-    @NotNull
     private int smr_b_r_count;
 
     @NotNull
@@ -66,17 +63,21 @@ public class JobSMRBase {
     private int smr_b_t_subside;
 
     @NotNull
-    private int smr_b_n_subside;
+    private int smr_b_h_subside;
 
     @NotNull
     private int smr_b_b_trip;
 
     @NotNull
+    private int smr_b_c_level;
+
+    @NotNull
+    private int smr_e_history;
+
+    @NotNull
+    private int smr_b_e_language;
+
+    @NotNull
     private int smr_b_s_range;
 
-    @NotNull
-    private int smr_b_career;
-
-    @NotNull
-    private int smr_b_experience;
 }

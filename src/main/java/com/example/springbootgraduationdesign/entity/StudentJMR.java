@@ -35,15 +35,15 @@ public class StudentJMR {
     private Job jmr_job;
 
     @NotNull
-    private double jmr_v_match;
+    private float jmr_v_match;
 
     @NotNull
-    private double jmr_v_success;
+    private float jmr_v_success;
 
     @NotNull
-    private double jmr_v_average;
+    private float jmr_v_average;
 
     @NotNull
-    private double jmr_v_polularity;
+    private float jmr_v_polularity;
 
 }

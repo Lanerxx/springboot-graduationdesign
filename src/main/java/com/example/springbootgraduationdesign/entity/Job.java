@@ -22,7 +22,7 @@ public class Job {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "j_po_id")
-    private Position j_postion;
+    private Position j_position;
 
 
     @NotNull
@@ -49,7 +49,7 @@ public class Job {
 
 
     @NotNull
-    private EnumWarehouse.J_GENDER j_gender;
+    private EnumWarehouse.GENDER j_gender;
 
     @NotNull
     private EnumWarehouse.E_HISTORY j_e_history;
@@ -66,29 +66,41 @@ public class Job {
     @NotNull
     private EnumWarehouse.S_RANGE j_s_range;
 
+    //学生是否要有实习/工作经验（YES or NO）
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_insurance;
+    private EnumWarehouse.IF_IS_OR_NOT j_if_career;
+
+    //学生是否要有项目经验（YES or NO）
+    @NotNull
+    private EnumWarehouse.IF_IS_OR_NOT j_if_project_experience;
+
+    //学生是否要为应届生 （YES or NO）
+    @NotNull
+    private EnumWarehouse.IF_IS_OR_NOT j_if_fresh;
 
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_check_up;
+    private EnumWarehouse.IF_IS_OR_NOT j_insurance;
 
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_a_bonus;
+    private EnumWarehouse.IF_IS_OR_NOT j_check_up;
 
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_p_leave;
+    private EnumWarehouse.IF_IS_OR_NOT j_a_bonus;
 
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_o_allowance;
+    private EnumWarehouse.IF_IS_OR_NOT j_p_leave;
 
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_stock;
+    private EnumWarehouse.IF_IS_OR_NOT j_o_allowance;
 
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_t_subside;
+    private EnumWarehouse.IF_IS_OR_NOT j_stock;
 
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT j_h_subside;
+    private EnumWarehouse.IF_IS_OR_NOT j_t_subside;
+
+    @NotNull
+    private EnumWarehouse.IF_IS_OR_NOT j_h_subside;
 
     @NotNull
     private EnumWarehouse.IF_IS_NEED_OR_NOT j_b_trip;

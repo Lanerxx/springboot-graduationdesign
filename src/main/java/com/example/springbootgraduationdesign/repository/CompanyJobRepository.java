@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface CompanyJobRepository extends BaseRepository<CompanyJob, Integer>{
-    @Query("SELECT cj FROM CompanyJob cj WHERE cj.companyJobPk.cj_job.j_postion.po_name=:name")
+    @Query("SELECT cj FROM CompanyJob cj WHERE cj.companyJobPk.cj_job.j_position.po_name=:name")
     Optional<List<CompanyJob>> getCompanyJobsByPositionName (@Param("name")String name);
 
     @Query("SELECT cj FROM CompanyJob  cj WHERE cj.companyJobPk.cj_company.c_id=:cid")

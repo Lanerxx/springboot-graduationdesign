@@ -66,7 +66,7 @@ public class Student {
 
 
     @NotNull
-    private EnumWarehouse.S_GENDER s_gender;
+    private EnumWarehouse.GENDER s_gender;
 
     @NotNull
     private EnumWarehouse.C_LEVEL s_c_level;
@@ -87,17 +87,17 @@ public class Student {
     private EnumWarehouse.RANKING s_ranking;
 
     @NotNull
-    private EnumWarehouse.IF_WORK s_if_work;
+    private EnumWarehouse.IF_IS_OR_NOT s_if_work;
 
     //学生是否有实习/工作经验（YES or NO）
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT s_if_career;
+    private EnumWarehouse.IF_IS_OR_NOT s_if_career;
 
     //学生是否有项目经验（YES or NO）
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT s_if_project_experience;
+    private EnumWarehouse.IF_IS_OR_NOT s_if_project_experience;
 
     //学生是否为应届生 （YES or NO）
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT s_if_fresh;
+    private EnumWarehouse.IF_IS_OR_NOT s_if_fresh;
 }

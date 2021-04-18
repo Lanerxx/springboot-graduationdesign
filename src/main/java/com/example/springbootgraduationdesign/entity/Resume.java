@@ -18,7 +18,6 @@ public class Resume {
     @ManyToOne
     @JoinColumn(name = "r_s_id")
     private Student r_student;
-
     @NotNull
     @Column(length = 20)
     private String r_e_location;
@@ -91,7 +90,7 @@ public class Resume {
 
     //学生是否对带薪年假 有要求（NO_REQUIREMENT YES or NO）
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT s_if_p_level;
+    private EnumWarehouse.IF_IS_NEED_OR_NOT s_if_p_leave;
 
     //学生是否对加班补助 有要求（NO_REQUIREMENT YES or NO）
     @NotNull
@@ -109,7 +108,7 @@ public class Resume {
     @NotNull
     private EnumWarehouse.IF_IS_NEED_OR_NOT s_if_h_subside;
 
-    //学生是否对是否出差 有要求（NO_REQUIREMENT YES or NO）
+    //学生是否愿意出差（YES or NO）
     @NotNull
-    private EnumWarehouse.IF_IS_NEED_OR_NOT s_if_b_trip;
+    private EnumWarehouse.IF_IS_OR_NOT s_if_b_trip;
 }

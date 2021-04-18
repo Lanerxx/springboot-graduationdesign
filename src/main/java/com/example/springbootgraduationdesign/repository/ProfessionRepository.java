@@ -16,4 +16,5 @@ public interface ProfessionRepository extends BaseRepository<Profession,Integer>
     @Query("SELECT pr FROM Profession  pr WHERE pr.pr_m_class=:name")
     Optional<List<Profession>> getProfessionByMClass (@Param("name")String name);
 
+
 }

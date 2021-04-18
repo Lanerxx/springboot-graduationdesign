@@ -21,11 +21,6 @@ public class JobSMR {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "smr_c_id")
-    private Company smr_company;
-
-    @NotNull
-    @ManyToOne
     @JoinColumn(name = "smr_j_id")
     private Job smr_job;
 
@@ -35,14 +30,14 @@ public class JobSMR {
     private Resume smr_resume;
 
     @NotNull
-    private double smr_v_match;
+    private float smr_v_match;
 
     @NotNull
-    private double smr_v_success;
+    private float smr_v_success;
 
     @NotNull
-    private double smr_v_average;
+    private float smr_v_average;
 
     @NotNull
-    private double smr_v_polularity;
+    private float smr_v_popularity;
 }

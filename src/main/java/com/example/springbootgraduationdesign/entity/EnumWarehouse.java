@@ -1,10 +1,7 @@
 package com.example.springbootgraduationdesign.entity;
 
 public class EnumWarehouse {
-    public enum S_GENDER {
-        MALE, FEMALE
-    }
-    public enum J_GENDER{
+    public enum GENDER{
         NO_REQUIREMENT, MALE, FEMALE
     }
 
@@ -18,7 +15,7 @@ public class EnumWarehouse {
     public enum S_RANGE{
         _4, _4_6, _6_8, _8_10, _10
     }
-    public enum IF_WORK{
+    public enum IF_IS_OR_NOT{
         YES, NO
     }
     public enum IF_IS_NEED_OR_NOT{
