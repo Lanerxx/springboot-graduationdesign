@@ -4,6 +4,7 @@ import com.example.springbootgraduationdesign.component.CheckIsNullComponent;
 import com.example.springbootgraduationdesign.component.RequestComponent;
 import com.example.springbootgraduationdesign.component.vo.JobVo;
 import com.example.springbootgraduationdesign.component.vo.PasswordVo;
+import com.example.springbootgraduationdesign.component.vo.PersonalizedSMRVo;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -64,17 +65,28 @@ public class CompanyController {
     }
 
     @PatchMapping("information")
-    public Map updateCompanyInformation(@Valid @RequestBody Company company){
-        if (checkIsNullComponent.objCheckIsNull(company)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "您还有未填写的信息，请完善信息后再提交！");
-        }
-        Company companyOld = companyService.getCompany(requestComponent.getUid());
+    public Map updateCompanyInformation(@RequestBody Company company){
+        int cid = requestComponent.getUid();
+        company.setC_id(cid);
+        Company companyOld = companyService.getCompany(cid);
         if (companyOld == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您想修改的公司不存在！");
         }
-        companyService.updateCompany(company, companyOld);
+        company.setC_password(companyOld.getC_password());
+        company.setC_f_telephone(companyOld.getC_f_telephone());
+        company.setC_f_contact(companyOld.getC_f_contact());
+        if (checkIsNullComponent.objCheckIsNull(company)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您还有未填写的信息，请完善信息后再提交！");
+        }
+        Industry industry = industryService.getIndustry(company.getC_industry().getI_id());
+        if (industry == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您提交的行业不存在！");
+        }
+        company.setC_industry(industry);
+        companyService.updateCompany(company);
         return Map.of(
                 "company",companyOld
         );
@@ -83,14 +95,19 @@ public class CompanyController {
 
 
     @PostMapping("job")
-    public Map addJob(@Valid @RequestBody JobVo jobVo){
+    public Map addJob(@RequestBody JobVo jobVo){
         //补全岗位中的企业信息和职位信息
         int cid = requestComponent.getUid();
         Company company = companyService.getCompany(cid);
         Job job = jobVo.getJob();
         job.setJ_company(company);
-        Position po = positionService.getPosition(job.getJ_postion().getPo_name());
-        job.setJ_postion(po);
+        Position po = positionService.getPosition(job.getJ_position().getPo_id());
+        if (po == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "该岗位名不存在！");
+        }
+        job.setJ_position(po);
+        job.setJ_count(0);
         //判断用户提交的信息是否全面
         if (checkIsNullComponent.objCheckIsNull(job)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -104,7 +121,7 @@ public class CompanyController {
                         "岗位需要的专业不存在！");
             }
         }
-
+        log.debug("1:  {}", jobVo.getJob().getJ_position().getPo_name());
         companyService.addJob(jobVo);
         List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());
         return Map.of(
@@ -144,8 +161,12 @@ public class CompanyController {
         int cid = requestComponent.getUid();
         Company company = companyService.getCompany(cid);
         job.setJ_company(company);
-        Position po = positionService.getPosition(job.getJ_postion().getPo_name());
-        job.setJ_postion(po);
+        Position po = positionService.getPosition(job.getJ_position().getPo_id());
+        if (po == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "该岗位名不存在！");
+        }
+        job.setJ_position(po);
         //判断用户提交的信息是否全面
         if (checkIsNullComponent.objCheckIsNull(job)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -160,7 +181,7 @@ public class CompanyController {
             }
         }
         //修改岗位到数据库，并拉取新数据
-        companyService.updateJob(jobVo, jobOld);
+        companyService.updateJob(jobVo);
         List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());
         return Map.of(
                 "jobs",jobs
@@ -185,14 +206,15 @@ public class CompanyController {
 
 
     @PostMapping("companyJob")
-    public Map addCompanyJob(@RequestBody int jid){
-        Job job = companyService.getJob(jid);
-        if (job == null){
+    public Map addCompanyJob(@RequestBody Job job){
+        log.debug("{}", job.getJ_id());
+        Job j = companyService.getJob(job.getJ_id());
+        if (j == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您想发布的岗位不存在");
         }
         Company company = companyService.getCompany(requestComponent.getUid());
-        companyService.addCompanyJob(company,job);
+        companyService.addCompanyJob(company,j);
         List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());
         return Map.of(
                 "jobs",jobs
@@ -215,7 +237,7 @@ public class CompanyController {
 
 
     @PostMapping("smr/{jid}")
-    public Map getJmr(@PathVariable int jid, @RequestBody List<Map<String,Integer>> focus){
+    public Map getJmr(@PathVariable int jid, @RequestBody PersonalizedSMRVo personalizedSMRVo){
         //calculate(...)
         List<JobSMR> jobSMRs = companyService.getJobSMRByJob(jid);
         return Map.of(

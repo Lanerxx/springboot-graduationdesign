@@ -42,20 +42,28 @@ public class StudentController {
 
     @GetMapping("index")
     public Map getIndex(){
-        Student student = studentService.getStudent(requestComponent.getUid());
+        int sid = requestComponent.getUid();
+        Student student = studentService.getStudent(sid);
         List<String> positionsName = positionService.listPositionsName();
         Set<String> professionsMClass = professionService.getProfessionsMClass();
+        List<String> studentPositionsName = positionService.listPositionNameByStudent(sid);
+        List<String> studentIndustryName = industryService.listIndustryNameByStudent(sid);
         return Map.of(
                 "student",student,
-                "positions",positionsName,
+                "positionsName",positionsName,
+                "studentPositionsName",studentPositionsName,
+                "studentIndustryName",studentIndustryName,
                 "professionsMClass",professionsMClass
         );
     }
 
     @PatchMapping("information")
     public Map updateStudentInformation(@RequestBody StudentVo studentVo){
+        int sid = requestComponent.getUid();
         Student student = studentVo.getStudent();
-        if (studentService.getStudent(student.getS_id()) == null){
+        student.setS_id(sid);
+        Student studentOld = studentService.getStudent(sid);
+        if (studentOld == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "该学生不存在！");
         }
@@ -65,7 +73,7 @@ public class StudentController {
                     "您填写的专业错误！");
         }
         student.setS_profession(profession);
-        if (student.getS_if_work().equals(EnumWarehouse.IF_WORK.YES)){
+        if (student.getS_if_work().equals(EnumWarehouse.IF_IS_OR_NOT.YES)){
             if (student.getS_w_province() == null || student.getS_company() == null){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "您还未填写已就业的城市或企业！");
@@ -76,6 +84,8 @@ public class StudentController {
         }
         List<Position> positions = studentVo.getPositions();
         List<Industry> industries = studentVo.getIndustries();
+        student.setS_telephone(studentOld.getS_telephone());
+        student.setS_password(studentOld.getS_password());
         if (positions == null || industries == null ||
                 checkIsNullComponent.objCheckIsNull(student)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -122,10 +132,11 @@ public class StudentController {
 
 
     @PostMapping("resume")
-    public Map addResume(@Valid @RequestBody Resume resume){
+    public Map addResume(@RequestBody Resume resume){
         int sid = requestComponent.getUid();
         Student student = studentService.getStudent(sid);
         resume.setR_student(student);
+        resume.setR_count(0);
         if (checkIsNullComponent.objCheckIsNull(resume)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息，请完善信息后再提交");
@@ -182,15 +193,16 @@ public class StudentController {
 
 
     @PostMapping("studentResume")
-    public Map addStudentResume(@Valid @RequestBody int rid){
-        Resume resume = studentService.getResume(rid);
-        if (resume == null){
+    public Map addStudentResume(@RequestBody Resume resume){
+        int rid = resume.getR_id();
+        Resume r = studentService.getResume(rid);
+        if (r == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您想发布的简历不存在");
         }
         int sid = requestComponent.getUid();
         Student student = studentService.getStudent(sid);
-        studentService.addStudentResume(student,resume);
+        studentService.addStudentResume(student,r);
         List<Resume> resumes = studentService.getResumesByStudentId(sid);
         return Map.of(
                 "resumes",resumes
