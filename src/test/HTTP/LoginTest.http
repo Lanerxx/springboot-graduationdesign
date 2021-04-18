@@ -17,8 +17,8 @@ Content-Type: application/json
 
 {
   "student":true,
-  "userPhoneNumber": "13923894423",
-  "userPassword": "Qrter122"
+  "userPhoneNumber": "15338492374",
+  "userPassword": "lanerxx00"
 }
 
 > {% client.global.set("token", response.headers.valueOf("authorization")); %}

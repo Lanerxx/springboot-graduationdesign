@@ -65,7 +65,6 @@ Content-Type: application/json
 {
   "s_name": "兰二",
   "s_password": "lanerxx00",
-  "s_id_card": null,
   "s_gender": "FEMALE",
   "s_birthday": "199910",
   "s_college": "东北林业大学",

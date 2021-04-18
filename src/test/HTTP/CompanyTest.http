@@ -1,0 +1,164 @@
+####
+#GET http://localhost:8080/api/company/smr/8
+#Accept: application/json
+#authorization: {{token}}
+
+###
+//delete a job
+DELETE http://localhost:8080/api/company/companyJob/3
+authorization: {{token}}
+
+###
+// add the companyJob and modify the property of posted in job
+POST http://localhost:8080/api/company/companyJob
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "j_id": 3
+}
+###
+//get all jobs in a company
+GET http://localhost:8080/api/company/jobs
+Accept: application/json
+authorization: {{token}}
+
+###
+//modify the info of job
+PATCH http://localhost:8080/api/company/job
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "job": {
+    "j_id": 2,
+    "j_position": {
+      "po_id": 3
+    },
+    "j_h_subside": 0,
+    "j_b_trip" : 0,
+    "j_t_subside": 0,
+    "j_stock": 0,
+    "j_o_allowance":  0,
+    "j_p_leave":  0,
+    "j_a_bonus":  0,
+    "j_check_up":  0,
+    "j_insurance":  0,
+    "j_s_range":  0,
+    "j_f_language": 0,
+    "j_e_language": 0,
+    "j_c_level": 0,
+    "j_e_history": 0,
+    "j_location": "北京市",
+    "j_p_require": 0,
+    "j_remark": "没没事",
+    "j_expire": "20210920",
+    "j_count": 5000,
+    "posted": false,
+    "j_gender": 1
+  },
+  "professions":[
+    {"pr_id" : 1},
+    {"pr_id" : 3},
+    {"pr_id" : 4},
+    {"pr_id" : 5}
+  ]
+
+}
+###
+//delete a job
+DELETE http://localhost:8080/api/company/job/2
+authorization: {{token}}
+
+###
+//add a job
+POST http://localhost:8080/api/company/job
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "job": {
+    "j_position": {
+      "po_id": 1
+    },
+    "j_h_subside": 2,
+    "j_b_trip" : 1,
+    "j_t_subside": 1,
+    "j_stock": 1,
+    "j_o_allowance": 1,
+    "j_p_leave": 2,
+    "j_a_bonus": 1,
+    "j_check_up": 0,
+    "j_insurance": 2,
+    "j_s_range": 1,
+    "j_f_language": 1,
+    "j_e_language": 3,
+    "j_c_level": 1,
+    "j_e_history": 1,
+    "j_location": "上海市",
+    "j_p_require": 1,
+    "j_remark": "没没事",
+    "j_expire": "20210920",
+    "posted": false,
+    "j_gender": 0
+  },
+  "professions":[
+    {"pr_id" : 1},
+    {"pr_id" : 2},
+    {"pr_id" : 4},
+    {"pr_id" : 5}
+  ]
+
+}
+
+###
+//modify the info of company
+PATCH http://localhost:8080/api/company/information
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "c_name": "百度",
+  "c_industry": {
+    "i_id": 1
+  },
+  "c_location": "梧州市",
+  "c_s_code": "ASD12312JHH2HU76",
+  "c_description": "本公司是发货",
+  "c_s_contact": "李小四",
+  "c_s_telephone": "13923839282",
+  "c_email": "23479360@cn.cn",
+  "c_e_date": "20201004",
+  "c_scale": 1000
+}
+
+###
+// modify the password
+PATCH http://localhost:8080/api/company/password
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "oldPassword":"618239",
+  "newPassword": "baidu123"
+}
+
+###
+// get the index
+GET http://localhost:8080/api/company/index
+Accept: application/json
+authorization: {{token}}
+
+###
+// company login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "company":true,
+  "userPhoneNumber": "618239",
+  "userPassword": "baidu123"
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+###

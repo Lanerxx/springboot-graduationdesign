@@ -1,0 +1,168 @@
+GET http://localhost:8080/api/student/smr/8
+Accept: application/json
+authorization: {{token}}
+
+###
+//delete a resume
+DELETE http://localhost:8080/api/student/studentResume/5
+authorization: {{token}}
+
+###
+// add the studentResume and modify the property of posted in resume
+POST http://localhost:8080/api/student/studentResume
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "r_id": 5
+}
+###
+//get all resumes posted by the student
+GET http://localhost:8080/api/student/resumes
+Accept: application/json
+authorization: {{token}}
+
+###
+//modify the info of resume
+PATCH http://localhost:8080/api/student/resume
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "r_id": 4,
+  "r_count":106,
+  "r_remark": "没有备注",
+  "r_s_evaluate": "团队合作能力强",
+  "r_p_experience":"经验丰富",
+  "r_career": "没有实习经历",
+  "r_honor":"三创赛荣誉",
+  "r_h_count": 3,
+  "r_certificate":"会计证",
+  "r_c_count": 2,
+  "r_skill":"Python",
+  "r_s_count":0 ,
+  "r_e_location":"青岛市",
+  "r_m_course":"asjkdhas",
+  "r_p_count": 0,
+  "r_paper":"qweuwqeuqwe",
+  "s_if_b_trip": 0,
+  "s_if_h_subside":0,
+  "s_if_insurance" : 0,
+  "s_if_check_up" : 0,
+  "s_if_a_bonus" : 0,
+  "s_if_p_level" : 0,
+  "s_if_o_allowance" : 0,
+  "s_if_stock" : 0,
+  "s_if_t_subside": 2
+}
+###
+//delete a resume
+DELETE http://localhost:8080/api/student/resume/4
+authorization: {{token}}
+
+###
+//add a resume
+POST http://localhost:8080/api/student/resume
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "r_remark": "jdkasjdh",
+  "r_s_evaluate": "dadas",
+  "r_p_experience":"sdas",
+  "r_career": "dsadas",
+  "r_honor":"dsadas",
+  "r_h_count": 3,
+  "r_certificate":"qweuiyqwu",
+  "r_c_count": 2,
+  "r_skill":"suadhiuasd",
+  "r_s_count":0 ,
+  "r_e_location":"suhqiwueqw",
+  "r_m_course":"asjkdhas",
+  "r_p_count": 0,
+  "r_paper":"qweuwqeuqwe",
+  "s_if_b_trip": 0,
+  "s_if_h_subside":0,
+  "s_if_insurance" : 0,
+  "s_if_check_up" : 0,
+  "s_if_a_bonus" : 0,
+  "s_if_p_level" : 0,
+  "s_if_o_allowance" : 0,
+  "s_if_stock" : 0,
+  "s_if_t_subside": 2
+}
+
+###
+//modify the info of student
+PATCH http://localhost:8080/api/student/information
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "student": {
+    "s_name": "久er",
+    "s_gender": 1,
+    "s_birthday": "199910",
+    "s_college": "家里蹲",
+    "s_c_level": 0,
+    "s_profession": {
+      "pr_id": 1
+    },
+    "s_e_history": 2,
+    "s_place": "湖北省",
+    "s_e_language": 1,
+    "s_f_language": 0,
+    "s_s_range": 0,
+    "s_e_city": "其他",
+    "s_g_time": "202106",
+    "s_telephone": "15338492374",
+    "s_email": "893948244@qq.com",
+    "s_if_fresh": "YES",
+    "s_if_project_experience": 0,
+    "s_if_career": 0,
+    "s_ranking": "_0_10",
+    "s_if_work": "NO",
+    "s_w_province": null,
+    "s_company": null
+  },
+  "positions": [
+    {"po_id": 2},
+    {"po_id": 3}
+  ],
+  "industries": [
+    {"i_id": 2},
+    {"i_id": 2}
+  ]
+}
+
+
+###
+// modify the password
+PATCH http://localhost:8080/api/student/password
+Content-Type: application/json
+authorization: {{token}}
+
+{
+  "oldPassword":"lanerxx00",
+  "newPassword": "lanerxx11"
+}
+
+###
+// get the index
+GET http://localhost:8080/api/student/index
+Accept: application/json
+authorization: {{token}}
+
+###
+//STUDENT:login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "student":true,
+  "userPhoneNumber": "15338492374",
+  "userPassword": "lanerxx00"
+}
+
+> {% client.global.set("token", response.headers.valueOf("authorization")); %}
+###
