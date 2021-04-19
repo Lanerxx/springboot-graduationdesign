@@ -273,8 +273,8 @@ public class CompanyService {
     public List<JobSMR> getJobSMRByJob(int jid){
         return jobSMRRepository.getJobSMRsByJob(jid).orElse(new ArrayList<>());
     }
-    public List<JobSMR> getJobSMRsByCompany(int cid){
-        return jobSMRRepository.getJobSMRsByCompany(cid).orElse(new ArrayList<>());
+    public JobSMR getJobSMRByJobAndResume(int jid, int rid){
+        return jobSMRRepository.getJobSMRByJobAndResume(jid, rid).orElse(null);
     }
 
     //定时执行，匹配每一个学生相对于每个岗位的条件符合值
@@ -289,12 +289,12 @@ public class CompanyService {
             Job job = companyJob.getCompanyJobPk().getCj_job();
             int jid = job.getJ_id();
 
-            //学校和学历符合的学生
+            //匹配学校和学历符合的学生
             EnumWarehouse.C_LEVEL jobLevel = job.getJ_c_level();
             EnumWarehouse.E_HISTORY jobHistory = job.getJ_e_history();
             List<Student> students = studentService.getStudentByCLevelAndHistory(jobLevel, jobHistory);
 
-            //性别、语言、薪资、工作经验、项目经验、应届符合的学生
+            //匹配性别、语言、薪资、工作经验、项目经验、应届符合的学生
             EnumWarehouse.GENDER jobGender = job.getJ_gender();
             EnumWarehouse.E_LANGUAGE jobELanguage = job.getJ_e_language();
             EnumWarehouse.F_LANGUAGE jobFLanguage = job.getJ_f_language();
@@ -312,7 +312,7 @@ public class CompanyService {
                     .filter(s -> s.getS_if_project_experience().ordinal() <= jobIfProject.ordinal())
                     .collect(Collectors.toList());
 
-            //行业、专业符合的学生
+            //匹配行业、专业符合的学生
             Industry jobIndustry = company.getC_industry();
             List<Profession> jobProfessions = professionService.getProfessionsByJob(jid);
             List<Student> studentList = new ArrayList<>();
@@ -321,8 +321,8 @@ public class CompanyService {
                 boolean prFlag = false;
 
                 List<Industry> industries = industryService.getIndustriesByStudent(student.getS_id());
-                for(int count = 0; count < industries.size(); count++){
-                    if (industries.get(count) == jobIndustry){
+                for (Industry industry : industries) {
+                    if (industry == jobIndustry) {
                         inFlag = true;
                         break;
                     }
@@ -330,8 +330,8 @@ public class CompanyService {
                 if (!inFlag) return;
 
                 Profession profession = student.getS_profession();
-                for(int count = 0; count < jobProfessions.size(); count++){
-                    if (jobProfessions.get(count) == profession){
+                for (Profession jobProfession : jobProfessions) {
+                    if (jobProfession == profession) {
                         prFlag = true;
                         break;
                     }
@@ -342,22 +342,20 @@ public class CompanyService {
             //获取符合要求的学生的已发布简历
             List<StudentResume> studentResumeList = studentService.getStudentResumesByStudents(studentList);
 
-            //遍历简历，执行匹配和计算数值
+            //-----------(1)、计算匹配值 smr_v_match-------------
             studentResumeList.forEach(studentResume -> {
-
                 Student student = studentResume.getStudentResumePK().getSr_student();
                 Resume resume = studentResume.getStudentResumePK().getSr_resume();
                 JobSMR jobSMR = new JobSMR();
                 JobSMRBase jobSMRBase = new JobSMRBase();
                 float smr_v_match = 0;
-                float smr_v_success = 0;
-                float smr_v_average = 0;
-                float smr_v_popularity = 0;
 
                 jobSMR.setSmr_resume(resume);
                 jobSMR.setSmr_job(job);
+                jobSMR.setSmr_v_success(0);
+                jobSMR.setSmr_v_average(0);
+                jobSMR.setSmr_v_popularity(0);
 
-                //-----------(1)、计算匹配值 smr_v_match-------------
                 int valueTempt = 0;
                 //3.分别计算20项加权项
                 //3.1 专排百分比
@@ -444,17 +442,25 @@ public class CompanyService {
                 smr_v_match += valueTempt;
 
                 jobSMR.setSmr_v_match(smr_v_match);
-
-                //-----------(2)、计算成功率 smr_v_success-------------
-                List<Resume> similarResumes = studentService.getSimilarResumes(resume);// * DBScan聚类 *
-                List<Job> qualifiedJRJobs = companyService.getJRJobsByResumes(similarResumes);// finished by JR
-                smr_v_success = companyService.getJobSMRSuccessValue(qualifiedJRJobs, job);// * 均值 + 欧式距离 *
-                jobSMR.setSmr_v_success(smr_v_success);
-
-                //-----------(3)、计算平均值 smr_v_average-------------
-                //-----------(4)、计算热度 smr_v_popularity-------------
+                companyService.addJobSMRBase(jobSMRBase);
+                jobSMR.setSmr_base(jobSMRBase);
+                companyService.addJobSMR(jobSMR);
 
             });
+
+            //-----------(2)、计算成功率 smr_v_success-------------
+            List<JobSMR> jobSMRs = companyService.getJobSMRByJob(job.getJ_id());
+            jobSMRs.forEach(jobSMR -> {
+                List<Resume> similarResumes = studentService.getSimilarResumesByJobSMR(jobSMR, jobSMRs);// finished by * 欧式距离 *
+                List<Job> qualifiedJRJobs = companyService.getJRJobsByResumes(similarResumes);// finished by JR
+                float smr_v_success = companyService.getJobSMRSuccessValue(qualifiedJRJobs, job);
+                // * classified to three classes, high, medium and low, by kMeans *
+                jobSMR.setSmr_v_success(smr_v_success);
+            });
+
+            //-----------(3)、计算平均值 smr_v_average-------------
+            //-----------(4)、计算热度 smr_v_popularity-------------
+
 //
         });
     }
@@ -469,9 +475,9 @@ public class CompanyService {
     -------创建：服务器
     -------删除：服务器
     --------------------------------------------------*/
-    public JobSMRBase addSmrBase(JobSMRBase smr_base){
-        jobSMRBaseRepository.save(smr_base);
-        return smr_base;
+    public JobSMRBase addJobSMRBase(JobSMRBase jobSMRBase){
+        jobSMRBaseRepository.save(jobSMRBase);
+        return jobSMRBase;
     }
 
     /*---------（JobResume）---------

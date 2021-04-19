@@ -1,5 +1,6 @@
 package com.example.springbootgraduationdesign.service;
 
+import com.example.springbootgraduationdesign.component.EuclideanDistanceComponent;
 import com.example.springbootgraduationdesign.component.ValueComponent;
 import com.example.springbootgraduationdesign.component.vo.StudentVo;
 import com.example.springbootgraduationdesign.entity.*;
@@ -46,6 +47,8 @@ public class StudentService {
     private ValueComponent valueComponent;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private EuclideanDistanceComponent euclideanDistanceComponent;
 
 
     /*--------------学生信息（Student）---------------
@@ -180,8 +183,28 @@ public class StudentService {
     public List<Resume> getResumesByStudentId(int sid){
         return resumeRepository.getResumesByStudent(sid).orElse(new ArrayList<>());
     }
-    public List<Resume> getSimilarResumes(Resume resume){
+    public List<Resume> getResumesByStudents(List<Student> students){
+        List<Resume> resumes = new ArrayList<>();
+        students.forEach(student -> {
+            List<Resume> rs = studentService.getResumesByStudentId(student.getS_id());
+            if (rs.size() != 0) resumes.addAll(rs);
+        });
+        return resumes;
+    }
+    public List<Resume> getSimilarResumes(Resume resume, List<Resume> resumes){
         return null;
+    }
+    public List<Resume> getSimilarResumesByJobSMR(JobSMR jobSMR, List<JobSMR> jobSMRs){
+        List<Resume> resumes = new ArrayList<>();
+        int distanceStandard = 2;
+        int[] jobSMRArray = euclideanDistanceComponent.transferJobJMRBaseToArray(jobSMR.getSmr_base());
+        jobSMRs.forEach(js -> {
+            double distance = euclideanDistanceComponent.sim_distance(jobSMRArray,
+                    euclideanDistanceComponent.transferJobJMRBaseToArray(js.getSmr_base()));
+            if (distance < distanceStandard) resumes.add(js.getSmr_resume());
+
+        });
+        return resumes;
     }
 
 
@@ -239,29 +262,6 @@ public class StudentService {
     public List<StudentResume> getStudentResumesByStudent(int sid){
         return studentResumeRepository.getStudentResumesByStudent(sid).orElse(new ArrayList<>());
     }
-    //    public List<StudentResumeVo> getStudentResumeVoByStudent(int sid){
-//        List<Resume> resumes = studentService.getResumesByStudentId(sid);
-//        List<Student_Resume> student_resumes = studentService.getStudentResumes(sid);
-//        List<StudentResumeVo> studentResumeVos = new ArrayList<>();
-//        resumes.forEach(resume -> {
-//            StudentResumeVo studentResumeVo = new StudentResumeVo();
-//            studentResumeVo.setResume(resume);
-//            for (Student_Resume student_resume : student_resumes){
-//                if (student_resume.getStudent_resume_pk().getResume().getR_id() ==
-//                        resume.getR_id()){
-//                    studentResumeVo.setPosted(true);
-//                    break;
-//                }else {
-//                    studentResumeVo.setPosted(false);
-//                }
-//            }
-//            studentResumeVos.add(studentResumeVo);
-//        });
-//        return studentResumeVos;
-//    }
-
-
-
 
     /*---------学生匹配的企业信息（JobMatchResult）---------
     -------检索：管理员，学生，就业专员
