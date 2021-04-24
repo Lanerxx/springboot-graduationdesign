@@ -124,11 +124,11 @@ public class JobDirectorController {
         );
     }
 
-    @GetMapping("smr/{cid}")
-    public Map getSmr(@PathVariable int cid){
-        List<JobSMR> jobSMRs = companyService.getJobSMRsByCompany(cid);
-        return Map.of(
-                "jobSMRs",jobSMRs
-        );
-    }
+//    @GetMapping("smr/{cid}")
+//    public Map getSmr(@PathVariable int cid){
+//        List<JobSMR> jobSMRs = companyService.getJobSMRsByCompany(cid);
+//        return Map.of(
+//                "jobSMRs",jobSMRs
+//        );
+//    }
 }

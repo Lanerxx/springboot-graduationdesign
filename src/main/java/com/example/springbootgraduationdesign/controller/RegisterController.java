@@ -84,7 +84,7 @@ public class RegisterController {
                     "您填写的专业错误！");
         }
         student.setS_profession(profession);
-        if (student.getS_if_work().equals(EnumWarehouse.IF_WORK.YES)){
+        if (student.getS_if_work().equals(EnumWarehouse.IF_IS_OR_NOT.YES)){
             if (student.getS_w_province() == null || student.getS_company() == null){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "您还未填写已就业的城市或企业！");
