@@ -1,6 +1,7 @@
 package com.example.springbootgraduationdesign.service;
 
 import com.example.springbootgraduationdesign.component.EuclideanDistanceComponent;
+import com.example.springbootgraduationdesign.component.TransferComponent;
 import com.example.springbootgraduationdesign.component.ValueComponent;
 import com.example.springbootgraduationdesign.component.vo.StudentVo;
 import com.example.springbootgraduationdesign.entity.*;
@@ -49,6 +50,8 @@ public class StudentService {
     private PasswordEncoder encoder;
     @Autowired
     private EuclideanDistanceComponent euclideanDistanceComponent;
+    @Autowired
+    private TransferComponent transferComponent;
 
 
     /*--------------学生信息（Student）---------------
@@ -197,13 +200,21 @@ public class StudentService {
     public List<Resume> getSimilarResumesByJobSMR(JobSMR jobSMR, List<JobSMR> jobSMRs){
         List<Resume> resumes = new ArrayList<>();
         int distanceStandard = 2;
-        int[] jobSMRArray = euclideanDistanceComponent.transferJobJMRBaseToArray(jobSMR.getSmr_base());
+        double[] jobSMRArray = transferComponent.transferJobJMRBaseToArray(jobSMR.getSmr_base());
         jobSMRs.forEach(js -> {
             double distance = euclideanDistanceComponent.sim_distance(jobSMRArray,
-                    euclideanDistanceComponent.transferJobJMRBaseToArray(js.getSmr_base()));
+                    transferComponent.transferJobJMRBaseToArray(js.getSmr_base()));
             if (distance < distanceStandard) resumes.add(js.getSmr_resume());
 
         });
+        System.out.println("---- getSimilarResumesByJobSMR : similarResumes ----");
+        if(resumes.size() != 0) {
+            System.out.println("相似简历:");
+            resumes.forEach(resume -> {
+                System.out.print("similarResumesId: " + resume.getR_id() + " ");
+            });
+        }
+        System.out.println("");
         return resumes;
     }
 
@@ -298,5 +309,19 @@ public class StudentService {
     public StudentJMRBase addJmrBase(StudentJMRBase jmr_base){
         studemtJMRBaseRepository.save(jmr_base);
         return jmr_base;
+    }
+
+    /*--------学生意向行业（StudentIndustry）----------
+    --------------------------------------------------*/
+    public StudentIndustry addStudentIndustry(StudentIndustry studentIndustry){
+        studentIndustryRepository.save(studentIndustry);
+        return studentIndustry;
+    }
+
+    /*--------学生意向岗位（StudentPosition）----------
+    --------------------------------------------------*/
+    public StudentPosition addStudentPosition(StudentPosition studentPosition){
+        studentPositionRepository.save(studentPosition);
+        return studentPosition;
     }
 }

@@ -2,6 +2,7 @@ package com.example.springbootgraduationdesign.service;
 
 import com.example.springbootgraduationdesign.entity.Industry;
 import com.example.springbootgraduationdesign.entity.Position;
+import com.example.springbootgraduationdesign.entity.StudentIndustry;
 import com.example.springbootgraduationdesign.repository.IndustryRepository;
 import com.example.springbootgraduationdesign.repository.StudentIndustryRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +69,13 @@ public class IndustryService {
         return studentIndustryRepository.listIndustryNameByStudent(sid).orElse(new ArrayList<>());
     }
     public List<Industry> getIndustriesByStudent(int sid){
-        return studentIndustryRepository.getIndustriesByStudent(sid).orElse(new ArrayList<>());
+        List<StudentIndustry> studentIndustries = studentIndustryRepository.getStudentIndustriesByStudent(sid).orElse(new ArrayList<>());
+        List<Industry> industries = new ArrayList<>();
+        if (studentIndustries.size() != 0){
+            for (StudentIndustry si : studentIndustries){
+                industries.add(si.getStudentIndustryPK().getSi_industry());
+            }
+        }
+        return industries;
     }
 }

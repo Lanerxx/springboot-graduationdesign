@@ -1,5 +1,6 @@
 package com.example.springbootgraduationdesign.service;
 
+import com.example.springbootgraduationdesign.entity.JobProfession;
 import com.example.springbootgraduationdesign.entity.Profession;
 import com.example.springbootgraduationdesign.repository.JobProfessionRepository;
 import com.example.springbootgraduationdesign.repository.ProfessionRepository;
@@ -100,7 +101,14 @@ public class ProfessionService {
         return professtionRepository.getProfessionByMClass(mClass).orElse(new ArrayList<>());
     }
     public List<Profession> getProfessionsByJob(int jid){
-        return jobProfessionRepository.getProfessionsByJob(jid).orElse(new ArrayList<>());
+        List<JobProfession> jobProfessions = jobProfessionRepository.getJobProfessionsByJob(jid).orElse(new ArrayList<>());
+        List<Profession> professions = new ArrayList<>();
+        if (jobProfessions.size() != 0){
+            for (JobProfession jp : jobProfessions){
+                professions.add(jp.getJobProfessionPK().getJp_profession());
+            }
+        }
+        return professions;
     }
 
 
