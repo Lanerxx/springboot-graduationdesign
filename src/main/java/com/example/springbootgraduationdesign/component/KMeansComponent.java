@@ -150,9 +150,9 @@ public class KMeansComponent {
 
     //排名评级（三级）
     public EnumWarehouse.SUCCESS_DEGREE getDegree(int i, int n){
-        if (i*1.0/n <= 1.0/3) return EnumWarehouse.SUCCESS_DEGREE.HIGH;
+        if (i*1.0/n <= 1.0/3) return EnumWarehouse.SUCCESS_DEGREE.LOW;
         else if (i*1.0/n <= 2.0/3) return EnumWarehouse.SUCCESS_DEGREE.MEDIUM;
-        return EnumWarehouse.SUCCESS_DEGREE.LOW;
+        return EnumWarehouse.SUCCESS_DEGREE.HIGH;
     }
 
 

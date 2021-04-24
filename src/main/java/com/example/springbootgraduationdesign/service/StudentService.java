@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,6 +44,8 @@ public class StudentService {
     private PositionService positionService;
     @Autowired
     private IndustryService industryService;
+    @Autowired
+    private ProfessionService professionService;
 
     @Autowired
     private ValueComponent valueComponent;
@@ -131,6 +134,60 @@ public class StudentService {
     public List<Student> getStudentByCLevelAndHistory(EnumWarehouse.C_LEVEL level, EnumWarehouse.E_HISTORY history){
         return studentRepository.getStudentByCLevelAndHistory(level, history).orElse(new ArrayList<>());
     }
+    public List<Student> getJobSMRQualifiedStudentsByCompanyJob(CompanyJob companyJob){
+        Company company = companyJob.getCompanyJobPk().getCj_company();
+        Job job = companyJob.getCompanyJobPk().getCj_job();
+        int jid = job.getJ_id();
+        //匹配学校和学历符合的学生
+        EnumWarehouse.C_LEVEL jobLevel = job.getJ_c_level();
+        EnumWarehouse.E_HISTORY jobHistory = job.getJ_e_history();
+        List<Student> students = studentService.getStudentByCLevelAndHistory(jobLevel, jobHistory);
+
+        //匹配性别、语言、薪资、工作经验、项目经验、应届符合的学生
+        EnumWarehouse.GENDER jobGender = job.getJ_gender();
+        EnumWarehouse.E_LANGUAGE jobELanguage = job.getJ_e_language();
+        EnumWarehouse.S_RANGE jobRange = job.getJ_s_range();
+        EnumWarehouse.IF_IS_OR_NOT jobIfCareer = job.getJ_if_career();
+        EnumWarehouse.IF_IS_OR_NOT jobIfFresh = job.getJ_if_fresh();
+        EnumWarehouse.IF_IS_OR_NOT jobIfProject = job.getJ_if_project_experience();
+        students.stream()
+                .filter(s ->  (jobGender.ordinal() == 0) || s.getS_gender().ordinal() == jobGender.ordinal())
+                .filter(s -> ((jobELanguage.ordinal() == 0) || s.getS_e_language().ordinal() <= jobELanguage.ordinal()))
+                .filter(s -> s.getS_s_range().ordinal() <= jobRange.ordinal())
+                .filter(s -> s.getS_if_career().ordinal() <= jobIfCareer.ordinal())
+                .filter(s -> s.getS_if_fresh().ordinal() <= jobIfFresh.ordinal())
+                .filter(s -> s.getS_if_project_experience().ordinal() <= jobIfProject.ordinal())
+                .collect(Collectors.toList());
+
+        //匹配行业、专业符合的学生
+        Industry jobIndustry = company.getC_industry();
+        List<Profession> jobProfessions = professionService.getProfessionsByJob(jid);
+        List<Student> studentList = new ArrayList<>();
+        students.forEach(student -> {
+            boolean inFlag = false;
+            boolean prFlag = false;
+
+            List<Industry> industries = industryService.getIndustriesByStudent(student.getS_id());
+            for (Industry industry : industries) {
+                if (industry == jobIndustry) {
+                    inFlag = true;
+                    break;
+                }
+            }
+            if (!inFlag) return;
+
+            Profession profession = student.getS_profession();
+            for (Profession jobProfession : jobProfessions) {
+                if (jobProfession == profession) {
+                    prFlag = true;
+                    break;
+                }
+            }
+            if (prFlag) studentList.add(student);
+        });
+        return studentList;
+    }
+
 
     private StudentIndustry addStudentIndustries(StudentIndustry studentIndustry) {
         studentIndustryRepository.save(studentIndustry);
@@ -194,9 +251,6 @@ public class StudentService {
         });
         return resumes;
     }
-    public List<Resume> getSimilarResumes(Resume resume, List<Resume> resumes){
-        return null;
-    }
     public List<Resume> getSimilarResumesByJobSMR(JobSMR jobSMR, List<JobSMR> jobSMRs){
         List<Resume> resumes = new ArrayList<>();
         int distanceStandard = 2;
@@ -207,14 +261,6 @@ public class StudentService {
             if (distance < distanceStandard) resumes.add(js.getSmr_resume());
 
         });
-        System.out.println("---- getSimilarResumesByJobSMR : similarResumes ----");
-        if(resumes.size() != 0) {
-            System.out.println("相似简历:");
-            resumes.forEach(resume -> {
-                System.out.print("similarResumesId: " + resume.getR_id() + " ");
-            });
-        }
-        System.out.println("");
         return resumes;
     }
 
@@ -256,11 +302,9 @@ public class StudentService {
     public List<StudentResume> getStudentResumes(int sid){
         return studentResumeRepository.getStudentResumesByStudent(sid).orElse(new ArrayList<>());
     }
-
     public List<StudentResume> getAllStudentResumes(){
         return studentResumeRepository.findAll();
     }
-
     public List<StudentResume> getStudentResumesByStudents(List<Student> students){
         List<StudentResume> studentResumes = new ArrayList<>();
         students.forEach(student -> {
@@ -269,7 +313,6 @@ public class StudentService {
         });
         return studentResumes.size() == 0 ? new ArrayList<>() : studentResumes;
     }
-
     public List<StudentResume> getStudentResumesByStudent(int sid){
         return studentResumeRepository.getStudentResumesByStudent(sid).orElse(new ArrayList<>());
     }

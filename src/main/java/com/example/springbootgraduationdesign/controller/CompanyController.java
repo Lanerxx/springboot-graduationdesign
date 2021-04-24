@@ -239,7 +239,7 @@ public class CompanyController {
     @PostMapping("smr/{jid}")
     public Map getJmr(@PathVariable int jid, @RequestBody PersonalizedSMRVo personalizedSMRVo){
         //calculate(...)
-        List<JobSMR> jobSMRs = companyService.getJobSMRByJob(jid);
+        List<JobSMR> jobSMRs = companyService.getJobSMRsByJob(jid);
         return Map.of(
                 "jobSMRs", jobSMRs
         );
@@ -252,10 +252,10 @@ public class CompanyController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您想匹配的岗位不存在或尚未发布");
         }
-        List<JobSMR> jobSMRs = companyService.getJobSMRByJob(jid);
+        List<JobSMR> jobSMRs = companyService.getJobSMRsByJob(jid);
         if (jobSMRs.size() == 0 ){
             //calculate(...)
-            jobSMRs = companyService.getJobSMRByJob(jid);
+            jobSMRs = companyService.getJobSMRsByJob(jid);
         }
         return Map.of(
                 "jobSMRs", jobSMRs

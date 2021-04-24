@@ -3,7 +3,9 @@ package com.example.springbootgraduationdesign.service;
 import com.example.springbootgraduationdesign.component.KMeansComponent;
 import com.example.springbootgraduationdesign.component.TransferComponent;
 import com.example.springbootgraduationdesign.component.ValueComponent;
+import com.example.springbootgraduationdesign.component.vo.JobSMRPersonalizedVo;
 import com.example.springbootgraduationdesign.component.vo.JobVo;
+import com.example.springbootgraduationdesign.component.vo.PersonalizedSMRVo;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -262,7 +265,7 @@ public class CompanyService {
     public List<JobSMR> getAllJobSMR(){
         return jobSMRRepository.findAll();
     }
-    public List<JobSMR> getJobSMRByJob(int jid){
+    public List<JobSMR> getJobSMRsByJob(int jid){
         return jobSMRRepository.getJobSMRsByJob(jid).orElse(new ArrayList<>());
     }
     public JobSMR getJobSMRByJobAndResume(int jid, int rid){
@@ -270,226 +273,266 @@ public class CompanyService {
     }
 
     //定时执行，匹配每一个学生相对于每个岗位的条件符合值
-    public void getJobSMR(){
+    public void getJobSMR_Match(){
         jobSMRRepository.deleteAll();
         jobSMRBaseRepository.deleteAll();
 
-        // 获取所有企业已发布的岗位，并遍历
+        // 获取所有企业已发布的岗位
         List<CompanyJob> companyJobs = companyService.getAllCompanyJobs();
+
+        //只获取两个companyjob测试
         int COUNT = 2;
         List<CompanyJob> companyJobsTemp = new ArrayList<>();
         for (int i = 0; i < COUNT; i++){
             companyJobsTemp.add(companyJobs.get(i));
         }
+
         companyJobsTemp.forEach(companyJob -> {
-            System.out.println("===================CompanyJob===================");
-            Company company = companyJob.getCompanyJobPk().getCj_company();
-            Job job = companyJob.getCompanyJobPk().getCj_job();
-            int jid = job.getJ_id();
-            System.out.println("JobID:" + jid + " PositionName:" + job.getJ_position().getPo_name() +
-                    " CompanyId:" + company.getC_name());
+            companyService.getOneJobSMR_Match(companyJob);
+        });
+    }
 
-            //匹配学校和学历符合的学生
-            EnumWarehouse.C_LEVEL jobLevel = job.getJ_c_level();
-            EnumWarehouse.E_HISTORY jobHistory = job.getJ_e_history();
-            List<Student> students = studentService.getStudentByCLevelAndHistory(jobLevel, jobHistory);
+    //及时执行，用户临时添加一个岗位执行匹配
+    public List<JobSMR> getJobSMR_Match(int jid){
+        CompanyJob companyJob = companyService.getCompanyJobByJob(jid);
+        companyService.getOneJobSMR_Match(companyJob);
+        return companyService.getJobSMRsByJob(jid);
+    }
 
-            //匹配性别、语言、薪资、工作经验、项目经验、应届符合的学生
-            EnumWarehouse.GENDER jobGender = job.getJ_gender();
-            EnumWarehouse.E_LANGUAGE jobELanguage = job.getJ_e_language();
-            EnumWarehouse.S_RANGE jobRange = job.getJ_s_range();
-            EnumWarehouse.IF_IS_OR_NOT jobIfCareer = job.getJ_if_career();
-            EnumWarehouse.IF_IS_OR_NOT jobIfFresh = job.getJ_if_fresh();
-            EnumWarehouse.IF_IS_OR_NOT jobIfProject = job.getJ_if_project_experience();
-            students.stream()
-                    .filter(s ->  (jobGender.ordinal() == 0) || s.getS_gender().ordinal() == jobGender.ordinal())
-                    .filter(s -> ((jobELanguage.ordinal() == 0) || s.getS_e_language().ordinal() <= jobELanguage.ordinal()))
-                    .filter(s -> s.getS_s_range().ordinal() <= jobRange.ordinal())
-                    .filter(s -> s.getS_if_career().ordinal() <= jobIfCareer.ordinal())
-                    .filter(s -> s.getS_if_fresh().ordinal() <= jobIfFresh.ordinal())
-                    .filter(s -> s.getS_if_project_experience().ordinal() <= jobIfProject.ordinal())
-                    .collect(Collectors.toList());
+    //及时执行，根据用户的自定义权重进行匹配
+    public List<JobSMRPersonalizedVo> getJobSMR_Match(int jid, PersonalizedSMRVo personalizedSMRVo){
+        List<JobSMR> jobSMRs = companyService.getJobSMRsByJob(jid);
+        if (jobSMRs.size() == 0){
+            companyService.getJobSMR_Match(jid);
+            jobSMRs = companyService.getJobSMRsByJob(jid);
+        }
+        List<JobSMRPersonalizedVo> jobSMRPersonalizedVos = new ArrayList<>();
+        for (JobSMR jobSMR : jobSMRs) {
+            JobSMRPersonalizedVo jobSMRPersonalizedVo = new JobSMRPersonalizedVo();
 
-            //匹配行业、专业符合的学生
-            Industry jobIndustry = company.getC_industry();
-            List<Profession> jobProfessions = professionService.getProfessionsByJob(jid);
-            List<Student> studentList = new ArrayList<>();
-            students.forEach(student -> {
-                boolean inFlag = false;
-                boolean prFlag = false;
+            double valueTempt;
+            double smr_v_match = 0;
+            JobSMRBase jobSMRBase = jobSMR.getSmr_base();
+            jobSMRPersonalizedVo.setSmr_id(jobSMR.getSmr_id());
+            jobSMRPersonalizedVo.setSmr_base(jobSMRBase);
+            jobSMRPersonalizedVo.setSmr_job(jobSMR.getSmr_job());
+            jobSMRPersonalizedVo.setSmr_resume(jobSMR.getSmr_resume());
+            jobSMRPersonalizedVo.setSmr_v_success(jobSMR.getSmr_v_success());
+            jobSMRPersonalizedVo.setSmr_v_popularity(jobSMR.getSmr_v_popularity());
 
-                List<Industry> industries = industryService.getIndustriesByStudent(student.getS_id());
-                for (Industry industry : industries) {
-                    if (industry == jobIndustry) {
-                        inFlag = true;
-                        break;
-                    }
-                }
-                if (!inFlag) return;
+            valueTempt = jobSMRBase.getSmr_b_ranking() * personalizedSMRVo.getRanking();
+            smr_v_match += valueTempt;
 
-                Profession profession = student.getS_profession();
-                for (Profession jobProfession : jobProfessions) {
-                    if (jobProfession == profession) {
-                        prFlag = true;
-                        break;
-                    }
-                }
-                if (prFlag) studentList.add(student);
-            });
+            valueTempt = jobSMRBase.getSmr_b_r_count() * personalizedSMRVo.getR_count();
+            smr_v_match += valueTempt;
 
-            //获取符合要求的学生的已发布简历
-            List<StudentResume> studentResumeList = studentService.getStudentResumesByStudents(studentList);
+            valueTempt = jobSMRBase.getSmr_b_p_count() * personalizedSMRVo.getP_count();
+            smr_v_match += valueTempt;
 
-            //-----------(1)、计算匹配值 smr_v_match-------------
-            if (studentResumeList.size() == 0){
-                System.out.println("-----------没有符合要求的学生-------------");
-            }else {
-                System.out.println("-----------符合要求的学生-------------");
-            }
-            studentResumeList.forEach(studentResume -> {
-                Student student = studentResume.getStudentResumePK().getSr_student();
-                Resume resume = studentResume.getStudentResumePK().getSr_resume();
-                System.out.println("StudentID:" + student.getS_id() + " StudentName:" + student.getS_name() +
-                        " ResumeId:" + resume.getR_id());
+            valueTempt = jobSMRBase.getSmr_b_s_count() * personalizedSMRVo.getS_count();
+            smr_v_match += valueTempt;
 
-                JobSMR jobSMR = new JobSMR();
-                JobSMRBase jobSMRBase = new JobSMRBase();
-                float smr_v_match = 0;
+            valueTempt = jobSMRBase.getSmr_b_c_count() * personalizedSMRVo.getC_count();
+            smr_v_match += valueTempt;
 
-                jobSMR.setSmr_resume(resume);
-                jobSMR.setSmr_job(job);
-                jobSMR.setSmr_v_success(EnumWarehouse.SUCCESS_DEGREE.LOW);
-                jobSMR.setSmr_v_average(0);
-                jobSMR.setSmr_v_popularity(0);
+            valueTempt = jobSMRBase.getSmr_b_h_count() * personalizedSMRVo.getH_count();
+            smr_v_match += valueTempt;
 
-                int valueTempt = 0;
-                //3.分别计算20项加权项
-                //3.1 专排百分比
-                valueTempt = valueComponent.jobJmrBaseRanking(student.getS_ranking());
-                jobSMRBase.setSmr_b_ranking(valueTempt);
-                smr_v_match += valueTempt;
-                //3.2
-                //3.3 简历被要取次数
-                valueTempt = valueComponent.jobJmrBaseRCount(resume.getR_count());
-                jobSMRBase.setSmr_b_r_count(valueTempt);
-                smr_v_match += valueTempt;
-                //3.4 论文数
-                valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_p_count());
-                jobSMRBase.setSmr_b_p_count(valueTempt);
-                smr_v_match += valueTempt;
-                //3.5 掌握技能
-                valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_s_count());
-                jobSMRBase.setSmr_b_s_count(valueTempt);
-                smr_v_match += valueTempt;
-                //3.6 专业技能证书
-                valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_c_count());
-                jobSMRBase.setSmr_b_c_count(valueTempt);
-                smr_v_match += valueTempt;
-                //3.7 获得荣誉/奖项
-                valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_h_count());
-                jobSMRBase.setSmr_b_h_count(valueTempt);
-                smr_v_match += valueTempt;
-                //3.8
-                //3.9 地区意向
-                valueTempt = valueComponent.jobJmrBaseLocation(job.getJ_location(), resume.getR_e_location());
-                jobSMRBase.setSmr_b_location(valueTempt);
-                smr_v_match += valueTempt;
-                //3.10 五险一金
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_insurance(), resume.getR_if_insurance());
-                jobSMRBase.setSmr_b_insurance(valueTempt);
-                smr_v_match += valueTempt;
-                //3.11 定期体检
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_check_up(), resume.getR_if_check_up());
-                jobSMRBase.setSmr_b_check_up(valueTempt);
-                smr_v_match += valueTempt;
-                //3.12 年终奖
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_a_bonus(), resume.getR_if_a_bonus());
-                jobSMRBase.setSmr_b_a_bonus(valueTempt);
-                smr_v_match += valueTempt;
-                //3.13 带薪年假
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_p_leave(), resume.getR_if_p_leave());
-                jobSMRBase.setSmr_b_p_leave(valueTempt);
-                smr_v_match += valueTempt;
-                //3.14 加班补助
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_o_allowance(), resume.getR_if_o_allowance());
-                jobSMRBase.setSmr_b_o_allowance(valueTempt);
-                smr_v_match += valueTempt;
-                //3.15 股票期权
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_stock(), resume.getR_if_stock());
-                jobSMRBase.setSmr_b_stock(valueTempt);
-                smr_v_match += valueTempt;
-                //3.16 交通补贴
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_t_subside(), resume.getR_if_t_subside());
-                jobSMRBase.setSmr_b_t_subside(valueTempt);
-                smr_v_match += valueTempt;
-                //3.17 住房补贴
-                valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_h_subside(), resume.getR_if_h_subside());
-                jobSMRBase.setSmr_b_h_subside(valueTempt);
-                smr_v_match += valueTempt;
-                //3.18 岗位需要/学生愿意出差
-                valueTempt = valueComponent.jobJmrBaseBTrip(job.getJ_b_trip(), resume.getR_if_b_trip());
-                jobSMRBase.setSmr_b_b_trip(valueTempt);
-                smr_v_match += valueTempt;
-                //3.19 毕业学校等级
-                valueTempt = valueComponent.jobJmrBaseCLevel(job.getJ_c_level(), student.getS_c_level());
-                jobSMRBase.setSmr_b_c_level(valueTempt);
-                smr_v_match += valueTempt;
-                //3.20 学历
-                valueTempt = valueComponent.jobJmrBaseEHistory(job.getJ_e_history(), student.getS_e_history());
-                jobSMRBase.setSmr_e_history(valueTempt);
-                smr_v_match += valueTempt;
-                //3.21 英语水平
-                valueTempt = valueComponent.jobJmrBaseELanguage(job.getJ_e_language(), student.getS_e_language());
-                jobSMRBase.setSmr_b_e_language(valueTempt);
-                smr_v_match += valueTempt;
-                //3.22 期望薪资
-                valueTempt = valueComponent.jobJmrBaseSRange(job.getJ_s_range(), student.getS_s_range());
-                jobSMRBase.setSmr_b_s_range(valueTempt);
-                smr_v_match += valueTempt;
+            valueTempt = jobSMRBase.getSmr_b_location() * personalizedSMRVo.getLocation();
+            smr_v_match += valueTempt;
 
-                jobSMR.setSmr_v_match(smr_v_match);
-                companyService.addJobSMRBase(jobSMRBase);
-                jobSMR.setSmr_base(jobSMRBase);
-                companyService.addJobSMR(jobSMR);
-                System.out.println("smr_v_match:" + smr_v_match);
-            });
+            valueTempt = jobSMRBase.getSmr_b_insurance() * personalizedSMRVo.getInsurance();
+            smr_v_match += valueTempt;
 
-            //获取当前job匹配到的学生简历
-            List<JobSMR> jobSMRs = companyService.getJobSMRByJob(job.getJ_id());
-            //遍历当前job匹配到的学生简历
-            jobSMRs.forEach(jobSMR -> {
-                //-----------(2)、计算成功率 smr_v_success-------------
-                System.out.println("-----------(2)、计算成功率 smr_v_success-------------");
-                //获取当前学生简历在 当前job匹配到的学生中 的相似简历 finished by * 欧式距离 *
-                List<Resume> similarResumes = studentService.getSimilarResumesByJobSMR(jobSMR, jobSMRs);
-                if (similarResumes.size() == 0)
-                    System.out.println("没有相似简历");
-                //获取这些相似简历曾经选中过的岗位 finished by JR
-                List<Job> qualifiedJRJobs = companyService.getJobResumeJobsByResumes(similarResumes);
-                if (qualifiedJRJobs.size() == 0)
-                    System.out.println("相似简历没有选中岗位");
-                //计算当前岗位在 曾经选中过的岗位中 的等级 * classified to three classes, high, medium and low, by kMeans *
-                EnumWarehouse.SUCCESS_DEGREE smr_v_success = companyService.getJobSMRSuccessDegree(qualifiedJRJobs, job);
-                jobSMR.setSmr_v_success(smr_v_success);
-                System.out.println("smr_v_success:" + smr_v_success);
+            valueTempt = jobSMRBase.getSmr_b_check_up() * personalizedSMRVo.getC_up();
+            smr_v_match += valueTempt;
 
-                //-----------(3)、计算平均值 smr_v_average-------------
-                System.out.println("-----------(3)、计算平均值 smr_v_average-------------");
-                double matchBase = 21 * 2;
-                //根据当前成功率等级获得成功率值
-                double success = transferComponent.getSuccessByDegree(smr_v_success);
-                System.out.println("success:" + success);
-                double smr_v_average = companyService.getAverage(success, jobSMR.getSmr_v_match()/matchBase);
-                jobSMR.setSmr_v_average(smr_v_average);
-                System.out.println("smr_v_average:" + smr_v_average);
+            valueTempt = jobSMRBase.getSmr_b_a_bonus() * personalizedSMRVo.getA_bonus();
+            smr_v_match += valueTempt;
 
-                //-----------(4)、计算热度 smr_v_popularity-------------
-                System.out.println("-----------(4)、计算热度 smr_v_popularity-------------");
-                Student student = jobSMR.getSmr_resume().getR_student();
-                int smr_v_popularity = getJobResumeCountByStudent(student.getS_id());
-                jobSMR.setSmr_v_popularity(smr_v_popularity);
-                System.out.println("smr_v_popularity:" + smr_v_popularity);
-            });
+            valueTempt = jobSMRBase.getSmr_b_p_leave() * personalizedSMRVo.getP_leave();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_o_allowance() * personalizedSMRVo.getO_allowance();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_stock() * personalizedSMRVo.getStock();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_t_subside() * personalizedSMRVo.getT_subside();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_h_subside() * personalizedSMRVo.getH_subside();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_b_trip() * personalizedSMRVo.getB_trip();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_c_level() * personalizedSMRVo.getC_level();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_e_history() * personalizedSMRVo.getE_history();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_e_language() * personalizedSMRVo.getE_language();
+            smr_v_match += valueTempt;
+
+            valueTempt = jobSMRBase.getSmr_b_s_range() * personalizedSMRVo.getS_range();
+            smr_v_match += valueTempt;
+
+            jobSMRPersonalizedVo.setSmr_v_match(smr_v_match);
+            double matchBase = 21 * 2;
+            double success = transferComponent.getSuccessByDegree(jobSMR.getSmr_v_success());
+            double smr_v_average = companyService.getAverage(success, jobSMR.getSmr_v_match()/matchBase);
+            jobSMRPersonalizedVo.setSmr_v_average(smr_v_average);
+            jobSMRPersonalizedVos.add(jobSMRPersonalizedVo);
+        }
+        return jobSMRPersonalizedVos;
+    }
+
+    //执行一个岗位的匹配
+    public void getOneJobSMR_Match(CompanyJob companyJob){
+        Job job = companyJob.getCompanyJobPk().getCj_job();
+        List<Student> qualifiedStudents = studentService.getJobSMRQualifiedStudentsByCompanyJob(companyJob);
+        List<StudentResume> qualifiedStudentResumes = studentService.getStudentResumesByStudents(qualifiedStudents);
+        //-----------(1)、计算匹配值 smr_v_match-------------
+        qualifiedStudentResumes.forEach(studentResume -> {
+            Student student = studentResume.getStudentResumePK().getSr_student();
+            Resume resume = studentResume.getStudentResumePK().getSr_resume();
+
+            JobSMR jobSMR = new JobSMR();
+            JobSMRBase jobSMRBase = new JobSMRBase();
+            float smr_v_match = 0;
+
+            jobSMR.setSmr_resume(resume);
+            jobSMR.setSmr_job(job);
+            jobSMR.setSmr_v_success(EnumWarehouse.SUCCESS_DEGREE.LOW);
+            jobSMR.setSmr_v_average(0);
+            jobSMR.setSmr_v_popularity(0);
+
+            int valueTempt = 0;
+            //3.分别计算20项加权项
+            //3.1 专排百分比
+            valueTempt = valueComponent.jobJmrBaseRanking(student.getS_ranking());
+            jobSMRBase.setSmr_b_ranking(valueTempt);
+            smr_v_match += valueTempt;
+            //3.2
+            //3.3 简历被要取次数
+            valueTempt = valueComponent.jobJmrBaseRCount(resume.getR_count());
+            jobSMRBase.setSmr_b_r_count(valueTempt);
+            smr_v_match += valueTempt;
+            //3.4 论文数
+            valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_p_count());
+            jobSMRBase.setSmr_b_p_count(valueTempt);
+            smr_v_match += valueTempt;
+            //3.5 掌握技能
+            valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_s_count());
+            jobSMRBase.setSmr_b_s_count(valueTempt);
+            smr_v_match += valueTempt;
+            //3.6 专业技能证书
+            valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_c_count());
+            jobSMRBase.setSmr_b_c_count(valueTempt);
+            smr_v_match += valueTempt;
+            //3.7 获得荣誉/奖项
+            valueTempt = valueComponent.jobJmrBaseXCount(resume.getR_h_count());
+            jobSMRBase.setSmr_b_h_count(valueTempt);
+            smr_v_match += valueTempt;
+            //3.8
+            //3.9 地区意向
+            valueTempt = valueComponent.jobJmrBaseLocation(job.getJ_location(), resume.getR_e_location());
+            jobSMRBase.setSmr_b_location(valueTempt);
+            smr_v_match += valueTempt;
+            //3.10 五险一金
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_insurance(), resume.getR_if_insurance());
+            jobSMRBase.setSmr_b_insurance(valueTempt);
+            smr_v_match += valueTempt;
+            //3.11 定期体检
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_check_up(), resume.getR_if_check_up());
+            jobSMRBase.setSmr_b_check_up(valueTempt);
+            smr_v_match += valueTempt;
+            //3.12 年终奖
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_a_bonus(), resume.getR_if_a_bonus());
+            jobSMRBase.setSmr_b_a_bonus(valueTempt);
+            smr_v_match += valueTempt;
+            //3.13 带薪年假
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_p_leave(), resume.getR_if_p_leave());
+            jobSMRBase.setSmr_b_p_leave(valueTempt);
+            smr_v_match += valueTempt;
+            //3.14 加班补助
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_o_allowance(), resume.getR_if_o_allowance());
+            jobSMRBase.setSmr_b_o_allowance(valueTempt);
+            smr_v_match += valueTempt;
+            //3.15 股票期权
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_stock(), resume.getR_if_stock());
+            jobSMRBase.setSmr_b_stock(valueTempt);
+            smr_v_match += valueTempt;
+            //3.16 交通补贴
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_t_subside(), resume.getR_if_t_subside());
+            jobSMRBase.setSmr_b_t_subside(valueTempt);
+            smr_v_match += valueTempt;
+            //3.17 住房补贴
+            valueTempt = valueComponent.jobJmrBaseWelfare(job.getJ_h_subside(), resume.getR_if_h_subside());
+            jobSMRBase.setSmr_b_h_subside(valueTempt);
+            smr_v_match += valueTempt;
+            //3.18 岗位需要/学生愿意出差
+            valueTempt = valueComponent.jobJmrBaseBTrip(job.getJ_b_trip(), resume.getR_if_b_trip());
+            jobSMRBase.setSmr_b_b_trip(valueTempt);
+            smr_v_match += valueTempt;
+            //3.19 毕业学校等级
+            valueTempt = valueComponent.jobJmrBaseCLevel(job.getJ_c_level(), student.getS_c_level());
+            jobSMRBase.setSmr_b_c_level(valueTempt);
+            smr_v_match += valueTempt;
+            //3.20 学历
+            valueTempt = valueComponent.jobJmrBaseEHistory(job.getJ_e_history(), student.getS_e_history());
+            jobSMRBase.setSmr_e_history(valueTempt);
+            smr_v_match += valueTempt;
+            //3.21 英语水平
+            valueTempt = valueComponent.jobJmrBaseELanguage(job.getJ_e_language(), student.getS_e_language());
+            jobSMRBase.setSmr_b_e_language(valueTempt);
+            smr_v_match += valueTempt;
+            //3.22 期望薪资
+            valueTempt = valueComponent.jobJmrBaseSRange(job.getJ_s_range(), student.getS_s_range());
+            jobSMRBase.setSmr_b_s_range(valueTempt);
+            smr_v_match += valueTempt;
+
+            jobSMR.setSmr_v_match(smr_v_match);
+            companyService.addJobSMRBase(jobSMRBase);
+            jobSMR.setSmr_base(jobSMRBase);
+            companyService.addJobSMR(jobSMR);
+            System.out.println("smr_v_match:" + smr_v_match);
+        });
+
+        //-----------(2)、smr_v_success smr_v_average smr_v_popularity-------------
+        //获取当前job匹配到的学生简历
+        List<JobSMR> jobSMRs = companyService.getJobSMRsByJob(job.getJ_id());
+        //遍历当前job匹配到的学生简历
+        jobSMRs.forEach(jobSMR -> {
+            //-----------(2)、计算成功率 smr_v_success-------------
+            System.out.println("-----------(2)、计算成功率 smr_v_success-------------");
+            //获取当前学生简历在 当前job匹配到的学生中 的相似简历 finished by * 欧式距离 *
+            List<Resume> similarResumes = studentService.getSimilarResumesByJobSMR(jobSMR, jobSMRs);
+            //获取这些相似简历曾经选中过的岗位 finished by JR
+            List<Job> qualifiedJRJobs = companyService.getJobResumesByResumes_ResumeToJob(similarResumes);
+            //计算当前岗位在 曾经选中过的岗位中 的等级 * classified to three classes, high, medium and low, by kMeans *
+            EnumWarehouse.SUCCESS_DEGREE smr_v_success = companyService.getJobSMRSuccessDegree(qualifiedJRJobs, job);
+            jobSMR.setSmr_v_success(smr_v_success);
+            System.out.println("smr_v_success:" + smr_v_success);
+
+            //-----------(3)、计算平均值 smr_v_average-------------
+            System.out.println("-----------(3)、计算平均值 smr_v_average-------------");
+            double matchBase = 21 * 2;
+            //根据当前成功率等级获得成功率值
+            double success = transferComponent.getSuccessByDegree(smr_v_success);
+            double smr_v_average = companyService.getAverage(success, jobSMR.getSmr_v_match()/matchBase);
+            jobSMR.setSmr_v_average(smr_v_average);
+            System.out.println("smr_v_average:" + smr_v_average);
+
+            //-----------(4)、计算热度 smr_v_popularity-------------
+            System.out.println("-----------(4)、计算热度 smr_v_popularity-------------");
+            Resume resume = jobSMR.getSmr_resume();
+            int smr_v_popularity = getJobResumeCountByResume(resume.getR_id(),true);
+            jobSMR.setSmr_v_popularity(smr_v_popularity);
+            System.out.println("smr_v_popularity:" + smr_v_popularity);
         });
     }
 
@@ -516,6 +559,9 @@ public class CompanyService {
         jobSMRBaseRepository.save(jobSMRBase);
         return jobSMRBase;
     }
+    public JobSMRBase getJobSMRBaseById(int jmbid){
+        return jobSMRBaseRepository.findById(jmbid).orElse(null);
+    }
 
     /*---------（JobResume）---------
     --------------------------------------------------*/
@@ -540,48 +586,38 @@ public class CompanyService {
         });
         return jobResumes;
     }
-    public List<JobResume> getJobResumesByStudent(int sid){
-        return jobResumeRepository.getJobResumesByStudent(true,sid).orElse(new ArrayList<>());
-    }
     public JobResume getJobResumeByJobAndResume(int jid, int rid){
         return jobResumeRepository.getJobResumeByJobAndResume(jid,rid).orElse(null);
     }
-    public List<JobResume> getJobResumesByResume(int rid){
-        return jobResumeRepository.getJobResumesByResume(rid,true).orElse(new ArrayList<>());
-    }
-    public List<JobResume> getJobResumesByResume2(int rid){
-        return jobResumeRepository.getJobResumesByResume(rid).orElse(new ArrayList<>());
-    }
-    public List<JobResume> getJobResumesByResumes(List<Resume> resumes){
+    public List<JobResume> getJobResumesByResume_ResumeToJob(List<Resume> resumes){
         List<JobResume> jobResumes = new ArrayList<>();
         resumes.forEach(r -> {
-            List<JobResume> jrs = companyService.getJobResumesByResume(r.getR_id());
+            List<JobResume> jrs = companyService.getJobResumesByResume_ResumeToJob(r.getR_id(), true);
             if (jrs.size() != 0){
                 jobResumes.addAll(jrs);
             }
         });
         return jobResumes;
     }
-    public List<Job> getJobResumeJobsByResumes(List<Resume> resumes){
-        System.out.println("---- getJobResumeJobsByResumes : qualifiedJRJobs ----");
+    public List<Job> getJobResumesByResumes_ResumeToJob(List<Resume> resumes){
         List<Job> jobs = new ArrayList<>();
-        List<JobResume> jobResumes = companyService.getJobResumesByResumes(resumes);
+        List<JobResume> jobResumes = companyService.getJobResumesByResume_ResumeToJob(resumes);
         if (jobResumes.size() != 0){
-            System.out.println("1.qualifiedJRJobs: ");
             for (JobResume jobResume : jobResumes) {
                 jobs.add(jobResume.getJobResumePK().getJr_job());
-                System.out.print("JobID: " + jobResume.getJobResumePK().getJr_job().getJ_position().getPo_name() + " ");
             }
-            System.out.println("");
         }
-        System.out.println("2.qualifiedJobs: ");
-        jobs.forEach(job -> {
-            System.out.print("JobId:" + job.getJ_id() + " ");
-        });
-        System.out.println("");
         return jobs;
     }
-    public int getJobResumeCountByStudent(int sid){
-        return companyService.getJobResumesByStudent(sid).size();
+
+    public int getJobResumeCountByResume(int rid, boolean jobToResume){
+        return companyService.getJobResumesByResume_JobToResume(rid,jobToResume).size();
+    }
+    public List<JobResume> getJobResumesByResume_JobToResume(int rid,boolean jobToResume){
+        return jobResumeRepository.getJobResumesByResume_JobToResume(rid,jobToResume).orElse(new ArrayList<>());
+    }
+    public List<JobResume> getJobResumesByResume_ResumeToJob(int rid,boolean resumeToJob){
+        return jobResumeRepository.getJobResumesByResume_ResumeToJob(rid,resumeToJob).orElse(new ArrayList<>());
     }
 }
+

@@ -15,15 +15,15 @@ public class SimulatedDataTest {
 
     @Test
     public void test1(){
-        simulatedDataComponent.simulatedProfession();
-        simulatedDataComponent.simulatedIndustry();
-        simulatedDataComponent.simulatedPosition();
-        simulatedDataComponent.simulatedStudent();
-        simulatedDataComponent.simulatedStudentIndustry();
-        simulatedDataComponent.simulatedStudentPosition();
-        simulatedDataComponent.simulatedStudentResume();
-        simulatedDataComponent.simulatedCompany();
-        simulatedDataComponent.simulatedCompanyJob();
+//        simulatedDataComponent.simulatedProfession();
+//        simulatedDataComponent.simulatedIndustry();
+//        simulatedDataComponent.simulatedPosition();
+//        simulatedDataComponent.simulatedStudent();
+//        simulatedDataComponent.simulatedStudentIndustry();
+//        simulatedDataComponent.simulatedStudentPosition();
+//        simulatedDataComponent.simulatedStudentResume();
+//        simulatedDataComponent.simulatedCompany();
+//        simulatedDataComponent.simulatedCompanyJob();
         simulatedDataComponent.simulatedJobResume();
     }
 }

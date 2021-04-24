@@ -13,6 +13,6 @@ public class JobResume {
     @EmbeddedId
     private JobResumePK jobResumePK;
 
-    private boolean studentToJob;
-    private boolean jobToStudent;
+    private boolean resumeToJob;
+    private boolean jobToResume;
 }

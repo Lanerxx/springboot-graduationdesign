@@ -905,8 +905,8 @@ public class SimulatedDataComponent {
                 jobResumePK.setJr_job(companyJob.getCompanyJobPk().getCj_job());
                 jobResumePK.setJr_resume(studentResume.getStudentResumePK().getSr_resume());
                 jobResume.setJobResumePK(jobResumePK);
-                jobResume.setJobToStudent(true);
-                jobResume.setStudentToJob(false);
+                jobResume.setJobToResume(true);
+                jobResume.setResumeToJob(false);
                 companyService.addJobResume(jobResume);
             }
 
@@ -924,11 +924,11 @@ public class SimulatedDataComponent {
                     jobResumePK.setJr_job(companyJob.getCompanyJobPk().getCj_job());
                     jobResumePK.setJr_resume(studentResume.getStudentResumePK().getSr_resume());
                     jobResume.setJobResumePK(jobResumePK);
-                    jobResume.setJobToStudent(false);
-                    jobResume.setStudentToJob(true);
+                    jobResume.setJobToResume(false);
+                    jobResume.setResumeToJob(true);
                     companyService.addJobResume(jobResume);
                 }else {
-                    jr.setStudentToJob(true);
+                    jr.setResumeToJob(true);
                     companyService.updateJobResume(jr);
                 }
             }
