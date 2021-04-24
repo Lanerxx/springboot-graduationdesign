@@ -66,4 +66,7 @@ public class Company {
 
     @NotNull
     private int c_scale;
+
+    @NotNull
+    private EnumWarehouse.FINANCING_STAGE c_f_stage;
 }

@@ -30,14 +30,14 @@ public class JobSMR {
     private Resume smr_resume;
 
     @NotNull
-    private float smr_v_match;
+    private double smr_v_match;//匹配程度
 
     @NotNull
-    private float smr_v_success;
+    private EnumWarehouse.SUCCESS_DEGREE smr_v_success;//成功等级
 
     @NotNull
-    private float smr_v_average;
+    private double smr_v_average;//匹配程度与成功等级的调和平均值
 
     @NotNull
-    private float smr_v_popularity;
+    private int smr_v_popularity;//匹配到的学生简历被企业选中的次数
 }

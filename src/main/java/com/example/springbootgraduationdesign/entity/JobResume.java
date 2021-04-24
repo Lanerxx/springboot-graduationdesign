@@ -12,4 +12,7 @@ import javax.persistence.Entity;
 public class JobResume {
     @EmbeddedId
     private JobResumePK jobResumePK;
+
+    private boolean studentToJob;
+    private boolean jobToStudent;
 }

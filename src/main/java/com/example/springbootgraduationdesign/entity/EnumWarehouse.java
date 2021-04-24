@@ -30,4 +30,13 @@ public class EnumWarehouse {
     public enum RANKING{
         _0_10, _10_20, _20_30, _30_40, _40
     }
+    public enum SUCCESS_DEGREE{
+        HIGH, MEDIUM, LOW
+    }
+
+    public enum FINANCING_STAGE{
+        LISTED, D_ROUND, C_ROUND, B_ROUND, A_ROUND, ANGEL_ROUND, SEED_ROUND, NO_NEED
+    }
+
 }
+
