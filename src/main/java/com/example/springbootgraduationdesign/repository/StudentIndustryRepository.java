@@ -19,7 +19,7 @@ public interface StudentIndustryRepository extends BaseRepository<StudentIndustr
     @Query("SELECT si.studentIndustryPK.si_industry.i_name FROM StudentIndustry si WHERE si.studentIndustryPK.si_student.s_id =:sid")
     Optional<List<String>> listIndustryNameByStudent(@Param("sid") int sid);
 
-    @Query("SELECT si.studentIndustryPK.si_industry FROM StudentIndustry si WHERE si.studentIndustryPK.si_student.s_id =:sid")
-    Optional<List<Industry>> getIndustriesByStudent(@Param("sid") int sid);
+    @Query("SELECT si FROM StudentIndustry si WHERE si.studentIndustryPK.si_student.s_id =:sid")
+    Optional<List<StudentIndustry>> getStudentIndustriesByStudent(@Param("sid") int sid);
 
 }

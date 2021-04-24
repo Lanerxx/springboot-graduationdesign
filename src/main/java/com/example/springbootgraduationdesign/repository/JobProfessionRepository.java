@@ -20,7 +20,7 @@ public interface JobProfessionRepository extends BaseRepository<JobProfession, I
     @Query("DELETE FROM JobProfession jp WHERE jp.jobProfessionPK.jp_job.j_id =:jid")
     void deleteJobProfessionsByJob(@Param("jid")int jid);
 
-    @Query("SELECT jp.jobProfessionPK.jp_profession FROM JobProfession jp WHERE jp.jobProfessionPK.jp_job.j_id=:jid")
-    Optional<List<Profession>> getProfessionsByJob (@Param("jid")int jid);
+    @Query("SELECT jp FROM JobProfession jp WHERE jp.jobProfessionPK.jp_job.j_id=:jid")
+    Optional<List<JobProfession>> getJobProfessionsByJob (@Param("jid")int jid);
 
 }
