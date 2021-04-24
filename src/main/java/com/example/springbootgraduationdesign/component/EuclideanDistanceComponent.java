@@ -13,7 +13,7 @@ public class EuclideanDistanceComponent {
     * @param vector2
     * @return 两点间距离
     */
-    public double sim_distance(int[] vector1, int[] vector2) {
+    public double sim_distance(double[] vector1, double[] vector2) {
         double distance = 0;
         if (vector1.length == vector2.length) {
             for (int i = 0; i < vector1.length; i++) {
@@ -25,6 +25,7 @@ public class EuclideanDistanceComponent {
         System.out.println(distance);
         return distance;
     }
+
     //向量a与矩阵的欧式距离
     public void jsim_distance(double[] vector1, double[][] vector2) {
         double[] distance = new double[vector2.length];
@@ -82,33 +83,6 @@ public class EuclideanDistanceComponent {
         for (double v : distance) {
             System.out.println(v);
         }
-    }
-
-    public int[] transferJobJMRBaseToArray(JobSMRBase jobSMRBase){
-        int n = 20;
-        int[] jobSMRArray = new int[n];
-        jobSMRArray[0] = jobSMRBase.getSmr_b_a_bonus();
-        jobSMRArray[1] = jobSMRBase.getSmr_b_p_leave();
-        jobSMRArray[2] = jobSMRBase.getSmr_b_o_allowance();
-        jobSMRArray[3] = jobSMRBase.getSmr_b_stock();
-        jobSMRArray[4] = jobSMRBase.getSmr_b_t_subside();
-        jobSMRArray[5] = jobSMRBase.getSmr_b_h_subside();
-        jobSMRArray[6] = jobSMRBase.getSmr_b_b_trip();
-        jobSMRArray[7] = jobSMRBase.getSmr_b_c_level();
-        jobSMRArray[8] = jobSMRBase.getSmr_e_history();
-        jobSMRArray[9] = jobSMRBase.getSmr_b_e_language();
-        jobSMRArray[10] = jobSMRBase.getSmr_b_ranking();
-        jobSMRArray[11] = jobSMRBase.getSmr_b_r_count();
-        jobSMRArray[12] = jobSMRBase.getSmr_b_p_count();
-        jobSMRArray[13] = jobSMRBase.getSmr_b_s_count();
-        jobSMRArray[14] = jobSMRBase.getSmr_b_c_count();
-        jobSMRArray[15] = jobSMRBase.getSmr_b_h_count();
-        jobSMRArray[16] = jobSMRBase.getSmr_b_postion();
-        jobSMRArray[17] = jobSMRBase.getSmr_b_location();
-        jobSMRArray[18] = jobSMRBase.getSmr_b_insurance();
-        jobSMRArray[19] = jobSMRBase.getSmr_b_check_up();
-        jobSMRArray[20] = jobSMRBase.getSmr_b_s_range();
-        return jobSMRArray;
     }
 
 }
