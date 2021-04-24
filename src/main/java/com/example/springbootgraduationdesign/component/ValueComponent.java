@@ -11,9 +11,10 @@ public class ValueComponent {
     public final static int VALUE_TWO = 1;
     public final static int VALUE_THREE = 2;
 
+    //------------计算jobJmrBase（与学生简历相比）-------------
     public int jobJmrBaseRanking(EnumWarehouse.RANKING ranking){
-        if (ranking.equals("_0_10") || ranking.equals("_10_20")) return VALUE_THREE;
-        if (ranking.equals("_20_30") || ranking.equals("_30_40")) return VALUE_TWO;
+        if (ranking.ordinal() <= 1) return VALUE_THREE;
+        if (ranking.ordinal() <= 3) return VALUE_TWO;
         return VALUE_ONE;
     }
 
@@ -36,19 +37,23 @@ public class ValueComponent {
     }
 
     public int jobJmrBaseWelfare (EnumWarehouse.IF_IS_OR_NOT jobEvent, EnumWarehouse.IF_IS_NEED_OR_NOT studentEvent){
-        if (studentEvent.equals("YES") && jobEvent.equals("YES")) return VALUE_THREE;
-        if (studentEvent.equals("NO_REQUIREMENT") && jobEvent.equals("YES")) return VALUE_TWO;
+        if (studentEvent.ordinal() == 1 && jobEvent.ordinal() == 0) return VALUE_THREE;
+        if (studentEvent.ordinal() == 0 && jobEvent.ordinal() == 0) return VALUE_TWO;
+//        if (studentEvent.equals("YES") && jobEvent.equals("YES")) return VALUE_THREE;
+//        if (studentEvent.equals("NO_REQUIREMENT") && jobEvent.equals("YES")) return VALUE_TWO;
         return VALUE_ONE;
     }
 
     public int jobJmrBaseBTrip (EnumWarehouse.IF_IS_NEED_OR_NOT jobEvent, EnumWarehouse.IF_IS_OR_NOT studentEvent){
-        if (studentEvent.equals("YES") && jobEvent.equals("YES")) return VALUE_THREE;
-        if (studentEvent.equals("YES") && jobEvent.equals("NO_REQUIREMENT")) return VALUE_TWO;
+        if (studentEvent.ordinal() == 0 && jobEvent.ordinal() == 1) return VALUE_THREE;
+        if (studentEvent.ordinal() == 0 && jobEvent.ordinal() == 0) return VALUE_TWO;
+//        if (studentEvent.equals("YES") && jobEvent.equals("YES")) return VALUE_THREE;
+//        if (studentEvent.equals("YES") && jobEvent.equals("NO_REQUIREMENT")) return VALUE_TWO;
         return VALUE_ONE;
     }
 
     public int jobJmrBaseCLevel (EnumWarehouse.C_LEVEL jobLevel, EnumWarehouse.C_LEVEL studentLevel){
-        switch (studentLevel.ordinal() - jobLevel.ordinal()){
+        switch (Math.abs(studentLevel.ordinal() - jobLevel.ordinal())){
             case 0: return VALUE_ONE;
             case 1: return VALUE_TWO;
             default: return VALUE_THREE;
@@ -56,7 +61,7 @@ public class ValueComponent {
     }
 
     public int jobJmrBaseEHistory (EnumWarehouse.E_HISTORY jobHistory, EnumWarehouse.E_HISTORY studentHistory ){
-        switch (studentHistory.ordinal() - jobHistory.ordinal()){
+        switch (Math.abs(studentHistory.ordinal() - jobHistory.ordinal())){
             case 0: return VALUE_ONE;
             case 1: return VALUE_TWO;
             default: return VALUE_THREE;
@@ -64,7 +69,7 @@ public class ValueComponent {
     }
 
     public int jobJmrBaseELanguage (EnumWarehouse.E_LANGUAGE jobLanguage, EnumWarehouse.E_LANGUAGE studentLanguage){
-        switch (studentLanguage.ordinal() - jobLanguage.ordinal()){
+        switch (Math.abs(studentLanguage.ordinal() - jobLanguage.ordinal())){
             case 0: return VALUE_ONE;
             case 1: return VALUE_TWO;
             default: return VALUE_THREE;
@@ -72,7 +77,7 @@ public class ValueComponent {
     }
 
     public int jobJmrBaseSRange (EnumWarehouse.S_RANGE jobRange, EnumWarehouse.S_RANGE studentRange){
-        switch (studentRange.ordinal() - jobRange.ordinal()){
+        switch (Math.abs(studentRange.ordinal() - jobRange.ordinal())){
             case 0: return VALUE_ONE;
             case 1: return VALUE_TWO;
             default: return VALUE_THREE;
@@ -87,8 +92,35 @@ public class ValueComponent {
         return VALUE_ONE;
     }
 
+    //------------计算job（与其他job相比）-------------
+    public int jobCount(int jobCount){
+        if (jobCount > 100) return VALUE_THREE;
+        if (jobCount > 20) return VALUE_TWO;
+        return VALUE_ONE;
+    }
 
+    public int jobSalaryRange(EnumWarehouse.S_RANGE jobRange){
+        if (jobRange.ordinal() >= 4) return VALUE_THREE;
+        if (jobRange.ordinal() >= 2) return VALUE_TWO;
+        return VALUE_ONE;
+    }
 
+    public int jobWelfare (EnumWarehouse.IF_IS_OR_NOT jobEvent){
+        if (jobEvent.equals("YES")) return VALUE_TWO;
+        return VALUE_ONE;
+    }
+
+    public int jobScare(int jobScare){
+        if (jobScare >= 1000) return VALUE_THREE;
+        if (jobScare >= 500) return VALUE_TWO;
+        return VALUE_ONE;
+    }
+
+    public int jobFRange(EnumWarehouse.FINANCING_STAGE jobFRange){
+        if (jobFRange.ordinal() <= 1) return VALUE_THREE;
+        if (jobFRange.ordinal() <=4) return VALUE_TWO;
+        return VALUE_ONE;
+    }
 
 
 }
