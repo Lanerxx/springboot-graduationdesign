@@ -12,16 +12,31 @@ import javax.persistence.Id;
 @Entity
 @Data
 @NoArgsConstructor
-public class StudentJMRBase {
+public class ResumeJMRBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int jmr_b_id;
 
     @NotNull
-    private int jmr_b_r_count;
+    private int jmr_b_c_scale;
 
     @NotNull
-    private int jmr_b_postion;
+    private int jmr_b_c_f_stage;
+
+    @NotNull
+    private int jmr_b_c_level;
+
+    @NotNull
+    private int jmr_e_history;
+
+    @NotNull
+    private int jmr_b_e_language;
+
+    @NotNull
+    private int jmr_b_j_count;
+
+    @NotNull
+    private int jmr_b_position;
 
     @NotNull
     private int jmr_b_location;
@@ -48,7 +63,7 @@ public class StudentJMRBase {
     private int jmr_b_t_subside;
 
     @NotNull
-    private int jmr_b_n_subside;
+    private int jmr_b_h_subside;
 
     @NotNull
     private int jmr_b_b_trip;

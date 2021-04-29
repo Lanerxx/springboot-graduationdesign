@@ -1,6 +1,7 @@
 package com.example.springbootgraduationdesign.service;
 
 import com.example.springbootgraduationdesign.entity.Position;
+import com.example.springbootgraduationdesign.entity.StudentPosition;
 import com.example.springbootgraduationdesign.repository.PositionRepository;
 import com.example.springbootgraduationdesign.repository.StudentPositionRepository;
 import javafx.geometry.Pos;
@@ -16,6 +17,9 @@ import java.util.List;
 @Slf4j
 @Transactional
 public class PositionService {
+    @Autowired
+    private PositionService positionService;
+
     @Autowired
     private PositionRepository positionRepository;
     @Autowired
@@ -68,7 +72,17 @@ public class PositionService {
         return studentPositionRepository.listPositionNameByStudent(sid).orElse(new ArrayList<>());
     }
     public List<Position> getPositionsByStudent(int sid){
-        return studentPositionRepository.getPositionsByStudent(sid).orElse(new ArrayList<>());
+        List<Position> positions = new ArrayList<>();
+        List<StudentPosition> studentPositions = positionService.getStudentPositionsByStudent(sid);
+        if (studentPositions.size() != 0){
+            for (StudentPosition sp : studentPositions){
+                positions.add(sp.getStudentPositionPK().getSp_position());
+            }
+        }
+        return positions;
+    }
+    public List<StudentPosition> getStudentPositionsByStudent(int sid){
+        return studentPositionRepository.getStudentPositionsByStudent(sid).orElse(new ArrayList<>());
     }
 
 

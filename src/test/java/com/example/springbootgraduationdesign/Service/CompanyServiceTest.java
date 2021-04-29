@@ -35,11 +35,8 @@ public class CompanyServiceTest {
         personalizedSMRVo.setE_language(random.nextDouble());
         personalizedSMRVo.setC_up(random.nextDouble());
         personalizedSMRVo.setE_history(random.nextDouble());
-        personalizedSMRVo.setGpa(random.nextDouble());
         personalizedSMRVo.setH_count(random.nextDouble());
         personalizedSMRVo.setH_subside(random.nextDouble());
-        personalizedSMRVo.setIf_career(random.nextDouble());
-        personalizedSMRVo.setIf_experience(random.nextDouble());
         personalizedSMRVo.setInsurance(random.nextDouble());
         personalizedSMRVo.setLocation(random.nextDouble());
         personalizedSMRVo.setO_allowance(random.nextDouble());

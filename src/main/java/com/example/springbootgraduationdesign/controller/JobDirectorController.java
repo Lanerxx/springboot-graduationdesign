@@ -92,13 +92,13 @@ public class JobDirectorController {
 //        );
 //    }
 
-    @GetMapping("jmr/{sid}")
-    public Map getJmr(@PathVariable int sid){
-        List<StudentJMR> studentJMRs = studentService.getStudentJMRsByStudent(sid);
-        return Map.of(
-                "studentJMRs",studentJMRs
-        );
-    }
+//    @GetMapping("jmr/{sid}")
+//    public Map getJmr(@PathVariable int sid){
+//        List<ResumeJMR> resumeJMRS = studentService.getStudentJMRsByStudent(sid);
+//        return Map.of(
+//                "studentJMRs", resumeJMRS
+//        );
+//    }
 
     @GetMapping("companies")
     public Map getCompanies(){

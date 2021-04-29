@@ -1,6 +1,7 @@
 package com.example.springbootgraduationdesign.repository;
 
 import com.example.springbootgraduationdesign.entity.Company;
+import com.example.springbootgraduationdesign.entity.EnumWarehouse;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,5 @@ public interface CompanyRepository extends BaseRepository<Company, Integer>{
 
     @Query("SELECT c FROM Company  c WHERE c.c_s_code=:code")
     Optional<Company> getCompanyBySCode (@Param("code")String code);
+
 }

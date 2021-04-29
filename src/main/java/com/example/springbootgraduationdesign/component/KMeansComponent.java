@@ -94,12 +94,12 @@ public class KMeansComponent {
                 centers.set(j,sum);
             }
         }
-        // 输出最终质心
-        for (int i = 0; i < k; i++){
-            double[] centerData = centers.get(i);
-            double sum = 0;
-            for (double centerDatum : centerData) sum += centerDatum;
-        }
+//        // 输出最终质心
+//        for (int i = 0; i < k; i++){
+//            double[] centerData = centers.get(i);
+//            double sum = 0;
+//            for (double centerDatum : centerData) sum += centerDatum;
+//        }
 
         Map<String,List<double[]>> listMap = new HashMap<>();
         listMap.put("clusterData",clusterData);

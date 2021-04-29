@@ -22,8 +22,8 @@ public interface StudentPositionRepository extends BaseRepository<StudentPositio
     @Query("select sp.studentPositionPK.sp_position.po_name from StudentPosition sp WHERE sp.studentPositionPK.sp_student.s_id = :sid")
     Optional<List<String>> listPositionNameByStudent(@Param("sid") int sid);
 
-    @Query("select sp.studentPositionPK.sp_position from StudentPosition sp WHERE sp.studentPositionPK.sp_student.s_id = :sid")
-    Optional<List<Position>> getPositionsByStudent(@Param("sid") int sid);
+    @Query("select sp from StudentPosition sp WHERE sp.studentPositionPK.sp_student.s_id = :sid")
+    Optional<List<StudentPosition>> getStudentPositionsByStudent(@Param("sid") int sid);
 
 
 }

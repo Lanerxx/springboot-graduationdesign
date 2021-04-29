@@ -4,7 +4,6 @@ import com.example.springbootgraduationdesign.component.vo.JobVo;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -29,7 +28,7 @@ public class SimulatedDataComponent {
     private static final int POSITION_COUNT = 5;
     private static final int STUDENT_RANDOM_COUNT = 1000;
     private static final int STUDENT_COPY_COUNT = 5;
-    private static final int COMPANY_RANDOM_COUNT = 50;
+    private static final int COMPANY_RANDOM_COUNT = 500;
 
     private int FIRST_NAME_COUNT = FIRST_NAME.length;
     private int ADDRESS_COUNT = ADDRESS.length;
@@ -869,7 +868,7 @@ public class SimulatedDataComponent {
         Random random = new Random();
         List<Company> companies = companyService.getAllCompanies();
         for (Company company : companies) {
-            int temp = random.nextInt(10);
+            int temp = random.nextInt(20);
             for (int i = 0; i < temp; i++){
                 Job job = simulatedDataComponent.simulatedJob(company);
                 int temp1 = random.nextInt(3);

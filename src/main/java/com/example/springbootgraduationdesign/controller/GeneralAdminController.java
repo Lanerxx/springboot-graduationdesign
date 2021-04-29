@@ -1,7 +1,6 @@
 package com.example.springbootgraduationdesign.controller;
 
 import com.example.springbootgraduationdesign.component.RequestComponent;
-import com.example.springbootgraduationdesign.component.vo.ProfessionMClassVo;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -103,13 +102,13 @@ public class GeneralAdminController {
 //        );
 //    }
 
-    @GetMapping("jmr/{sid}")
-    public Map getJmr(@PathVariable int sid){
-        List<StudentJMR> studentJMRS = studentService.getStudentJMRsByStudent(sid);
-        return Map.of(
-                "studentJMRS",studentJMRS
-        );
-    }
+//    @GetMapping("jmr/{sid}")
+//    public Map getJmr(@PathVariable int sid){
+//        List<ResumeJMR> resumeJMRS = studentService.getStudentJMRsByStudent(sid);
+//        return Map.of(
+//                "studentJMRS", resumeJMRS
+//        );
+//    }
 
     @GetMapping("companies")
     public Map getCompanies(){

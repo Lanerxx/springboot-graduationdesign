@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @NoArgsConstructor
-public class StudentJMR {
+public class ResumeJMR {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int jmr_id;
@@ -17,12 +17,7 @@ public class StudentJMR {
     @NotNull
     @OneToOne
     @JoinColumn(name = "jmr_b_id")
-    private StudentJMRBase jmr_base;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "jmr_s_id")
-    private Student jmr_student;
+    private ResumeJMRBase jmr_base;
 
     @NotNull
     @ManyToOne
@@ -35,15 +30,15 @@ public class StudentJMR {
     private Job jmr_job;
 
     @NotNull
-    private float jmr_v_match;
+    private double jmr_v_match;
 
     @NotNull
-    private float jmr_v_success;
+    private EnumWarehouse.SUCCESS_DEGREE jmr_v_success;
 
     @NotNull
-    private float jmr_v_average;
+    private double jmr_v_average;
 
     @NotNull
-    private float jmr_v_polularity;
+    private int jmr_v_popularity;
 
 }

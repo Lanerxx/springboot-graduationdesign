@@ -20,7 +20,7 @@ Optional<Student> getStudentByS_telephone (@Param("telephone")String telephone);
     Optional<List<Student>> getStudentByCollege (@Param("college")String college);
 
     @Query("SELECT s FROM Student  s WHERE s.s_c_level <=:level AND s.s_e_history <=:history")
-    Optional<List<Student>> getStudentByCLevelAndHistory (
+    Optional<List<Student>> getStudentsByCLevelAndHistory (
             @Param("level") EnumWarehouse.C_LEVEL level,
             @Param("history") EnumWarehouse.E_HISTORY history
     );

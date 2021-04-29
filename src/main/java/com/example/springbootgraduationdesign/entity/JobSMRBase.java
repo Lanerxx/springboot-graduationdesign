@@ -36,7 +36,7 @@ public class JobSMRBase {
     private int smr_b_h_count;
 
     @NotNull
-    private int smr_b_postion;
+    private int smr_b_position;
 
     @NotNull
     private int smr_b_location;
@@ -72,7 +72,7 @@ public class JobSMRBase {
     private int smr_b_c_level;
 
     @NotNull
-    private int smr_e_history;
+    private int smr_b_e_history;
 
     @NotNull
     private int smr_b_e_language;

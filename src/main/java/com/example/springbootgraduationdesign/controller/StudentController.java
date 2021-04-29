@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -226,23 +225,23 @@ public class StudentController {
     }
 
 
-    @PostMapping("jmr")
-    public Map getJmr(@RequestBody List<Map<String,Integer>> focus){
-        return Map.of(
-                "studentJMRs", "studentJMRs"
-        );
-    }
+//    @PostMapping("jmr")
+//    public Map getJmr(@RequestBody List<Map<String,Integer>> focus){
+//        return Map.of(
+//                "studentJMRs", "studentJMRs"
+//        );
+//    }
 
-    @GetMapping("jmr")
-    public Map getJmr(){
-        List<StudentJMR> studentJMRs = studentService.getStudentJMRsByStudent(requestComponent.getUid());
-        if (studentJMRs.size() == 0){
-            //calculate...
-            studentJMRs = studentService.getStudentJMRsByStudent(requestComponent.getUid());
-        }
-        return Map.of(
-                "studentJMRs", studentJMRs
-        );
-    }
+//    @GetMapping("jmr")
+//    public Map getJmr(){
+//        List<ResumeJMR> resumeJMRS = studentService.getStudentJMRsByStudent(requestComponent.getUid());
+//        if (resumeJMRS.size() == 0){
+//            //calculate...
+//            resumeJMRS = studentService.getStudentJMRsByStudent(requestComponent.getUid());
+//        }
+//        return Map.of(
+//                "studentJMRs", resumeJMRS
+//        );
+//    }
 
 }

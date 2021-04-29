@@ -24,6 +24,6 @@ public class SimulatedDataTest {
 //        simulatedDataComponent.simulatedStudentResume();
 //        simulatedDataComponent.simulatedCompany();
 //        simulatedDataComponent.simulatedCompanyJob();
-        simulatedDataComponent.simulatedJobResume();
+//        simulatedDataComponent.simulatedJobResume();
     }
 }
