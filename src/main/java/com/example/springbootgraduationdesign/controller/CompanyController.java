@@ -283,4 +283,34 @@ public class CompanyController {
         );
     }
 
+    @PostMapping("companyFavoredResume/{rid}")
+    public Map addCompanyFavoredResume(@PathVariable int rid){
+        Resume r = studentService.getResume(rid);
+        if (r == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想收藏的简历不存在");
+        }
+        Company company = companyService.getCompany(requestComponent.getUid());
+        CompanyFavoredResume companyFavoredResume = new CompanyFavoredResume();
+        CompanyFavoredResumePK companyFavoredResumePK = new CompanyFavoredResumePK();
+        companyFavoredResumePK.setCfr_company(company);
+        companyFavoredResumePK.setCfr_resume(r);
+        companyFavoredResume.setCompanyFavoredResumePK(companyFavoredResumePK);
+        companyService.addCompanyFavoredResume(companyFavoredResume);
+
+        List<CompanyFavoredResume> companyFavoredResumes = companyService.getCompanyFavoredResumesByCompany(requestComponent.getUid());
+        return Map.of(
+                "companyFavoredResumes",companyFavoredResumes
+        );
+    }
+
+    @GetMapping("companyFavoredResume")
+    public Map getCompanyFavoredResumes(){
+        List<CompanyFavoredResume> companyFavoredResumes = companyService.getCompanyFavoredResumesByCompany(requestComponent.getUid());
+        return Map.of(
+                "companyFavoredResumes",companyFavoredResumes
+        );
+    }
+
+
 }

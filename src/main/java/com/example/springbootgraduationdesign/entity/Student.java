@@ -63,10 +63,6 @@ public class Student {
     private String s_company;
 
     @NotNull
-    private double s_gpa;
-
-
-    @NotNull
     private EnumWarehouse.GENDER s_gender;
 
     @NotNull

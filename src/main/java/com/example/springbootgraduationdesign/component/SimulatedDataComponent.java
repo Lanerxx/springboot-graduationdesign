@@ -208,7 +208,6 @@ public class SimulatedDataComponent {
             student.setS_g_time("202" + random.nextInt(3) + "09");
             student.setS_telephone(FIGURE_THREE[random.nextInt(FIGURE_THREE_COUNT)] + FIGURE_FOUR[random.nextInt(FIGURE_FOUR_COUNT)] + FIGURE_FOUR[random.nextInt(FIGURE_FOUR_COUNT)]);
             student.setS_email(FIGURE_FOUR[random.nextInt(FIGURE_FOUR_COUNT)] + EMAIL_END[random.nextInt(EMAIL_END_COUNT)]);
-            student.setS_gpa(random.nextInt(34) + 60);//60-93
 
             if (random.nextInt(2) == 0)
                 student.setS_gender(EnumWarehouse.GENDER.男);
@@ -388,7 +387,6 @@ public class SimulatedDataComponent {
         studentTar.setS_g_time(studentPro.getS_g_time());
         studentTar.setS_telephone(studentPro.getS_telephone());
         studentTar.setS_email(studentPro.getS_email());
-        studentTar.setS_gpa(studentPro.getS_gpa());
         studentTar.setS_gender(studentPro.getS_gender());
         studentTar.setS_c_level(studentPro.getS_c_level());
         studentTar.setS_e_history(studentPro.getS_e_history());
