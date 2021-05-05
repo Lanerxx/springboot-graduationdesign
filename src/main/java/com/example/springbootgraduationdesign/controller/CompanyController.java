@@ -197,6 +197,17 @@ public class CompanyController {
         );
     }
 
+    @GetMapping("job/{jid}/jobprofession")
+    public Map getJobProfession(@PathVariable int jid){
+        System.out.println("jid:" + jid);
+        List<String> jobProfessionMSName = professionService.getProfessionsMSNameByJob(jid);
+        System.out.println(jobProfessionMSName);
+
+        return Map.of(
+                "jobProfessionMSName", jobProfessionMSName
+        );
+    }
+
     @GetMapping("jobs")
     public Map getJobs(){
         List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());

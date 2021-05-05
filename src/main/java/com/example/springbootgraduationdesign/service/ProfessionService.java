@@ -59,6 +59,26 @@ public class ProfessionService {
     public List<Profession> getAllProfessions(){
         return professtionRepository.findAll();
     }
+    public List<Profession> getProfessionsByJobProfessions(List<JobProfession> jobProfessions){
+        List<Profession> professions = new ArrayList<>();
+        for (JobProfession jobProfession : jobProfessions) {
+            professions.add(jobProfession.getJobProfessionPK().getJp_profession());
+        }
+        return professions;
+    }
+    public List<String> getProfessionsMSNameByJobProfessions(List<JobProfession> jobProfessions){
+        List<String> professionsMSName = new ArrayList<>();
+        for (JobProfession jobProfession : jobProfessions) {
+            professionsMSName.add(jobProfession.getJobProfessionPK().getJp_profession().getPr_m_class()
+                    + jobProfession.getJobProfessionPK().getJp_profession().getPr_s_class());
+        }
+        return professionsMSName;
+    }
+    public List<String> getProfessionsMSNameByJob(int jid){
+        List<JobProfession> jobProfessions = jobProfessionRepository.getJobProfessionsByJob(jid).orElse(new ArrayList<>());
+        List<String> professionsMSName = professionService.getProfessionsMSNameByJobProfessions(jobProfessions);
+        return professionsMSName;
+    }
     public Set<String> getProfessionsMClass(){
         Set<String> professionMClasses = new HashSet<>();
         List<Profession> professions = professionService.getAllProfessions();
