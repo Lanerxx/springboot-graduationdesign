@@ -452,9 +452,10 @@ public class StudentService {
             jmr_v_match += valueTempt;
 
             resumeJMRNew.setJmr_v_match(jmr_v_match);
+            int beautify = 1000;
             double matchBase = 17 * 2;
             double success = transferComponent.getSuccessByDegree(resumeJMR.getJmr_v_success());
-            double jmr_v_average = valueComponent.getAverage(success, jmr_v_match/matchBase);
+            double jmr_v_average = valueComponent.getAverage(success, jmr_v_match/matchBase) * beautify;
 
             System.out.println("jmr_v_average pro :" + resumeJMR.getJmr_v_average());
             resumeJMRNew.setJmr_v_average(jmr_v_average);
@@ -543,9 +544,10 @@ public class StudentService {
             jmr_v_match += valueTempt;
 
             resumeJMRPersonalizedVo.setJmr_v_match(jmr_v_match);
+            int beautify = 1000;
             double matchBase = 18 * 2;
             double success = transferComponent.getSuccessByDegree(resumeJMR.getJmr_v_success());
-            double jmr_v_average = valueComponent.getAverage(success, jmr_v_match/matchBase);
+            double jmr_v_average = valueComponent.getAverage(success, jmr_v_match/matchBase * beautify);
 
             System.out.println("jmr_v_average pro :" + resumeJMR.getJmr_v_average());
             resumeJMRPersonalizedVo.setJmr_v_average(jmr_v_average);

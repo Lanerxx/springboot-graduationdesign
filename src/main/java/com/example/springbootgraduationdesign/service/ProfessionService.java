@@ -20,7 +20,7 @@ import java.util.Set;
 @Transactional
 public class ProfessionService {
     @Autowired
-    private ProfessionRepository professtionRepository;
+    private ProfessionRepository professionRepository;
     @Autowired
     private JobProfessionRepository jobProfessionRepository;
 
@@ -34,7 +34,7 @@ public class ProfessionService {
     -------删除：管理员
     --------------------------------------------------*/
     public Profession addProfession(Profession profession){
-        professtionRepository.save(profession);
+        professionRepository.save(profession);
         return profession;
     }
     public List<Profession> addProfessions(List<Profession> professions){
@@ -42,22 +42,22 @@ public class ProfessionService {
     }
 
     public void deleteProfession(int pid){
-        professtionRepository.deleteById(pid);
+        professionRepository.deleteById(pid);
     }
     public void deleteAllProfessions(){
-        professtionRepository.deleteAll();
+        professionRepository.deleteAll();
     }
     public void deleteJobProfession(int jid, int pid){
         jobProfessionRepository.deleteById(pid);
     }
 
     public Profession updateProfession(Profession profession){
-        professtionRepository.save(profession);
+        professionRepository.save(profession);
         return profession;
     }
 
     public List<Profession> getAllProfessions(){
-        return professtionRepository.findAll();
+        return professionRepository.findAll();
     }
     public List<Profession> getProfessionsByJobProfessions(List<JobProfession> jobProfessions){
         List<Profession> professions = new ArrayList<>();
@@ -66,6 +66,14 @@ public class ProfessionService {
         }
         return professions;
     }
+    public List<String> getProfessionsMNameByJobProfessions(List<JobProfession> jobProfessions){
+        List<String> professionsMName = new ArrayList<>();
+        for (JobProfession jobProfession : jobProfessions) {
+            professionsMName.add(jobProfession.getJobProfessionPK().getJp_profession().getPr_m_class());
+        }
+        return professionsMName;
+    }
+
     public List<String> getProfessionsMSNameByJobProfessions(List<JobProfession> jobProfessions){
         List<String> professionsMSName = new ArrayList<>();
         for (JobProfession jobProfession : jobProfessions) {
@@ -74,10 +82,10 @@ public class ProfessionService {
         }
         return professionsMSName;
     }
-    public List<String> getProfessionsMSNameByJob(int jid){
+    public List<String> getProfessionsMNameByJob(int jid){
         List<JobProfession> jobProfessions = jobProfessionRepository.getJobProfessionsByJob(jid).orElse(new ArrayList<>());
-        List<String> professionsMSName = professionService.getProfessionsMSNameByJobProfessions(jobProfessions);
-        return professionsMSName;
+        List<String> professionsMName = professionService.getProfessionsMNameByJobProfessions(jobProfessions);
+        return professionsMName;
     }
     public Set<String> getProfessionsMClass(){
         Set<String> professionMClasses = new HashSet<>();
@@ -87,6 +95,20 @@ public class ProfessionService {
         });
 
         return professionMClasses;
+    }
+    public List<Profession> getProfessionsByProfessionsMName(List<String> professionsMName){
+        List<Profession> professions = new ArrayList<>();
+        for (String professionMName : professionsMName) {
+           Profession profession = professionService.getProfessionByProfessionMName(professionMName);
+           if (profession != null) professions.add(profession);
+        }
+        return professions;
+    }
+    public Profession getProfessionByProfessionMName(String professionMName){
+        Profession profession = new Profession();
+        List<Profession> professions = professionService.getProfessionsByMClass(professionMName);
+        if (professions.size() != 0) profession = professions.get(0);
+        return profession;
     }
 
 //    public List<ProfessionMClassVo> getProfessionsMClassVo() {
@@ -112,13 +134,13 @@ public class ProfessionService {
         return professionSClasses;
     }
     public Profession getProfession(int pid){
-        return professtionRepository.findById(pid).orElse(null);
+        return professionRepository.findById(pid).orElse(null);
     }
     public Profession getProfessionBySClass(String sClass){
-        return professtionRepository.getProfessionBySClass(sClass).orElse(null);
+        return professionRepository.getProfessionBySClass(sClass).orElse(null);
     }
     public List<Profession> getProfessionsByMClass(String mClass){
-        return professtionRepository.getProfessionByMClass(mClass).orElse(new ArrayList<>());
+        return professionRepository.getProfessionByMClass(mClass).orElse(new ArrayList<>());
     }
     public List<Profession> getProfessionsByJob(int jid){
         List<JobProfession> jobProfessions = jobProfessionRepository.getJobProfessionsByJob(jid).orElse(new ArrayList<>());

@@ -493,9 +493,10 @@ public class CompanyService {
 
             jobSMRNew.setSmr_v_match(smr_v_match);
             System.out.println("smr_v_match:" + smr_v_match);
+            int beautify = 1000;
             double matchBase = 19 * 2;
             double success = transferComponent.getSuccessByDegree(jobSMR.getSmr_v_success());
-            double smr_v_average = valueComponent.getAverage(success, smr_v_match/matchBase);
+            double smr_v_average = valueComponent.getAverage(success, smr_v_match/matchBase) * beautify;
             jobSMRNew.setSmr_v_average(smr_v_average);
             jobSMRsNew.add(jobSMRNew);
             System.out.println("smr_v_average:" + smr_v_average);
@@ -585,9 +586,10 @@ public class CompanyService {
             smr_v_match += valueTempt;
 
             jobSMRPersonalizedVo.setSmr_v_match(smr_v_match);
+            int beautify = 1000;
             double matchBase = 21 * 2;
             double success = transferComponent.getSuccessByDegree(jobSMR.getSmr_v_success());
-            double smr_v_average = valueComponent.getAverage(success, smr_v_match/matchBase);
+            double smr_v_average = valueComponent.getAverage(success, smr_v_match/matchBase) * beautify;
             jobSMRPersonalizedVo.setSmr_v_average(smr_v_average);
             jobSMRPersonalizedVos.add(jobSMRPersonalizedVo);
         }

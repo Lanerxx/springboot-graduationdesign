@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -112,20 +116,23 @@ public class CompanyController {
                     "该岗位名不存在！");
         }
         job.setJ_position(po);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        job.setInsertTime(localDateTime);
+        job.setUpdateTime(localDateTime);
         //判断用户提交的信息是否全面
         if (checkIsNullComponent.objCheckIsNull(job)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息，请完善信息后再提交");
         }
         //判断用户提交的专业信息是否存在
-        List<Profession> professions = jobVo.getProfessions();
-        for( Profession pr : professions){
-            if (professionService.getProfession(pr.getPr_id()) == null){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "岗位需要的专业不存在！");
-            }
+        List<String> professionsMName = jobVo.getProfessionsMName();
+        List<Profession> professions = professionService.getProfessionsByProfessionsMName(professionsMName);
+        if (professions.size() == 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "岗位需要的专业不存在！");
         }
         log.debug("1:  {}", jobVo.getJob().getJ_position().getPo_name());
+        jobVo.setProfessions(professions);
         companyService.addJob(jobVo);
         List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());
         return Map.of(
@@ -182,14 +189,14 @@ public class CompanyController {
                     "您还有未填写的信息，请完善信息后再提交");
         }
         //判断用户提交的专业信息是否存在
-        List<Profession> professions = jobVo.getProfessions();
-        for( Profession pr : professions){
-            if (professionService.getProfession(pr.getPr_id()) == null){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "岗位需要的专业不存在！");
-            }
+        List<String> professionsMName = jobVo.getProfessionsMName();
+        List<Profession> professions = professionService.getProfessionsByProfessionsMName(professionsMName);
+        if (professions.size() == 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "岗位需要的专业不存在！");
         }
         //修改岗位到数据库，并拉取新数据
+        jobVo.setProfessions(professions);
         companyService.updateJob(jobVo);
         List<Job> jobs = companyService.getJobsByCompany(requestComponent.getUid());
         return Map.of(
@@ -200,11 +207,10 @@ public class CompanyController {
     @GetMapping("job/{jid}/jobprofession")
     public Map getJobProfession(@PathVariable int jid){
         System.out.println("jid:" + jid);
-        List<String> jobProfessionMSName = professionService.getProfessionsMSNameByJob(jid);
-        System.out.println(jobProfessionMSName);
-
+        List<String> jobProfessionMName = professionService.getProfessionsMNameByJob(jid);
+        System.out.println(jobProfessionMName);
         return Map.of(
-                "jobProfessionMSName", jobProfessionMSName
+                "jobProfessionMName", jobProfessionMName
         );
     }
 
@@ -271,11 +277,7 @@ public class CompanyController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您想匹配的岗位不存在或尚未发布");
         }
-        List<JobSMR> jobSMRs = companyService.getJobSMRsByJob(jid);
-        if (jobSMRs.size() == 0 ){
-            //calculate(...)
-            jobSMRs = companyService.getJobSMRsByJob(jid);
-        }
+        List<JobSMR> jobSMRs = companyService.getJobSMR_Match(jid);
         return Map.of(
                 "jobSMRs", jobSMRs
         );
