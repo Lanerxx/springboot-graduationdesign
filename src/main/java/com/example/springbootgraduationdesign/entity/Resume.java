@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -71,9 +72,6 @@ public class Resume {
     private String r_remark;
 
     @NotNull
-    private int r_count;
-
-    @NotNull
     private boolean posted;
 
     //学生是否对五险一金有要求（NO_REQUIREMENT:可以没有，有更好 YES：必须要有 or NO：完全不需要）
@@ -111,4 +109,14 @@ public class Resume {
     //学生是否愿意出差（YES or NO）
     @NotNull
     private EnumWarehouse.IF_IS_OR_NOT r_if_b_trip;
+
+    @Column(columnDefinition = "timestamp default current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime insertTime;
+    @Column(columnDefinition = "timestamp default current_timestamp " +
+            "on update current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime updateTime;
 }

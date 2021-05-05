@@ -3,11 +3,9 @@ package com.example.springbootgraduationdesign.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -16,24 +14,23 @@ public class ResumeSystemDefaultWeight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rsdw_id;
+    @NotNull
+    private double rsdw_ranking;
 
     @NotNull
-    private double rsdw_c_scale;
+    private double rsdw_r_count;
 
     @NotNull
-    private double rsdw_c_f_stage;
+    private double rsdw_p_count;
 
     @NotNull
-    private double rsdw_c_level;
+    private double rsdw_s_count;
 
     @NotNull
-    private double rsdw_c_e_history;
+    private double rsdw_c_count;
 
     @NotNull
-    private double rsdw_e_language;
-
-    @NotNull
-    private double rsdw_j_count;
+    private double rsdw_h_count;
 
     @NotNull
     private double rsdw_position;
@@ -57,7 +54,7 @@ public class ResumeSystemDefaultWeight {
     private double rsdw_o_allowance;
 
     @NotNull
-    private double rsdw_stock;
+    private double rsdw_b_stock;
 
     @NotNull
     private double rsdw_t_subside;
@@ -69,5 +66,25 @@ public class ResumeSystemDefaultWeight {
     private double rsdw_b_trip;
 
     @NotNull
+    private double rsdw_c_level;
+
+    @NotNull
+    private double rsdw_e_history;
+
+    @NotNull
+    private double rsdw_e_language;
+
+    @NotNull
     private double rsdw_s_range;
+
+    @Column(columnDefinition = "timestamp default current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime insertTime;
+    @Column(columnDefinition = "timestamp default current_timestamp " +
+            "on update current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime updateTime;
+
 }

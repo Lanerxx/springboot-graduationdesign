@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -38,15 +39,7 @@ public class Job {
     private String j_remark;
 
     @NotNull
-    @Column(length = 20)
-    private String j_expire;
-
-    @NotNull
-    private int j_count;
-
-    @NotNull
     private boolean posted;
-
 
     @NotNull
     private EnumWarehouse.GENDER j_gender;
@@ -104,4 +97,14 @@ public class Job {
 
     @NotNull
     private EnumWarehouse.IF_IS_NEED_OR_NOT j_b_trip;
+
+    @Column(columnDefinition = "timestamp default current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime insertTime;
+    @Column(columnDefinition = "timestamp default current_timestamp " +
+            "on update current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime updateTime;
 }

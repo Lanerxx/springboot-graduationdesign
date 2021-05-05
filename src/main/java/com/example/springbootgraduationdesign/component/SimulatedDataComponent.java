@@ -211,9 +211,9 @@ public class SimulatedDataComponent {
             student.setS_gpa(random.nextInt(34) + 60);//60-93
 
             if (random.nextInt(2) == 0)
-                student.setS_gender(EnumWarehouse.GENDER.MALE);
+                student.setS_gender(EnumWarehouse.GENDER.男);
             else
-                student.setS_gender(EnumWarehouse.GENDER.FEMALE);
+                student.setS_gender(EnumWarehouse.GENDER.女);
 
             int temp = random.nextInt(6);
             int temp1 = random.nextInt(3);
@@ -221,52 +221,52 @@ public class SimulatedDataComponent {
                 case 0://985- 1/3博士 - 1/3硕士 - 1/3 学士
                     student.setS_c_level(EnumWarehouse.C_LEVEL._985);
                     if (temp1 == 0)
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.DOCTOR);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.博士);
                     else if (temp1 == 1)
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.MASTER);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.硕士);
                     else
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.BACHELOR);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.本科);
                     break;
                 case 1://211- 1/3博士 - 1/3硕士 - 1/3 学士
                     student.setS_c_level(EnumWarehouse.C_LEVEL._211);
                     if (temp1 == 0)
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.DOCTOR);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.博士);
                     else if (temp1 == 1)
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.MASTER);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.硕士);
                     else
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.BACHELOR);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.本科);
                     break;
                 case 2://一本- 2/3硕士 - 1/3 学士
-                    student.setS_c_level(EnumWarehouse.C_LEVEL.FIRST_UNDERGRADUATE);
+                    student.setS_c_level(EnumWarehouse.C_LEVEL.一批本科);
                     if (temp1 == 0)
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.BACHELOR);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.本科);
                     else
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.MASTER);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.硕士);
                     break;
                 case 3://二本- 1/3硕士 - 2/3 学士
-                    student.setS_c_level(EnumWarehouse.C_LEVEL.SECOND_UNDERGRADUATE);
+                    student.setS_c_level(EnumWarehouse.C_LEVEL.二批本科);
                     if (temp1 == 0)
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.MASTER);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.硕士);
                     else
-                        student.setS_e_history(EnumWarehouse.E_HISTORY.BACHELOR);
+                        student.setS_e_history(EnumWarehouse.E_HISTORY.本科);
                     break;
                 case 4://专科- 专科
-                    student.setS_c_level(EnumWarehouse.C_LEVEL.JUNIOR_COLLEGE);
-                    student.setS_e_history(EnumWarehouse.E_HISTORY.JUNIOR_COLLEGE);
+                    student.setS_c_level(EnumWarehouse.C_LEVEL.专科);
+                    student.setS_e_history(EnumWarehouse.E_HISTORY.专科);
                     break;
                 case 5://职高- 专科
-                    student.setS_c_level(EnumWarehouse.C_LEVEL.VOCATIONAL_AND_TECHNICAL_COLLEGE);
-                    student.setS_e_history(EnumWarehouse.E_HISTORY.JUNIOR_COLLEGE);
+                    student.setS_c_level(EnumWarehouse.C_LEVEL.职高);
+                    student.setS_e_history(EnumWarehouse.E_HISTORY.专科);
                     break;
             }
 
             temp = random.nextInt(7);
             switch (temp){
                 case 0:
-                    student.setS_e_language(EnumWarehouse.E_LANGUAGE.FOREIGN_EXPERIENCE);
+                    student.setS_e_language(EnumWarehouse.E_LANGUAGE.国外留学);
                     break;
                 case 1:
-                    student.setS_e_language(EnumWarehouse.E_LANGUAGE.TOEFL_IELTS);
+                    student.setS_e_language(EnumWarehouse.E_LANGUAGE.托福雅思);
                     break;
                 case 2:
                     student.setS_e_language(EnumWarehouse.E_LANGUAGE.TEM8);
@@ -281,14 +281,14 @@ public class SimulatedDataComponent {
                     student.setS_e_language(EnumWarehouse.E_LANGUAGE.CET4);
                     break;
                 case 6:
-                    student.setS_e_language(EnumWarehouse.E_LANGUAGE.NONE);
+                    student.setS_e_language(EnumWarehouse.E_LANGUAGE.无);
                     break;
             }
 
             temp = random.nextInt(4);
             switch (temp){
                 case 0:
-                    student.setS_f_language(EnumWarehouse.F_LANGUAGE.FOREIGN_EXPERIENCE);
+                    student.setS_f_language(EnumWarehouse.F_LANGUAGE.国外留学);
                     break;
                 case 1:
                     student.setS_f_language(EnumWarehouse.F_LANGUAGE.N2);
@@ -297,66 +297,66 @@ public class SimulatedDataComponent {
                     student.setS_f_language(EnumWarehouse.F_LANGUAGE.N1);
                     break;
                 case 3:
-                    student.setS_f_language(EnumWarehouse.F_LANGUAGE.NONE);
+                    student.setS_f_language(EnumWarehouse.F_LANGUAGE.无);
                     break;
             }
 
             temp = random.nextInt(5);
             switch (temp){
                 case 0:
-                    student.setS_s_range(EnumWarehouse.S_RANGE._4);
+                    student.setS_s_range(EnumWarehouse.S_RANGE.四千及以下);
                     break;
                 case 1:
-                    student.setS_s_range(EnumWarehouse.S_RANGE._4_6);
+                    student.setS_s_range(EnumWarehouse.S_RANGE.四至六千);
                     break;
                 case 2:
-                    student.setS_s_range(EnumWarehouse.S_RANGE._6_8);
+                    student.setS_s_range(EnumWarehouse.S_RANGE.六至八千);
                     break;
                 case 3:
-                    student.setS_s_range(EnumWarehouse.S_RANGE._8_10);
+                    student.setS_s_range(EnumWarehouse.S_RANGE.八至一万);
                     break;
                 case 4:
-                    student.setS_s_range(EnumWarehouse.S_RANGE._10);
+                    student.setS_s_range(EnumWarehouse.S_RANGE.一万及以上);
                     break;
             }
 
             temp = random.nextInt(5);
             switch (temp){
                 case 0:
-                    student.setS_ranking(EnumWarehouse.RANKING._0_10);
+                    student.setS_ranking(EnumWarehouse.RANKING.前百分之10);
                     break;
                 case 1:
-                    student.setS_ranking(EnumWarehouse.RANKING._10_20);
+                    student.setS_ranking(EnumWarehouse.RANKING.百分之10到百分之20);
                     break;
                 case 2:
-                    student.setS_ranking(EnumWarehouse.RANKING._20_30);
+                    student.setS_ranking(EnumWarehouse.RANKING.百分之20到百分之30);
                     break;
                 case 3:
-                    student.setS_ranking(EnumWarehouse.RANKING._30_40);
+                    student.setS_ranking(EnumWarehouse.RANKING.百分之30到百分之40);
                     break;
                 case 4:
-                    student.setS_ranking(EnumWarehouse.RANKING._40);
+                    student.setS_ranking(EnumWarehouse.RANKING.百分之40以后);
                     break;
             }
 
-            student.setS_if_work(EnumWarehouse.IF_IS_OR_NOT.NO);
+            student.setS_if_work(EnumWarehouse.IF_IS_OR_NOT.否);
             student.setS_w_province("无");
             student.setS_company("无");
 
             if (random.nextInt(2) == 0)
-                student.setS_if_career(EnumWarehouse.IF_IS_OR_NOT.YES);
+                student.setS_if_career(EnumWarehouse.IF_IS_OR_NOT.是);
             else
-                student.setS_if_career(EnumWarehouse.IF_IS_OR_NOT.NO);
+                student.setS_if_career(EnumWarehouse.IF_IS_OR_NOT.否);
 
             if (random.nextInt(2) == 0)
-                student.setS_if_fresh(EnumWarehouse.IF_IS_OR_NOT.YES);
+                student.setS_if_fresh(EnumWarehouse.IF_IS_OR_NOT.是);
             else
-                student.setS_if_fresh(EnumWarehouse.IF_IS_OR_NOT.NO);
+                student.setS_if_fresh(EnumWarehouse.IF_IS_OR_NOT.否);
 
             if (random.nextInt(2) == 0)
-                student.setS_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.YES);
+                student.setS_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.是);
             else
-                student.setS_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.NO);
+                student.setS_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.否);
 
             studentService.addStudent(student);
 
@@ -457,119 +457,118 @@ public class SimulatedDataComponent {
         resume.setR_p_experience("项目经验的详细介绍");
         resume.setR_s_evaluate("个人评估");
         resume.setR_remark("备注");
-        resume.setR_count(0);
         resume.setPosted(false);
         int temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_insurance(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_insurance(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_insurance(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_insurance(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_insurance(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_insurance(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_check_up(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_check_up(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_check_up(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_check_up(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_check_up(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_check_up(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_a_bonus(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_a_bonus(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_a_bonus(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_a_bonus(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_a_bonus(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_a_bonus(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_p_leave(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_p_leave(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_p_leave(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_p_leave(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_p_leave(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_p_leave(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_o_allowance(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_o_allowance(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_o_allowance(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_o_allowance(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_o_allowance(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_o_allowance(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_stock(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_stock(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_stock(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_stock(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_stock(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_stock(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_t_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_t_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_t_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_t_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_t_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_t_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                resume.setR_if_h_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                resume.setR_if_h_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                resume.setR_if_h_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                resume.setR_if_h_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                resume.setR_if_h_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                resume.setR_if_h_subside(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
 
         temp = random.nextInt(2);
         switch (temp){
             case 0:
-                resume.setR_if_b_trip(EnumWarehouse.IF_IS_OR_NOT.YES);
+                resume.setR_if_b_trip(EnumWarehouse.IF_IS_OR_NOT.是);
                 break;
             case 1:
-                resume.setR_if_b_trip(EnumWarehouse.IF_IS_OR_NOT.NO);
+                resume.setR_if_b_trip(EnumWarehouse.IF_IS_OR_NOT.否);
                 break;
         }
         return resume;
@@ -623,28 +622,28 @@ public class SimulatedDataComponent {
             int temp1 = random.nextInt(8);
             switch (temp1){
                 case 0:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.LISTED);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.已上市);
                     break;
                 case 1:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.D_ROUND);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.D轮);
                     break;
                 case 2:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.C_ROUND);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.C轮);
                     break;
                 case 3:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.B_ROUND);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.B轮);
                     break;
                 case 4:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.A_ROUND);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.A轮);
                     break;
                 case 5:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.ANGEL_ROUND);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.天使轮);
                     break;
                 case 6:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.SEED_ROUND);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.种子);
                     break;
                 case 7:
-                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.NO_NEED);
+                    company.setC_f_stage(EnumWarehouse.FINANCING_STAGE.不需要融资);
                     break;
             }
             companyService.addCompany(company);
@@ -660,26 +659,24 @@ public class SimulatedDataComponent {
         job.setJ_location("地址");
         job.setJ_p_require("岗位要求");
         job.setJ_remark("备注");
-        job.setJ_expire("过期时间");
-        job.setJ_count(0);
         job.setPosted(false);
 
         int temp = random.nextInt(3);
-        job.setJ_gender(EnumWarehouse.GENDER.NO_REQUIREMENT);
+        job.setJ_gender(EnumWarehouse.GENDER.无要求);
 
         temp = random.nextInt(4);
         switch (temp){
             case 0:
-                job.setJ_e_history(EnumWarehouse.E_HISTORY.DOCTOR);
+                job.setJ_e_history(EnumWarehouse.E_HISTORY.博士);
                 break;
             case 1:
-                job.setJ_e_history(EnumWarehouse.E_HISTORY.MASTER);
+                job.setJ_e_history(EnumWarehouse.E_HISTORY.硕士);
                 break;
             case 2:
-                job.setJ_e_history(EnumWarehouse.E_HISTORY.BACHELOR);
+                job.setJ_e_history(EnumWarehouse.E_HISTORY.本科);
                 break;
             case 3:
-                job.setJ_e_history(EnumWarehouse.E_HISTORY.JUNIOR_COLLEGE);
+                job.setJ_e_history(EnumWarehouse.E_HISTORY.专科);
                 break;
         }
 
@@ -692,29 +689,29 @@ public class SimulatedDataComponent {
                 job.setJ_c_level(EnumWarehouse.C_LEVEL._211);
                 break;
             case 2:
-                job.setJ_c_level(EnumWarehouse.C_LEVEL.FIRST_UNDERGRADUATE);
+                job.setJ_c_level(EnumWarehouse.C_LEVEL.一批本科);
                 break;
             case 3:
-                job.setJ_c_level(EnumWarehouse.C_LEVEL.SECOND_UNDERGRADUATE);
+                job.setJ_c_level(EnumWarehouse.C_LEVEL.二批本科);
                 break;
             case 4:
-                job.setJ_c_level(EnumWarehouse.C_LEVEL.JUNIOR_COLLEGE);
+                job.setJ_c_level(EnumWarehouse.C_LEVEL.专科);
                 break;
             case 5:
-                job.setJ_c_level(EnumWarehouse.C_LEVEL.VOCATIONAL_AND_TECHNICAL_COLLEGE);
+                job.setJ_c_level(EnumWarehouse.C_LEVEL.职高);
                 break;
         }
 
         temp = random.nextInt(8);
         switch (temp){
             case 0:
-                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.NO_REQUIREMENT);
+                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.不需要);
                 break;
             case 1:
-                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.FOREIGN_EXPERIENCE);
+                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.国外留学);
                 break;
             case 2:
-                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.TOEFL_IELTS);
+                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.托福雅思);
                 break;
             case 3:
                 job.setJ_e_language(EnumWarehouse.E_LANGUAGE.TEM8);
@@ -729,17 +726,17 @@ public class SimulatedDataComponent {
                 job.setJ_e_language(EnumWarehouse.E_LANGUAGE.CET4);
                 break;
             case 7:
-                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.NONE);
+                job.setJ_e_language(EnumWarehouse.E_LANGUAGE.无);
                 break;
         }
 
         temp = random.nextInt(5);
         switch (temp){
             case 0:
-                job.setJ_f_language(EnumWarehouse.F_LANGUAGE.NO_REQUIREMENT);
+                job.setJ_f_language(EnumWarehouse.F_LANGUAGE.不需要);
                 break;
             case 1:
-                job.setJ_f_language(EnumWarehouse.F_LANGUAGE.FOREIGN_EXPERIENCE);
+                job.setJ_f_language(EnumWarehouse.F_LANGUAGE.国外留学);
                 break;
             case 2:
                 job.setJ_f_language(EnumWarehouse.F_LANGUAGE.N2);
@@ -748,107 +745,107 @@ public class SimulatedDataComponent {
                 job.setJ_f_language(EnumWarehouse.F_LANGUAGE.N1);
                 break;
             case 4:
-                job.setJ_f_language(EnumWarehouse.F_LANGUAGE.NONE);
+                job.setJ_f_language(EnumWarehouse.F_LANGUAGE.无);
                 break;
         }
 
         temp = random.nextInt(5);
         switch (temp){
             case 0:
-                job.setJ_s_range(EnumWarehouse.S_RANGE._4);
+                job.setJ_s_range(EnumWarehouse.S_RANGE.四千及以下);
                 break;
             case 1:
-                job.setJ_s_range(EnumWarehouse.S_RANGE._4_6);
+                job.setJ_s_range(EnumWarehouse.S_RANGE.四至六千);
                 break;
             case 2:
-                job.setJ_s_range(EnumWarehouse.S_RANGE._6_8);
+                job.setJ_s_range(EnumWarehouse.S_RANGE.六至八千);
                 break;
             case 3:
-                job.setJ_s_range(EnumWarehouse.S_RANGE._8_10);
+                job.setJ_s_range(EnumWarehouse.S_RANGE.八至一万);
                 break;
             case 4:
-                job.setJ_s_range(EnumWarehouse.S_RANGE._10);
+                job.setJ_s_range(EnumWarehouse.S_RANGE.一万及以上);
                 break;
         }
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_if_career(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_if_career(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_if_career(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_if_career(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_if_project_experience(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_if_fresh(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_if_fresh(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_if_fresh(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_if_fresh(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_insurance(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_insurance(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_insurance(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_insurance(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_check_up(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_check_up(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_check_up(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_check_up(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_a_bonus(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_a_bonus(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_a_bonus(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_a_bonus(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_p_leave(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_p_leave(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_p_leave(EnumWarehouse.IF_IS_OR_NOT.NO);
-
-
-        temp = random.nextInt(2);
-        if (temp == 0)
-            job.setJ_o_allowance(EnumWarehouse.IF_IS_OR_NOT.YES);
-        else
-            job.setJ_o_allowance(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_p_leave(EnumWarehouse.IF_IS_OR_NOT.否);
 
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_stock(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_o_allowance(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_stock(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_o_allowance(EnumWarehouse.IF_IS_OR_NOT.否);
+
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_t_subside(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_stock(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_t_subside(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_stock(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(2);
         if (temp == 0)
-            job.setJ_h_subside(EnumWarehouse.IF_IS_OR_NOT.YES);
+            job.setJ_t_subside(EnumWarehouse.IF_IS_OR_NOT.是);
         else
-            job.setJ_h_subside(EnumWarehouse.IF_IS_OR_NOT.NO);
+            job.setJ_t_subside(EnumWarehouse.IF_IS_OR_NOT.否);
+
+        temp = random.nextInt(2);
+        if (temp == 0)
+            job.setJ_h_subside(EnumWarehouse.IF_IS_OR_NOT.是);
+        else
+            job.setJ_h_subside(EnumWarehouse.IF_IS_OR_NOT.否);
 
         temp = random.nextInt(3);
         switch (temp){
             case 0:
-                job.setJ_b_trip(EnumWarehouse.IF_IS_NEED_OR_NOT.NO_REQUIREMENT);
+                job.setJ_b_trip(EnumWarehouse.IF_IS_NEED_OR_NOT.不需要);
                 break;
             case 1:
-                job.setJ_b_trip(EnumWarehouse.IF_IS_NEED_OR_NOT.NO);
+                job.setJ_b_trip(EnumWarehouse.IF_IS_NEED_OR_NOT.否);
                 break;
             case 2:
-                job.setJ_b_trip(EnumWarehouse.IF_IS_NEED_OR_NOT.YES);
+                job.setJ_b_trip(EnumWarehouse.IF_IS_NEED_OR_NOT.是);
                 break;
         }
         return job;
@@ -933,5 +930,42 @@ public class SimulatedDataComponent {
             }
         });
     }
+
+    public void simulatedCompanyFavoredResumes(){
+        Random random = new Random();
+        List<Company> companies = companyService.getAllCompanies();
+        List<StudentResume> studentResumes = studentService.getAllStudentResumes();
+        int n = studentResumes.size();
+        companies.forEach(company -> {
+            for (int i = 0; i < 20;i++){
+                Resume resume = studentResumes.get(random.nextInt(n)).getStudentResumePK().getSr_resume();
+                CompanyFavoredResume companyFavoredResume = new CompanyFavoredResume();
+                CompanyFavoredResumePK companyFavoredResumePK = new CompanyFavoredResumePK();
+                companyFavoredResumePK.setCfr_company(company);
+                companyFavoredResumePK.setCfr_resume(resume);
+                companyFavoredResume.setCompanyFavoredResumePK(companyFavoredResumePK);
+                companyService.addCompanyFavoredResume(companyFavoredResume);
+            }
+        });
+    }
+
+    public void simulatedStudentFavoredJobs(){
+        Random random = new Random();
+        List<Student> students = studentService.getAllStudents();
+        List<CompanyJob> companyJobs = companyService.getAllCompanyJobs();
+        int n = companyJobs.size();
+        students.forEach(student -> {
+            for (int i = 0; i < 20;i++){
+                Job job = companyJobs.get(random.nextInt(n)).getCompanyJobPk().getCj_job();
+                StudentFavoredJob studentFavoredJob = new StudentFavoredJob();
+                StudentFavoredJobPK studentFavoredJobPK = new StudentFavoredJobPK();
+                studentFavoredJobPK.setSfj_job(job);
+                studentFavoredJobPK.setSfj_student(student);
+                studentFavoredJob.setStudentFavoredJobPK(studentFavoredJobPK);
+                studentService.addStudentFavoredJob(studentFavoredJob);
+            }
+        });
+    }
+
 
 }

@@ -3,6 +3,7 @@ package com.example.springbootgraduationdesign.Service;
 import com.example.springbootgraduationdesign.component.vo.PersonalizedJMRVo;
 import com.example.springbootgraduationdesign.component.vo.ResumeJMRPersonalizedVo;
 import com.example.springbootgraduationdesign.entity.Resume;
+import com.example.springbootgraduationdesign.entity.ResumeJMR;
 import com.example.springbootgraduationdesign.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,18 @@ public class StudentServiceTest {
         }
 
         System.out.println("end");
+    }
+
+    @Test
+    public void getResumeJMR_MatchTest(){
+        int rid = 12;
+        List<ResumeJMR> resumeJMRs = studentService.getResumeJMR_Match(rid);
+        if (resumeJMRs.size() == 0){
+            System.out.println("0");
+        }else {
+            for (ResumeJMR resumeJMR : resumeJMRs) {
+                System.out.println(resumeJMR);
+            }
+        }
     }
 }

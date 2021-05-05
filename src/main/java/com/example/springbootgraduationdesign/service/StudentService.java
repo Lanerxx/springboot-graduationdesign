@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,8 @@ public class StudentService {
     @Autowired
     private StudentPositionRepository studentPositionRepository;
     @Autowired
+    private StudentFavoredJobRepository studentFavoredJobRepository;
+    @Autowired
     private ResumeRepository resumeRepository;
     @Autowired
     private StudentResumeRepository studentResumeRepository;
@@ -39,6 +40,8 @@ public class StudentService {
     private ResumeJMRBaseRepository resumeJMRBaseRepository;
     @Autowired
     private JobResumeRepository jobResumeRepository;
+    @Autowired
+    private ResumeSystemDefaultWeightRepository resumeSystemDefaultWeightRepository;
 
 
     @Autowired
@@ -93,9 +96,7 @@ public class StudentService {
     }
     public Student updateStudent(StudentVo studentVo){
         Student student = studentVo.getStudent();
-//        studentService.deleteStudentPositionsByStudent(studentOld.getS_id());
         studentIndustryRepository.deleteStudentIndustriesByStudent(student.getS_id());
-//        studentService.deleteStudentIndustriesByStudent(studentOld.getS_id());
         studentPositionRepository.deleteStudentPositionsByStudent(student.getS_id());
         studentService.updateStudent(student);
 
@@ -108,7 +109,6 @@ public class StudentService {
             studentPositionPK.setSp_position(po);
             studentPositionPK.setSp_student(student);
             studentPosition.setStudentPositionPK(studentPositionPK);
-//            studentService.addStudentPositions(studentPosition);
             studentPositionRepository.save(studentPosition);
         }
         for (Industry i : industries){
@@ -117,7 +117,6 @@ public class StudentService {
             studentIndustryPK.setSi_industry(i);
             studentIndustryPK.setSi_student(student);
             studentIndustry.setStudentIndustryPK(studentIndustryPK);
-//            studentService.addStudentIndustries(studentIndustry);
             studentIndustryRepository.save(studentIndustry);
         }
         return student;
@@ -132,7 +131,7 @@ public class StudentService {
     public List<Student> getStudentsByName(String name){
         return studentRepository.getStudentByName(name).orElse(new ArrayList<>());
     }
-    public List<Student> getStudentByCollege(String college){
+    public List<Student> getStudentsByCollege(String college){
         return studentRepository.getStudentByCollege(college).orElse(new ArrayList<>());
     }
     public Student getStudentByTelephone(String telephone){
@@ -270,6 +269,20 @@ public class StudentService {
         });
         return resumes;
     }
+    public List<Resume> getResumesByCompanyFavoredResumes(List<CompanyFavoredResume> companyFavoredResumes){
+        List<Resume> resumes = new ArrayList<>();
+        for (CompanyFavoredResume companyFavoredResume : companyFavoredResumes) {
+            resumes.add(companyFavoredResume.getCompanyFavoredResumePK().getCfr_resume());
+        }
+        return resumes;
+    }
+    public List<Resume> getResumesByJobResumes(List<JobResume> jobResumes){
+        List<Resume> resumes = new ArrayList<>();
+        for (JobResume jobResume : jobResumes) {
+            resumes.add(jobResume.getJobResumePK().getJr_resume());
+        }
+        return resumes;
+    }
 
 
     /*--------学生已发布简历信息（StudentResume）----------
@@ -359,24 +372,96 @@ public class StudentService {
 
         // 获取所有企业已发布的岗位
         List<StudentResume> studentResumes = studentService.getAllStudentResumes();
-
-//        //只获取两个studentresume测试
-//        int COUNT = 19;
-//        List<StudentResume> studentResumesTemp = new ArrayList<>();
-//        for (int i = 0; i < COUNT; i++){
-//            studentResumesTemp.add(studentResumes.get(i));
-//        }
-
         studentResumes.forEach(studentResume -> {
             studentService.getOneResumeJMR_Match(studentResume);
         });
     }
 
-    //及时执行，用户临时添加一个简历执行匹配
+    //及时执行，根据系统默认权重进行匹配
     public List<ResumeJMR> getResumeJMR_Match(int rid){
         StudentResume studentResume = studentService.getStudentResumeByResume(rid);
-        studentService.getOneResumeJMR_Match(studentResume);
-        return studentService.getResumeJMRsByResume(rid);
+        List<ResumeJMR> resumeJMRsNew = new ArrayList<>();
+        List<ResumeJMR> resumeJMRs = studentService.getResumeJMRsByResume(rid);
+        if (resumeJMRs.size() == 0){
+            studentService.getOneResumeJMR_Match(studentResume);
+            resumeJMRs = studentService.getResumeJMRsByResume(rid);
+        }
+        for (ResumeJMR resumeJMR : resumeJMRs) {
+            JobSystemDefaultWeight jobSystemDefaultWeight = companyService.getJobSystemDefaultWeight();
+            ResumeJMRBase resumeJMRBase = resumeJMR.getJmr_base();
+            ResumeJMR resumeJMRNew = new ResumeJMR();
+
+            resumeJMRNew.setJmr_id(resumeJMR.getJmr_id());
+            resumeJMRNew.setJmr_v_success(resumeJMR.getJmr_v_success());
+            resumeJMRNew.setJmr_job(resumeJMR.getJmr_job());
+            resumeJMRNew.setJmr_resume(resumeJMR.getJmr_resume());
+            resumeJMRNew.setJmr_v_popularity(resumeJMR.getJmr_v_popularity());
+            resumeJMRNew.setJmr_base(resumeJMRBase);
+
+            double valueTempt;
+            double jmr_v_match = 0;
+            valueTempt = resumeJMRBase.getJmr_b_c_scale() * jobSystemDefaultWeight.getJsdw_c_scale();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_c_f_stage() * jobSystemDefaultWeight.getJsdw_c_f_stage();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_c_level() * jobSystemDefaultWeight.getJsdw_c_level();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_e_history() * jobSystemDefaultWeight.getJsdw_c_e_history();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_e_language() * jobSystemDefaultWeight.getJsdw_e_language();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_position() * jobSystemDefaultWeight.getJsdw_position();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_location() * jobSystemDefaultWeight.getJsdw_location();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_insurance() * jobSystemDefaultWeight.getJsdw_insurance();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_check_up() * jobSystemDefaultWeight.getJsdw_check_up();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_a_bonus() * jobSystemDefaultWeight.getJsdw_a_bonus();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_p_leave() * jobSystemDefaultWeight.getJsdw_p_leave();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_o_allowance() * jobSystemDefaultWeight.getJsdw_o_allowance();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_stock() * jobSystemDefaultWeight.getJsdw_stock();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_t_subside() * jobSystemDefaultWeight.getJsdw_t_subside();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_h_subside() * jobSystemDefaultWeight.getJsdw_h_subside();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_b_trip() * jobSystemDefaultWeight.getJsdw_b_trip();
+            jmr_v_match += valueTempt;
+
+            valueTempt = resumeJMRBase.getJmr_b_s_range() * jobSystemDefaultWeight.getJsdw_s_range();
+            jmr_v_match += valueTempt;
+
+            resumeJMRNew.setJmr_v_match(jmr_v_match);
+            double matchBase = 17 * 2;
+            double success = transferComponent.getSuccessByDegree(resumeJMR.getJmr_v_success());
+            double jmr_v_average = valueComponent.getAverage(success, jmr_v_match/matchBase);
+
+            System.out.println("jmr_v_average pro :" + resumeJMR.getJmr_v_average());
+            resumeJMRNew.setJmr_v_average(jmr_v_average);
+            System.out.println("jmr_v_average now :" + jmr_v_average);
+            resumeJMRsNew.add(resumeJMRNew);
+        }
+        return resumeJMRsNew;
     }
 
     //及时执行，根据用户的自定义权重进行匹配
@@ -490,7 +575,7 @@ public class StudentService {
 
             resumeJMR.setJmr_resume(resume);
             resumeJMR.setJmr_job(job);
-            resumeJMR.setJmr_v_success(EnumWarehouse.SUCCESS_DEGREE.LOW);
+            resumeJMR.setJmr_v_success(EnumWarehouse.SUCCESS_DEGREE.低);
             resumeJMR.setJmr_v_average(0);
             resumeJMR.setJmr_v_popularity(0);
 
@@ -513,10 +598,6 @@ public class StudentService {
 
             valueTempt = valueComponent.resumeJmrBaseELanguage(job.getJ_e_language(),student.getS_e_language());
             resumeJMRBase.setJmr_b_e_language(valueTempt);
-            jmr_v_match += valueTempt;
-
-            valueTempt = valueComponent.resumeJmrBaseJCount(job.getJ_count());
-            resumeJMRBase.setJmr_b_j_count(valueTempt);
             jmr_v_match += valueTempt;
 
             //jmr_b_postion;
@@ -655,12 +736,35 @@ public class StudentService {
         return jobResume;
     }
 
+    public List<JobResume> getJobResumesByResume_ResumeToJob(int rid, boolean resumeToJob){
+        return jobResumeRepository.getJobResumesByResume_ResumeToJob(rid,resumeToJob).orElse(new ArrayList<>());
+    }
     public List<JobResume> getJobResumesByJob_ResumeToJob(int jid, boolean resumeToJob){
         return jobResumeRepository.getJobResumesByJob_ResumeToJob(jid,resumeToJob).orElse(new ArrayList<>());
     }
-
     public List<JobResume> getJobResumesByJob_JobToResume(int jid,boolean jobToResume){
         return jobResumeRepository.getJobResumesByJob_JobToResume(jid,jobToResume).orElse(new ArrayList<>());
+    }
+    public List<JobResume> getJobResumesByStudent_ResumeToJob(int sid, boolean resumeToJob){
+        List<JobResume> jobResumes = new ArrayList<>();
+        List<Resume> resumes = studentService.getResumesByStudentId(sid);
+        for (Resume resume : resumes) {
+            jobResumes.addAll(studentService.getJobResumesByResume_ResumeToJob(resume.getR_id(), true));
+        }
+        return jobResumes;
+    }
+    public List<JobResume> getJobResumesByStudents_ResumeToJob(List<Student> students, boolean resumeToJob){
+        List<JobResume> jobResumes = new ArrayList<>();
+        for (Student student : students) {
+            jobResumes.addAll(studentService.getJobResumesByStudent_ResumeToJob(student.getS_id(), true));
+        }
+        return jobResumes;
+    }
+    public List<JobResume> getJobResumesByStudents_ResumeToJob_JobToResume(List<Student> students, boolean resumeToJob, boolean jobToResume){
+        List<JobResume> jobResumes = studentService.getJobResumesByStudents_ResumeToJob(students, resumeToJob);
+        return jobResumes.stream()
+                .filter(jobResume -> jobResume.isJobToResume())
+                .collect(Collectors.toList());
     }
     public List<JobResume> getJobResumesByJobs_JobToResume(List<Job> jobs){
         List<JobResume> jobResumes = new ArrayList<>();
@@ -684,7 +788,82 @@ public class StudentService {
         return studentService.getJobResumesByJob_ResumeToJob(jid,resumeToJob).size();
     }
 
+    /*---------学生收藏的岗位信息（StudentFavoredJob）---------
+    -------检索：管理员，学生，就业专员
+    -------更新：服务器
+    -------创建：服务器
+    -------删除：服务器
+    --------------------------------------------------*/
+    public StudentFavoredJob addStudentFavoredJob(StudentFavoredJob studentFavoredJob){
+        return studentFavoredJobRepository.save(studentFavoredJob);
+    }
+    public List<StudentFavoredJob> getAllStudentFavoredJobs(){
+        return studentFavoredJobRepository.findAll();
+    }
 
+    public List<StudentFavoredJob> getStudentFavoredJobsByStudent(int sid){
+        return studentFavoredJobRepository.getStudentFavoredJobsByStudent(sid).orElse(new ArrayList<>());
+    }
+    public List<StudentFavoredJob> getStudentFavoredJobsByStudents(List<Student> students){
+        List<StudentFavoredJob> studentFavoredJobs = new ArrayList<>();
+        if (students.size() == 0) return studentFavoredJobs;
+        for (Student student : students) {
+            studentFavoredJobs.addAll(studentService.getStudentFavoredJobsByStudent(student.getS_id()));
+        }
+        return studentFavoredJobs;
+    }
+    public List<Resume> getAllFavoredResumes(){
+        List<Resume> resumes = new ArrayList<>();
+        List<CompanyFavoredResume> companyFavoredResumes = companyService.getAllCompanyFavoredResumes();
+        if (companyFavoredResumes.size() != 0){
+            companyFavoredResumes.forEach(companyFavoredResume -> {
+                resumes.add(companyFavoredResume.getCompanyFavoredResumePK().getCfr_resume());
+            });
+        }
+        return resumes;
+    }
 
+    /*----------（ResumeSystemDefaultWeightRepository）-----------
+    -------提供给学生端使用，衡量resume各项信息重要程度
+    --------------------------------------------------*/
+    public ResumeSystemDefaultWeight addResumeSystemDefaultWeight(ResumeSystemDefaultWeight resumeSystemDefaultWeight){
+        return resumeSystemDefaultWeightRepository.save(resumeSystemDefaultWeight);
+    }
+    public ResumeSystemDefaultWeight addResumeSystemDefaultWeight(List<Double> weights){
+        ResumeSystemDefaultWeight resumeSystemDefaultWeight = new ResumeSystemDefaultWeight();
+        resumeSystemDefaultWeight.setRsdw_a_bonus(weights.get(0));
+        resumeSystemDefaultWeight.setRsdw_p_leave(weights.get(1));
+        resumeSystemDefaultWeight.setRsdw_o_allowance(weights.get(2));
+        resumeSystemDefaultWeight.setRsdw_b_stock(weights.get(3));
+        resumeSystemDefaultWeight.setRsdw_t_subside(weights.get(4));
+        resumeSystemDefaultWeight.setRsdw_h_subside(weights.get(5));
+        resumeSystemDefaultWeight.setRsdw_b_trip(weights.get(6));
+        resumeSystemDefaultWeight.setRsdw_c_level(weights.get(7));
+        resumeSystemDefaultWeight.setRsdw_e_history(weights.get(8));
+        resumeSystemDefaultWeight.setRsdw_e_language(weights.get(9));
+        resumeSystemDefaultWeight.setRsdw_ranking(weights.get(10));
+        resumeSystemDefaultWeight.setRsdw_check_up(weights.get(11));
+        resumeSystemDefaultWeight.setRsdw_p_count(weights.get(12));
+        resumeSystemDefaultWeight.setRsdw_h_count(weights.get(13));
+        resumeSystemDefaultWeight.setRsdw_s_count(weights.get(14));
+        resumeSystemDefaultWeight.setRsdw_c_count(weights.get(15));
+        resumeSystemDefaultWeight.setRsdw_position(weights.get(16));
+        resumeSystemDefaultWeight.setRsdw_location(weights.get(17));
+        resumeSystemDefaultWeight.setRsdw_insurance(weights.get(18));
+        studentService.addResumeSystemDefaultWeight(resumeSystemDefaultWeight);
+        return resumeSystemDefaultWeight;
+    }
 
+    public void deleteAllResumeSystemDefaultWeights(){
+        resumeSystemDefaultWeightRepository.deleteAll();
+    }
+
+    public ResumeSystemDefaultWeight getResumeSystemDefaultWeight(){
+        ResumeSystemDefaultWeight resumeSystemDefaultWeight = new ResumeSystemDefaultWeight();
+        List<ResumeSystemDefaultWeight> resumeSystemDefaultWeights = resumeSystemDefaultWeightRepository.findAll();
+        if (resumeSystemDefaultWeights.size() != 0){
+            resumeSystemDefaultWeight =resumeSystemDefaultWeights.get(0);
+        }
+        return resumeSystemDefaultWeight;
+    }
 }

@@ -20,4 +20,7 @@ public interface CompanyRepository extends BaseRepository<Company, Integer>{
     @Query("SELECT c FROM Company  c WHERE c.c_s_code=:code")
     Optional<Company> getCompanyBySCode (@Param("code")String code);
 
+    @Query("SELECT c FROM Company  c WHERE c.c_f_stage=:fStage")
+    Optional<List<Company>> getCompaniesByFStage (@Param("fStage")EnumWarehouse.FINANCING_STAGE fStage);
+
 }

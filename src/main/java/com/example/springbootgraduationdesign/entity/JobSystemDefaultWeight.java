@@ -3,11 +3,9 @@ package com.example.springbootgraduationdesign.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -18,22 +16,22 @@ public class JobSystemDefaultWeight {
     private int jsdw_id;
 
     @NotNull
-    private double jsdw_ranking;
+    private double jsdw_c_scale;
 
     @NotNull
-    private double jsdw_r_count;
+    private double jsdw_c_f_stage;
 
     @NotNull
-    private double jsdw_p_count;
+    private double jsdw_c_level;
 
     @NotNull
-    private double jsdw_s_count;
+    private double jsdw_c_e_history;
 
     @NotNull
-    private double jsdw_c_count;
+    private double jsdw_e_language;
 
     @NotNull
-    private double jsdw_h_count;
+    private double jsdw_j_count;
 
     @NotNull
     private double jsdw_position;
@@ -57,7 +55,7 @@ public class JobSystemDefaultWeight {
     private double jsdw_o_allowance;
 
     @NotNull
-    private double jsdw_b_stock;
+    private double jsdw_stock;
 
     @NotNull
     private double jsdw_t_subside;
@@ -69,15 +67,16 @@ public class JobSystemDefaultWeight {
     private double jsdw_b_trip;
 
     @NotNull
-    private double jsdw_c_level;
-
-    @NotNull
-    private double jsdw_e_history;
-
-    @NotNull
-    private double jsdw_e_language;
-
-    @NotNull
     private double jsdw_s_range;
+
+    @Column(columnDefinition = "timestamp default current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime insertTime;
+    @Column(columnDefinition = "timestamp default current_timestamp " +
+            "on update current_timestamp",
+            insertable = false,
+            updatable = false)
+    private LocalDateTime updateTime;
 
 }

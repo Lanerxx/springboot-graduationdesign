@@ -1,21 +1,23 @@
 package com.example.springbootgraduationdesign.Service;
 
-import com.example.springbootgraduationdesign.component.vo.JobSMRPersonalizedVo;
-import com.example.springbootgraduationdesign.component.vo.PersonalizedSMRVo;
-import com.example.springbootgraduationdesign.entity.JobSMR;
-import com.example.springbootgraduationdesign.entity.JobSMRBase;
+import com.example.springbootgraduationdesign.component.vo.*;
+import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.CompanyService;
+import com.example.springbootgraduationdesign.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @SpringBootTest
 public class CompanyServiceTest {
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private StudentService studentService;
 
     @Test
     public void getJobSMRTest(){
@@ -88,4 +90,77 @@ public class CompanyServiceTest {
 //        personalizedSMRVo.setS_count();
 //        personalizedSMRVo.setT_subside();
     }
+
+    @Test
+    public void getJobSMR_MatchTest(){
+        int jid = 12;
+        List<JobSMR> jobSMRs = companyService.getJobSMR_Match(jid);
+        if (jobSMRs.size() == 0){
+            System.out.println("0");
+        }else {
+            for (JobSMR jobSMR : jobSMRs) {
+                System.out.println(jobSMR);
+            }
+        }
+    }
+
+    @Test
+    public void get(){
+        String collegeName = "门头沟枚大学0";
+        //获取需要跟踪的学生集合
+        List<Student> students = studentService.getStudentsByCollege(collegeName);
+
+
+        //倾向跟踪
+//        List<StudentFavoredJob> studentFavoredJobs = studentService.getStudentFavoredJobsByStudents(students);
+//        List<Job> jobsFavored = companyService.getJobsByStudentFavoredJobs(studentFavoredJobs);
+//        JobListStatisticalFormVo jobListStatisticalFormVoFavored = trackService.getJobListStatisticalFormVo(jobsFavored);
+
+        //单向跟踪
+        List<JobResume> jobResumesOneWay = studentService.getJobResumesByStudents_ResumeToJob(students,true);
+        List<Job> jobsOneWay = companyService.getJobsByJobResumes(jobResumesOneWay);
+//        JobListStatisticalFormVo jobListStatisticalFormVoOneWay = trackService.getJobListStatisticalFormVo(jobsOneWay);
+
+        //双向跟踪
+        List<JobResume> jobResumesTwoWay = studentService.getJobResumesByStudents_ResumeToJob_JobToResume(students,true,true);
+        List<Job> jobsTwoWay = companyService.getJobsByJobResumes(jobResumesTwoWay);
+//        JobListStatisticalFormVo jobListStatisticalFormVoTwoWay = trackService.getJobListStatisticalFormVo(jobsTwoWay);
+
+        System.out.println("jobResumesOneWay:");
+        System.out.println("size():" + jobResumesOneWay.size());
+        for (JobResume jobResume : jobResumesOneWay) {
+            System.out.print("Job:" + jobResume.getJobResumePK().getJr_job().getJ_id()
+                    + "/Resume:" + jobResume.getJobResumePK().getJr_resume().getR_id() + "  ");
+        }
+        System.out.println();
+        for (JobResume jobResume : jobResumesOneWay) {
+            if (jobResume.isJobToResume()) System.out.print("JtR:true/");
+            else System.out.print("JtR:false/");
+            if (jobResume.isResumeToJob()) System.out.print("RtJ:true/");
+            else System.out.print("RtJ:false/");
+            System.out.print("  ");
+
+        }
+        System.out.println();
+        System.out.println("jobResumesTwoWay:");
+        System.out.println("size():" + jobResumesTwoWay.size());
+        for (JobResume jobResume : jobResumesTwoWay) {
+            System.out.print("Job:" + jobResume.getJobResumePK().getJr_job().getJ_id()
+                    + "/Resume:" + jobResume.getJobResumePK().getJr_resume().getR_id() + "  ");
+
+        }
+        System.out.println();
+        for (JobResume jobResume : jobResumesTwoWay) {
+            if (jobResume.isJobToResume()) System.out.print("JtR:true/");
+            else System.out.print("JtR:false/");
+            if (jobResume.isResumeToJob()) System.out.print("RtJ:true/");
+            else System.out.print("RtJ:false/");
+            System.out.print("  ");
+        }
+
+
+
+
+    }
+
 }
