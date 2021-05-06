@@ -96,6 +96,15 @@ public class ProfessionService {
 
         return professionMClasses;
     }
+    public List<String> getProfessionsSName(){
+        List<String> professionsSName = new ArrayList<>();
+        List<Profession> professions = professionService.getAllProfessions();
+        professions.forEach(profession -> {
+            professionsSName.add(profession.getPr_s_class());
+        });
+
+        return professionsSName;
+    }
     public List<Profession> getProfessionsByProfessionsMName(List<String> professionsMName){
         List<Profession> professions = new ArrayList<>();
         for (String professionMName : professionsMName) {

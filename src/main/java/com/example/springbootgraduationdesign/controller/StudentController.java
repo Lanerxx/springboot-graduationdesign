@@ -6,6 +6,7 @@ import com.example.springbootgraduationdesign.component.vo.PasswordVo;
 import com.example.springbootgraduationdesign.component.vo.StudentVo;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
+import javafx.geometry.Pos;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,15 +46,17 @@ public class StudentController {
         int sid = requestComponent.getUid();
         Student student = studentService.getStudent(sid);
         List<String> positionsName = positionService.listPositionsName();
-        Set<String> professionsMClass = professionService.getProfessionsMClass();
+        List<String> industriesName = industryService.listIndustriesName();
         List<String> studentPositionsName = positionService.listPositionNameByStudent(sid);
         List<String> studentIndustryName = industryService.listIndustryNameByStudent(sid);
+        List<String> professionsSClass = professionService.getProfessionsSName();
         return Map.of(
                 "student",student,
                 "positionsName",positionsName,
                 "studentPositionsName",studentPositionsName,
                 "studentIndustryName",studentIndustryName,
-                "professionsMClass",professionsMClass
+                "industriesName",industriesName,
+                "professionsSClass",professionsSClass
         );
     }
 
@@ -66,7 +70,7 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "该学生不存在！");
         }
-        Profession profession = professionService.getProfession(student.getS_profession().getPr_id());
+        Profession profession = professionService.getProfessionBySClass(student.getS_profession().getPr_s_class());
         if (profession == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您填写的专业错误！");
@@ -78,36 +82,31 @@ public class StudentController {
                         "您还未填写已就业的城市或企业！");
             }
         }else {
-            student.setS_w_province("NONE");
-            student.setS_company("NONE");
+            student.setS_w_province("无");
+            student.setS_company("无");
         }
-        List<Position> positions = studentVo.getPositions();
-        List<Industry> industries = studentVo.getIndustries();
+        List<Position> positions = positionService.getPositionsByPositionsName(studentVo.getPositionsName());
+        if (positions.size() == 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您填写的期望岗位错误！");
+        }
+        List<Industry> industries = industryService.getIndustriesByIndustriesName(studentVo.getIndustriesName());
+        if (industries.size() == 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您填写的期望行业错误！");
+        }
+
         student.setS_telephone(studentOld.getS_telephone());
         student.setS_password(studentOld.getS_password());
-        if (positions == null || industries == null ||
-                checkIsNullComponent.objCheckIsNull(student)){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        student.setInsertTime(localDateTime);
+        student.setUpdateTime(localDateTime);
+        if (checkIsNullComponent.objCheckIsNull(student)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息！");
         }
-        for (int i = 0; i < positions.size(); i++){
-            Position position = positionService.getPosition(positions.get(i).getPo_id());
-            if (position == null){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "您填写的期望岗位错误！");
-            }else {
-                positions.set(i, position);
-            }
-        }
-        for (int i = 0; i < industries.size(); i++){
-            Industry industry = industryService.getIndustry(industries.get(i).getI_id());
-            if (industry == null){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "您填写的期望行业错误！");
-            }else {
-                industries.set(i, industry);
-            }
-        }
+        studentVo.setPositions(positions);
+        studentVo.setIndustries(industries);
         studentService.updateStudent(studentVo);
         return Map.of(
                 "student",student
@@ -129,12 +128,14 @@ public class StudentController {
         );
     }
 
-
     @PostMapping("resume")
     public Map addResume(@RequestBody Resume resume){
         int sid = requestComponent.getUid();
         Student student = studentService.getStudent(sid);
         resume.setR_student(student);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        resume.setInsertTime(localDateTime);
+        resume.setUpdateTime(localDateTime);
         if (checkIsNullComponent.objCheckIsNull(resume)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息，请完善信息后再提交");
@@ -166,6 +167,9 @@ public class StudentController {
         int sid = requestComponent.getUid();
         Student s = studentService.getStudent(sid);
         resume.setR_student(s);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        resume.setInsertTime(localDateTime);
+        resume.setUpdateTime(localDateTime);
         if (checkIsNullComponent.objCheckIsNull(resume)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息，请完善信息后再提交");

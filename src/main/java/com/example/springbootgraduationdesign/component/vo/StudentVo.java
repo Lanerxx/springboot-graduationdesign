@@ -11,5 +11,8 @@ import java.util.List;
 public class StudentVo {
     private Student student;
     private List<Position> positions;
+    private List<String> positionsName;
     private List<Industry> industries;
+    private List<String> industriesName;
+
 }

@@ -22,6 +22,9 @@ public class IndustryService {
     @Autowired
     private StudentIndustryRepository studentIndustryRepository;
 
+    @Autowired
+    private IndustryService industryService;
+
     /*---------------行业信息（Position）----------------
     -------检索：管理员
     -------更新：管理员
@@ -48,6 +51,18 @@ public class IndustryService {
         return industry;
     }
 
+
+    public List<Industry> getIndustriesByIndustriesName(List<String> industriesName){
+        System.out.println("industriesName:" + industriesName);
+        List<Industry> industries = new ArrayList<>();
+        for (String s : industriesName) {
+            Industry industry = industryService.getIndustry(s);
+            System.out.print("industry:" + industry + "/");
+            if (industry != null) industries.add(industry);
+        }
+        System.out.println();
+        return industries;
+    }
     public List<Industry> getAllIndustries(){
         return industryRepository.findAll();
     }

@@ -51,6 +51,17 @@ public class PositionService {
         return position;
     }
 
+    public List<Position> getPositionsByPositionsName(List<String> positionsName){
+        System.out.println("positionsName:" + positionsName);
+        List<Position> positions = new ArrayList<>();
+        for (String s : positionsName) {
+            Position position = positionService.getPosition(s);
+            System.out.print("position:" + position + "/");
+            if (position != null) positions.add(position);
+        }
+        System.out.println();
+        return positions;
+    }
     public List<Position> getAllPositions(){
         return positionRepository.findAll();
     }

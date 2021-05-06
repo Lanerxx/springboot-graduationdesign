@@ -102,7 +102,9 @@ public class StudentService {
 
         List<Position> positions = studentVo.getPositions();
         List<Industry> industries = studentVo.getIndustries();
+        System.out.println("positions:");
         for (Position po : positions){
+            System.out.print("getPo_id:" + po.getPo_id() + " getPo_name:" + po.getPo_name() + " / ");
             log.debug(po.getPo_name());
             StudentPosition studentPosition = new StudentPosition();
             StudentPositionPK studentPositionPK = new StudentPositionPK();
@@ -111,7 +113,10 @@ public class StudentService {
             studentPosition.setStudentPositionPK(studentPositionPK);
             studentPositionRepository.save(studentPosition);
         }
+        System.out.println();
+        System.out.println("industries:");
         for (Industry i : industries){
+            System.out.print("getI_id:" + i.getI_id() + " getI_name:" + i.getI_name() + " / ");
             StudentIndustry studentIndustry = new StudentIndustry();
             StudentIndustryPK studentIndustryPK = new StudentIndustryPK();
             studentIndustryPK.setSi_industry(i);
@@ -119,6 +124,7 @@ public class StudentService {
             studentIndustry.setStudentIndustryPK(studentIndustryPK);
             studentIndustryRepository.save(studentIndustry);
         }
+        System.out.println();
         return student;
     }
 
