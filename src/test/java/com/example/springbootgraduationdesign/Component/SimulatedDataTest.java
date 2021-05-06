@@ -1,10 +1,16 @@
 package com.example.springbootgraduationdesign.Component;
 
 import com.example.springbootgraduationdesign.component.SimulatedDataComponent;
+import com.example.springbootgraduationdesign.entity.EnumWarehouse;
+import com.example.springbootgraduationdesign.entity.Student;
 import com.example.springbootgraduationdesign.service.CompanyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @SpringBootTest
 public class SimulatedDataTest {
@@ -29,3 +35,4 @@ public class SimulatedDataTest {
         simulatedDataComponent.simulatedStudentFavoredJobs();
     }
 }
+

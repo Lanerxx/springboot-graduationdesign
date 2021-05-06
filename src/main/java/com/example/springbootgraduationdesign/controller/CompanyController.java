@@ -283,6 +283,7 @@ public class CompanyController {
         );
     }
 
+
     @PostMapping("companyFavoredResume/{rid}")
     public Map addCompanyFavoredResume(@PathVariable int rid){
         Resume r = studentService.getResume(rid);

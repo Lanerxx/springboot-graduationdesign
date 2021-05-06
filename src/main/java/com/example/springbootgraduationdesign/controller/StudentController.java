@@ -2,8 +2,7 @@ package com.example.springbootgraduationdesign.controller;
 
 import com.example.springbootgraduationdesign.component.CheckIsNullComponent;
 import com.example.springbootgraduationdesign.component.RequestComponent;
-import com.example.springbootgraduationdesign.component.vo.PasswordVo;
-import com.example.springbootgraduationdesign.component.vo.StudentVo;
+import com.example.springbootgraduationdesign.component.vo.*;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
 import javafx.geometry.Pos;
@@ -214,11 +213,14 @@ public class StudentController {
     @DeleteMapping("studentResume/{rid}")
     public Map deleteStudentResume(@PathVariable int rid){
         StudentResume studentResume = studentService.getStudentResumeByResume(rid);
-        if (studentResume ==null){
+        if (studentResume == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您想回收的简历不存在");
         }
         studentService.deleteStudentResumeAndRelatedByResume(rid);
+        Resume resume = studentService.getResume(rid);
+        resume.setPosted(false);
+        studentService.updateResume(resume);
         int sid = requestComponent.getUid();
         List<Resume> resumes = studentService.getResumesByStudentId(sid);
         return Map.of(
@@ -228,23 +230,56 @@ public class StudentController {
     }
 
 
-//    @PostMapping("jmr")
-//    public Map getJmr(@RequestBody List<Map<String,Integer>> focus){
-//        return Map.of(
-//                "studentJMRs", "studentJMRs"
-//        );
-//    }
+    @PostMapping("jmr/{rid}")
+    public Map getJmr(@PathVariable int rid, @RequestBody PersonalizedJMRVo personalizedJMRVo){
+        //calculate(...)
+        List<ResumeJMRPersonalizedVo> resumeJMRS = studentService.getResumeJMR_Match(rid,personalizedJMRVo);
+        return Map.of(
+                "ResumeJMRPersonalizedVo", resumeJMRS
+        );
+    }
 
-//    @GetMapping("jmr")
-//    public Map getJmr(){
-//        List<ResumeJMR> resumeJMRS = studentService.getStudentJMRsByStudent(requestComponent.getUid());
-//        if (resumeJMRS.size() == 0){
-//            //calculate...
-//            resumeJMRS = studentService.getStudentJMRsByStudent(requestComponent.getUid());
-//        }
-//        return Map.of(
-//                "studentJMRs", resumeJMRS
-//        );
-//    }
+    @GetMapping("jmr/{rid}")
+    public Map getSmr(@PathVariable int rid){
+        System.out.println("getSmr rid:" + rid);
+        StudentResume studentResume = studentService.getStudentResumeByResume(rid);
+        if (studentResume == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想匹配的简历不存在或尚未发布");
+        }
+        List<ResumeJMR> resumeJMRS = studentService.getResumeJMR_Match(rid);
+        return Map.of(
+                "resumeJMRS", resumeJMRS
+        );
+    }
+
+
+    @PostMapping("studentFavoredJob/{jid}")
+    public Map addStudentFavoredJob(@PathVariable int jid){
+        Job j = companyService.getJob(jid);
+        if (j == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想收藏的岗位不存在");
+        }
+        Student student = studentService.getStudent(requestComponent.getUid());
+        StudentFavoredJob studentFavoredJob = new StudentFavoredJob();
+        StudentFavoredJobPK studentFavoredJobPK = new StudentFavoredJobPK();
+        studentFavoredJobPK.setSfj_student(student);
+        studentFavoredJobPK.setSfj_job(j);
+        studentFavoredJob.setStudentFavoredJobPK(studentFavoredJobPK);
+        studentService.addStudentFavoredJob(studentFavoredJob);
+        List<StudentFavoredJob> studentFavoredJobs = studentService.getStudentFavoredJobsByStudent(requestComponent.getUid());
+        return Map.of(
+                "studentFavoredJobs",studentFavoredJobs
+        );
+    }
+
+    @GetMapping("studentFavoredJob")
+    public Map getStudentFavoredJobs(){
+        List<StudentFavoredJob> studentFavoredJobs = studentService.getStudentFavoredJobsByStudent(requestComponent.getUid());
+        return Map.of(
+                "studentFavoredJobs",studentFavoredJobs
+        );
+    }
 
 }
