@@ -805,10 +805,13 @@ public class StudentService {
     public StudentFavoredJob addStudentFavoredJob(StudentFavoredJob studentFavoredJob){
         return studentFavoredJobRepository.save(studentFavoredJob);
     }
+    public void deleteStudentFavoredJobByStudentAndJob(int sid, int jid){
+        studentFavoredJobRepository.deleteStudentFavoredJobByStudentAndJob(sid, jid);
+    }
+
     public List<StudentFavoredJob> getAllStudentFavoredJobs(){
         return studentFavoredJobRepository.findAll();
     }
-
     public List<StudentFavoredJob> getStudentFavoredJobsByStudent(int sid){
         return studentFavoredJobRepository.getStudentFavoredJobsByStudent(sid).orElse(new ArrayList<>());
     }
@@ -829,6 +832,9 @@ public class StudentService {
             });
         }
         return resumes;
+    }
+    public StudentFavoredJob getStudentFavoredJobByStudentAndJob(int sid, int jid){
+        return studentFavoredJobRepository.getStudentFavoredJobByStudentAndJob(sid, jid).orElse(null);
     }
 
     /*----------（ResumeSystemDefaultWeightRepository）-----------

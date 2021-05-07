@@ -282,4 +282,20 @@ public class StudentController {
         );
     }
 
+    @DeleteMapping("studentFavoredJob/{jid}")
+    public Map deleteStudentFavoredJob(@PathVariable int jid){
+        int sid = requestComponent.getUid();
+        StudentFavoredJob studentFavoredJob = studentService.getStudentFavoredJobByStudentAndJob(sid,jid);
+        if (studentFavoredJob == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想取消收藏的岗位不存在");
+        }
+        studentService.deleteStudentFavoredJobByStudentAndJob(sid, jid);
+        List<StudentFavoredJob> studentFavoredJobs = studentService.getStudentFavoredJobsByStudent(requestComponent.getUid());
+        return Map.of(
+                "studentFavoredJobs",studentFavoredJobs
+        );
+    }
+
+
 }

@@ -851,7 +851,7 @@ public class CompanyService {
         return jobResumeRepository.getJobResumesByResume_ResumeToJob(rid,resumeToJob).orElse(new ArrayList<>());
     }
 
-     /*----------企业已发布职位信息（CompanyFavoredResume）-----------
+     /*----------企业收藏夹（CompanyFavoredResume）-----------
     -------检索：管理员，公司，就业专员
     -------更新：管理员，公司
     -------创建：管理员，公司
@@ -861,6 +861,9 @@ public class CompanyService {
          return companyFavoredResumeRepository.save(companyFavoredResume);
      }
 
+     public void deleteCompanyFavoredResumeByCompanyAndResume(int cid, int rid){
+         companyFavoredResumeRepository.deleteCompanyFavoredResumeByCompanyAndResume(cid, rid);
+     }
 
      public List<CompanyFavoredResume> getCompanyFavoredResumesByCompany(int cid){
          return companyFavoredResumeRepository.getCompanyFavoredResumesByCompany(cid).orElse(new ArrayList<>());
@@ -884,6 +887,9 @@ public class CompanyService {
              }
          }
         return jobs;
+    }
+    public CompanyFavoredResume getCompanyFavoredResumeByCompanyAndResume(int cid, int rid){
+         return companyFavoredResumeRepository.getCompanyFavoredResumeByCompanyAndResume(cid,rid).orElse(null);
     }
 
 

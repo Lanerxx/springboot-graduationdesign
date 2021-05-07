@@ -313,5 +313,21 @@ public class CompanyController {
         );
     }
 
+    @DeleteMapping("companyFavoredResume/{rid}")
+    public Map deleteCompanyFavoredResume(@PathVariable int rid){
+        int cid = requestComponent.getUid();
+        CompanyFavoredResume companyFavoredResume = companyService.getCompanyFavoredResumeByCompanyAndResume(cid,rid);
+        if (companyFavoredResume == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想取消收藏的简历不存在");
+        }
+        companyService.deleteCompanyFavoredResumeByCompanyAndResume(cid,rid);
+        List<CompanyFavoredResume> companyFavoredResumes = companyService.getCompanyFavoredResumesByCompany(requestComponent.getUid());
+        return Map.of(
+                "companyFavoredResumes",companyFavoredResumes
+        );
+    }
+
+
 
 }
