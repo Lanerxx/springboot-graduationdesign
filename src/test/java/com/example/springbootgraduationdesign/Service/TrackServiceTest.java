@@ -31,4 +31,5 @@ public class TrackServiceTest {
         System.out.println("resumeListStatisticalFormVoOneWay:" + list.get("resumeListStatisticalFormVoOneWay"));
         System.out.println("resumeListStatisticalFormVoTwoWay:" + list.get("resumeListStatisticalFormVoTwoWay"));
     }
+
 }

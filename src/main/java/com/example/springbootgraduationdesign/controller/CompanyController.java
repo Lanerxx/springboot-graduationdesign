@@ -2,9 +2,7 @@ package com.example.springbootgraduationdesign.controller;
 
 import com.example.springbootgraduationdesign.component.CheckIsNullComponent;
 import com.example.springbootgraduationdesign.component.RequestComponent;
-import com.example.springbootgraduationdesign.component.vo.JobVo;
-import com.example.springbootgraduationdesign.component.vo.PasswordVo;
-import com.example.springbootgraduationdesign.component.vo.PersonalizedSMRVo;
+import com.example.springbootgraduationdesign.component.vo.*;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +32,8 @@ public class CompanyController {
     private IndustryService industryService;
     @Autowired
     private ProfessionService professionService;
+    @Autowired
+    private RecommendService recommendService;
 
     @Autowired
     private CheckIsNullComponent checkIsNullComponent;
@@ -401,6 +401,16 @@ public class CompanyController {
         List<JobResume> jobResumes = companyService.getJobResumesByCompany(cid);
         return Map.of(
                 "jobResumes",jobResumes
+        );
+    }
+
+
+    @GetMapping("resumeRecommend")
+    public Map getResumeRecommends(){
+        int cid = requestComponent.getUid();
+        List<ResumeRecommendVo> resumeRecommendVos = recommendService.getResumeRecommends(cid);
+        return Map.of(
+                "resumeRecommendVos",resumeRecommendVos
         );
     }
 

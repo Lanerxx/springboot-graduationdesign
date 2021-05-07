@@ -124,6 +124,10 @@ public class CompanyService {
     public List<Company> getCompaniesByFStage(EnumWarehouse.FINANCING_STAGE financingStage){
         return companyRepository.getCompaniesByFStage(financingStage).orElse(new ArrayList<>());
     }
+    public List<Company> getSimilarCompaniesByCompany(Company company){
+        //融资阶段、行业
+        return companyRepository.getCompaniesByFStageAndIndustry(company.getC_f_stage(),company.getC_industry().getI_id()).orElse(new ArrayList<>());
+    }
 
 
     /*-----------------职位信息（Job）-------------------

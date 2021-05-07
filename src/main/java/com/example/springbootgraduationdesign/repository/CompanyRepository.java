@@ -23,4 +23,8 @@ public interface CompanyRepository extends BaseRepository<Company, Integer>{
     @Query("SELECT c FROM Company  c WHERE c.c_f_stage=:fStage")
     Optional<List<Company>> getCompaniesByFStage (@Param("fStage")EnumWarehouse.FINANCING_STAGE fStage);
 
+    @Query("SELECT c FROM Company  c WHERE c.c_f_stage=:fStage AND c.c_industry.i_id=:iid")
+    Optional<List<Company>> getCompaniesByFStageAndIndustry (@Param("fStage")EnumWarehouse.FINANCING_STAGE fStage, @Param("iid") int iid);
+
+
 }

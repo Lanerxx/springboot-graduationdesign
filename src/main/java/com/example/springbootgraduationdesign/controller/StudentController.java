@@ -32,6 +32,8 @@ public class StudentController {
     private IndustryService industryService;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private RecommendService recommendService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -39,6 +41,7 @@ public class StudentController {
     private CheckIsNullComponent checkIsNullComponent;
     @Autowired
     private RequestComponent requestComponent;
+
 
     @GetMapping("index")
     public Map getIndex(){
@@ -366,6 +369,15 @@ public class StudentController {
         List<JobResume> jobResumes = studentService.getJobResumsByStudent(sid);
         return Map.of(
                 "jobResumes",jobResumes
+        );
+    }
+
+    @GetMapping("jobRecommend")
+    public Map getJobRecommends(){
+        int sid = requestComponent.getUid();
+        List<JobRecommendVo> jobRecommendVos = recommendService.getJobRecommends(sid);
+        return Map.of(
+                "jobRecommendVos",jobRecommendVos
         );
     }
 

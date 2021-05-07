@@ -199,7 +199,21 @@ public class StudentService {
         });
         return studentList;
     }
+    public List<Student> getSimilarStudentsByStudent(Student student){
+        //学校等级、学历、语言、期望薪资、工作经验、项目经验、应届情况 相似学生
+        //学校、学历
+        List<Student> students = studentService.getStudentsByCLevelAndHistory(student.getS_c_level(), student.getS_e_history());
 
+        //语言、期望薪资、工作经验、项目经验、应届
+        students.stream()
+                .filter(s -> s.getS_e_language().ordinal() == student.getS_e_language().ordinal())
+                .filter(s -> s.getS_s_range().ordinal() == student.getS_s_range().ordinal())
+                .filter(s -> s.getS_if_career().ordinal() == student.getS_if_career().ordinal())
+                .filter(s -> s.getS_if_fresh().ordinal() == student.getS_if_fresh().ordinal())
+                .filter(s -> s.getS_if_project_experience().ordinal() == student.getS_if_project_experience().ordinal())
+                .collect(Collectors.toList());
+        return students;
+    }
 
     private StudentIndustry addStudentIndustries(StudentIndustry studentIndustry) {
         studentIndustryRepository.save(studentIndustry);
