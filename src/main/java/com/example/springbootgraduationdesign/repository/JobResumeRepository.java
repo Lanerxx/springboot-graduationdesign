@@ -15,6 +15,12 @@ public interface JobResumeRepository extends BaseRepository<JobResume,Integer>{
     @Query("SELECT jr FROM JobResume  jr WHERE jr.jobResumePK.jr_job.j_id=:jid")
     Optional<JobResume> getJobResumesByJob (@Param("jid")int jid);
 
+    @Query("SELECT jr FROM JobResume  jr WHERE jr.jobResumePK.jr_job.j_company.c_id=:cid")
+    Optional<List<JobResume>> getJobResumesByCompany (@Param("cid")int cid);
+
+    @Query("SELECT jr FROM JobResume  jr WHERE jr.jobResumePK.jr_resume.r_student.s_id=:sid")
+    Optional<List<JobResume>> getJobResumesByStudent (@Param("sid")int sid);
+
     @Query("SELECT jr FROM JobResume  jr WHERE jr.jobResumePK.jr_resume.r_id=:rid")
     Optional<List<JobResume>> getJobResumesByResume (@Param("rid")int rid);
 

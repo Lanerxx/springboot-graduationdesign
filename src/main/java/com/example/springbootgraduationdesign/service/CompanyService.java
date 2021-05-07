@@ -835,6 +835,12 @@ public class CompanyService {
         }
         return jobResumes;
     }
+    public List<JobResume> getJobResumesByCompany_JobToResume_ResumeToJob(int cid, boolean jobToResume, boolean resumeToJob){
+        List<JobResume> jobResumes = companyService.getJobResumesByCompany_JobToResume(cid, jobToResume);
+        return  jobResumes.stream()
+                .filter(jobResume -> jobResume.isResumeToJob() == resumeToJob)
+                .collect(Collectors.toList());
+    }
     public List<JobResume> getJobResumesByCompanies_JobToResume_ResumeToJob(List<Company> companies, boolean jobToResume, boolean resumeToJob){
         List<JobResume> jobResumes = companyService.getJobResumesByCompanies_JobToResume(companies, true);
         return  jobResumes.stream()
@@ -849,6 +855,9 @@ public class CompanyService {
     }
     public List<JobResume> getJobResumesByResume_ResumeToJob(int rid,boolean resumeToJob){
         return jobResumeRepository.getJobResumesByResume_ResumeToJob(rid,resumeToJob).orElse(new ArrayList<>());
+    }
+    public List<JobResume> getJobResumesByCompany(int cid){
+        return jobResumeRepository.getJobResumesByCompany(cid).orElse(new ArrayList<>());
     }
 
      /*----------企业收藏夹（CompanyFavoredResume）-----------

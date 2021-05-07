@@ -297,5 +297,76 @@ public class StudentController {
         );
     }
 
+    @GetMapping("studentJobs")
+    public Map getStudentJobs(){
+        int sid = requestComponent.getUid();
+        List<JobResume> jobResumes = studentService.getJobResumsByStudent(sid);
+        return Map.of(
+                "jobResumes",jobResumes
+        );
+    }
+
+    @PostMapping("studentJobs/jobResume/{jid}/{rid}")
+    public Map addJobResume(@PathVariable int rid, @PathVariable int jid){
+        int sid = requestComponent.getUid();
+        Job job = companyService.getJob(jid);
+        Resume resume = studentService.getResume(rid);
+        if (job == null || resume == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您提交的简历或岗位信息不正确");
+        }
+        JobResume jobResume = studentService.getJobResumeByJobAndResume(jid,rid );
+        if (jobResume == null){
+            jobResume = new JobResume();
+            JobResumePK jobResumePK = new JobResumePK();
+            jobResume.setJobToResume(false);
+            jobResume.setResumeToJob(true);
+            jobResumePK.setJr_resume(resume);
+            jobResumePK.setJr_job(job);
+            jobResume.setJobResumePK(jobResumePK);
+            studentService.addJobResume(jobResume);
+        }else {
+            jobResume.setResumeToJob(true);
+            studentService.updateJobResume(jobResume);
+        }
+        List<JobResume> jobResumes = studentService.getJobResumsByStudent(sid);
+        return Map.of(
+                "jobResumes",jobResumes
+        );
+    }
+
+    @PostMapping("studentJobs/jobResume/{jid}")
+    public Map addJobResume(@PathVariable int jid){
+        int sid = requestComponent.getUid();
+        Job job = companyService.getJob(jid);
+        if (job == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想应聘的岗位不存在！");
+        }
+        List<Resume> resumes = studentService.getResumesByStudentId(sid);
+        if (resumes.size() == 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "请至少发布一份简历后再应聘岗位！");
+        }
+        Resume resume = resumes.get(0);
+        JobResume jobResume = studentService.getJobResumeByJobAndResume(jid, resume.getR_id());
+        if (jobResume == null){
+            jobResume = new JobResume();
+            JobResumePK jobResumePK = new JobResumePK();
+            jobResume.setJobToResume(false);
+            jobResume.setResumeToJob(true);
+            jobResumePK.setJr_resume(resume);
+            jobResumePK.setJr_job(job);
+            jobResume.setJobResumePK(jobResumePK);
+            studentService.addJobResume(jobResume);
+        }else {
+            jobResume.setResumeToJob(true);
+            studentService.updateJobResume(jobResume);
+        }
+        List<JobResume> jobResumes = studentService.getJobResumsByStudent(sid);
+        return Map.of(
+                "jobResumes",jobResumes
+        );
+    }
 
 }

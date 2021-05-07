@@ -18,10 +18,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/company/")
@@ -329,5 +326,82 @@ public class CompanyController {
     }
 
 
+    @GetMapping("companyResumes")
+    public Map getCompanyResumes(){
+        int cid = requestComponent.getUid();
+        List<JobResume> jobResumes = companyService.getJobResumesByCompany(cid);
+//        List<JobResume> jobResumesOut = companyService.getJobResumesByCompany_JobToResume_ResumeToJob(cid, true,false);
+//        List<JobResume> jobResumesTwoWay = companyService.getJobResumesByCompany_JobToResume_ResumeToJob(cid,true,true);
+//        List<JobResume> jobResumesIn = companyService.getJobResumesByCompany_JobToResume_ResumeToJob(cid,false,true);
+        return Map.of(
+                "jobResumes",jobResumes
+//                "jobResumesOut",jobResumesOut,
+//                "jobResumesTwoWay",jobResumesTwoWay,
+//                "jobResumesIn",jobResumesIn
+        );
+    }
+
+    @PostMapping("companyResumes/jobResume/{jid}/{rid}")
+    public Map addJobResume(@PathVariable int rid, @PathVariable int jid){
+        int cid = requestComponent.getUid();
+        Job job = companyService.getJob(jid);
+        Resume resume = studentService.getResume(rid);
+        if (job == null || resume == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您提交的简历或岗位信息不正确");
+        }
+        JobResume jobResume = companyService.getJobResumeByJobAndResume(jid,rid);
+        if (jobResume == null){
+            jobResume = new JobResume();
+            JobResumePK jobResumePK = new JobResumePK();
+            jobResume.setJobToResume(true);
+            jobResume.setResumeToJob(false);
+            jobResumePK.setJr_resume(resume);
+            jobResumePK.setJr_job(job);
+            jobResume.setJobResumePK(jobResumePK);
+            companyService.addJobResume(jobResume);
+        }else {
+            jobResume.setJobToResume(true);
+            studentService.updateJobResume(jobResume);
+        }
+        List<JobResume> jobResumes = companyService.getJobResumesByCompany(cid);
+        return Map.of(
+                "jobResumes",jobResumes
+        );
+    }
+
+    @PostMapping("companyResumes/jobResume/{rid}")
+    public Map addJobResume(@PathVariable int rid){
+        int cid = requestComponent.getUid();
+        Resume resume = studentService.getResume(rid);
+        if (resume == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想招聘的简历不存在！");
+        }
+        List<Job> jobs = companyService.getJobsByCompany(cid);
+        if (jobs.size() == 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "请至少发布一个岗位后再招聘！");
+        }
+        Job job = jobs.get(0);
+        JobResume jobResume = companyService.getJobResumeByJobAndResume(job.getJ_id(),rid);
+        if (jobResume == null){
+            jobResume = new JobResume();
+            JobResumePK jobResumePK = new JobResumePK();
+            jobResume.setJobToResume(true);
+            jobResume.setResumeToJob(false);
+            jobResumePK.setJr_resume(resume);
+            jobResumePK.setJr_job(job);
+            jobResume.setJobResumePK(jobResumePK);
+            companyService.addJobResume(jobResume);
+        }else {
+            jobResume.setJobToResume(true);
+            companyService.updateJobResume(jobResume);
+        }
+        List<JobResume> jobResumes = companyService.getJobResumesByCompany(cid);
+        return Map.of(
+                "jobResumes",jobResumes
+        );
+    }
 
 }

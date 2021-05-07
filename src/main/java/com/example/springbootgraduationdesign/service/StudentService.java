@@ -795,6 +795,12 @@ public class StudentService {
     public int getJobResumeCountByJob(int jid, boolean resumeToJob){
         return studentService.getJobResumesByJob_ResumeToJob(jid,resumeToJob).size();
     }
+    public List<JobResume> getJobResumsByStudent(int sid){
+        return jobResumeRepository.getJobResumesByStudent(sid).orElse(new ArrayList<>());
+    }
+    public JobResume getJobResumeByJobAndResume(int jid, int rid){
+        return jobResumeRepository.getJobResumeByJobAndResume(jid, rid).orElse(null);
+    }
 
     /*---------学生收藏的岗位信息（StudentFavoredJob）---------
     -------检索：管理员，学生，就业专员
