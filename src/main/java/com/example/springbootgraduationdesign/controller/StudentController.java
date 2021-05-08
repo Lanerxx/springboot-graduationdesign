@@ -34,6 +34,8 @@ public class StudentController {
     private CompanyService companyService;
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private MatchService matchService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -235,10 +237,10 @@ public class StudentController {
 
     @PostMapping("jmr/{rid}")
     public Map getJmr(@PathVariable int rid, @RequestBody PersonalizedJMRVo personalizedJMRVo){
-        //calculate(...)
-        List<ResumeJMRPersonalizedVo> resumeJMRS = studentService.getResumeJMR_Match(rid,personalizedJMRVo);
+        PersonalizedJMRVo pJMRVo = matchService.transferPersonalizedJMRVoWeight(personalizedJMRVo);
+        List<ResumeJMRPersonalizedVo> resumeJMRsPersonalized = studentService.getResumeJMR_Match(rid,pJMRVo);
         return Map.of(
-                "ResumeJMRPersonalizedVo", resumeJMRS
+                "resumeJMRsPersonalized", resumeJMRsPersonalized
         );
     }
 
@@ -250,9 +252,9 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您想匹配的简历不存在或尚未发布");
         }
-        List<ResumeJMR> resumeJMRS = studentService.getResumeJMR_Match(rid);
+        List<ResumeJMR> resumeJMRs = studentService.getResumeJMR_Match(rid);
         return Map.of(
-                "resumeJMRS", resumeJMRS
+                "resumeJMRs", resumeJMRs
         );
     }
 

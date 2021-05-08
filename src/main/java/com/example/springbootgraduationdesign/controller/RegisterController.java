@@ -39,10 +39,14 @@ public class RegisterController {
     public Map getIndex(){
         List<String> positionsName = positionService.listPositionsName();
         Set<String> professionsMClass = professionService.getProfessionsMClass();
+        List<String> professionSClass = professionService.getProfessionsSName();
+        List<String> industriesName = industryService.listIndustriesName();
         return Map.of(
                 "positions",positionsName,
-                "professionsMClass",professionsMClass
-        );
+                "professionsMClass",professionsMClass,
+                "professionSClass",professionSClass,
+                "industries",industriesName
+                );
     }
 
     @PostMapping("index/professionsSClass")
@@ -55,13 +59,12 @@ public class RegisterController {
 
     @PostMapping("company")
     public Map registerCompany(@RequestBody Company company){
-        Industry industry = industryService.getIndustry(company.getC_industry().getI_id());
+        Industry industry = industryService.getIndustry(company.getC_industry().getI_name());
         if( industry == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "行业信息不存在！");
         }
         company.setC_industry(industry);
-        log.debug("{}","sadas");
         if (checkIsNullComponent.objCheckIsNull(company)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息！");
@@ -78,7 +81,7 @@ public class RegisterController {
 
     @PostMapping("student")
     public Map registerStudent(@RequestBody Student student){
-        Profession profession = professionService.getProfession(student.getS_profession().getPr_id());
+        Profession profession = professionService.getProfessionBySClass(student.getS_profession().getPr_s_class());
         if (profession == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您填写的专业错误！");
@@ -90,8 +93,8 @@ public class RegisterController {
                         "您还未填写已就业的城市或企业！");
             }
         }else {
-            student.setS_w_province("NONE");
-            student.setS_company("NONE");
+            student.setS_w_province("无");
+            student.setS_company("无");
         }
         if (checkIsNullComponent.objCheckIsNull(student)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

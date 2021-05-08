@@ -34,6 +34,8 @@ public class CompanyController {
     private ProfessionService professionService;
     @Autowired
     private RecommendService recommendService;
+    @Autowired
+    private MatchService matchService;
 
     @Autowired
     private CheckIsNullComponent checkIsNullComponent;
@@ -260,10 +262,10 @@ public class CompanyController {
 
     @PostMapping("smr/{jid}")
     public Map getJmr(@PathVariable int jid, @RequestBody PersonalizedSMRVo personalizedSMRVo){
-        //calculate(...)
-        List<JobSMR> jobSMRs = companyService.getJobSMRsByJob(jid);
+        PersonalizedSMRVo pSMRVo = matchService.transferPersonalizedSMRVoWeight(personalizedSMRVo);
+        List<JobSMRPersonalizedVo> jobSMRsPersonalized = companyService.getJobSMR_Match(jid,pSMRVo);
         return Map.of(
-                "jobSMRs", jobSMRs
+                "jobSMRsPersonalized", jobSMRsPersonalized
         );
     }
 

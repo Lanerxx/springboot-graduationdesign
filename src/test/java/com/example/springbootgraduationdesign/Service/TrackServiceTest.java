@@ -2,11 +2,15 @@ package com.example.springbootgraduationdesign.Service;
 
 import com.example.springbootgraduationdesign.entity.Company;
 import com.example.springbootgraduationdesign.entity.EnumWarehouse;
+import com.example.springbootgraduationdesign.entity.Industry;
 import com.example.springbootgraduationdesign.service.TrackService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -33,3 +37,4 @@ public class TrackServiceTest {
     }
 
 }
+
