@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class RegisterController {
         return Map.of(
                 "positions",positionsName,
                 "professionsMClass",professionsMClass,
-                "professionSClass",professionSClass,
+                "professionsSClass",professionSClass,
                 "industries",industriesName
                 );
     }
@@ -65,6 +66,9 @@ public class RegisterController {
                     "行业信息不存在！");
         }
         company.setC_industry(industry);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        company.setInsertTime(localDateTime);
+        company.setUpdateTime(localDateTime);
         if (checkIsNullComponent.objCheckIsNull(company)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息！");
@@ -96,6 +100,10 @@ public class RegisterController {
             student.setS_w_province("无");
             student.setS_company("无");
         }
+        LocalDateTime localDateTime = LocalDateTime.now();
+        student.setInsertTime(localDateTime);
+        student.setUpdateTime(localDateTime);
+        System.out.println("student:" + student);
         if (checkIsNullComponent.objCheckIsNull(student)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "您还有未填写的信息！");

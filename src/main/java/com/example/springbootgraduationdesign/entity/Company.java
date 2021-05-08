@@ -81,3 +81,4 @@ public class Company {
             updatable = false)
     private LocalDateTime updateTime;
 }
+

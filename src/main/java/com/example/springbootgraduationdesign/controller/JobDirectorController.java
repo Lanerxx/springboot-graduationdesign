@@ -28,6 +28,8 @@ public class JobDirectorController {
     private ProfessionService professionService;
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private IndustryService industryService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -103,8 +105,10 @@ public class JobDirectorController {
     @GetMapping("companies")
     public Map getCompanies(){
         List<Company> companies = companyService.getAllCompanies();
+        List<String> industries = industryService.listIndustriesName();
         return Map.of(
-                "companies",companies
+                "companies",companies,
+                "industries",industries
         );
     }
 

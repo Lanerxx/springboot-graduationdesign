@@ -3,6 +3,7 @@ package com.example.springbootgraduationdesign.Service;
 import com.example.springbootgraduationdesign.entity.Company;
 import com.example.springbootgraduationdesign.entity.EnumWarehouse;
 import com.example.springbootgraduationdesign.entity.Industry;
+import com.example.springbootgraduationdesign.entity.Profession;
 import com.example.springbootgraduationdesign.service.TrackService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
