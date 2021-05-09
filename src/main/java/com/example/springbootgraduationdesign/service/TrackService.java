@@ -654,7 +654,7 @@ public class TrackService {
         JobListStatisticalFormVo jobListStatisticalFormVoTwoWay = trackService.getJobListStatisticalFormVo(jobsTwoWay);
 
         return Map.of("students",students,
-                "StudentListStatisticalFormVo",studentListStatisticalFormVo,
+                "studentListStatisticalFormVo",studentListStatisticalFormVo,
                 "jobListStatisticalFormVoFavored",jobListStatisticalFormVoFavored,
                 "jobListStatisticalFormVoOneWay",jobListStatisticalFormVoOneWay,
                 "jobListStatisticalFormVoTwoWay",jobListStatisticalFormVoTwoWay

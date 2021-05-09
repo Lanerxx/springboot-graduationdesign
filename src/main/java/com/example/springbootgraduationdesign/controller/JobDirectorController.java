@@ -2,6 +2,7 @@ package com.example.springbootgraduationdesign.controller;
 
 import com.example.springbootgraduationdesign.component.CheckIsNullComponent;
 import com.example.springbootgraduationdesign.component.RequestComponent;
+import com.example.springbootgraduationdesign.component.vo.StudentListStatisticalFormVo;
 import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,8 @@ public class JobDirectorController {
     private StudentService studentService;
     @Autowired
     private IndustryService industryService;
+    @Autowired
+    private TrackService trackService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -41,6 +44,7 @@ public class JobDirectorController {
     private CheckIsNullComponent checkIsNullComponent;
     @Autowired
     private RequestComponent requestComponent;
+
 
     @GetMapping("index")
     public Map getIndex(){
@@ -196,4 +200,16 @@ public class JobDirectorController {
 //                "jobSMRs",jobSMRs
 //        );
 //    }
+
+    @GetMapping("trackStudent/{collegeName}")
+    public Map getTrackStudentsByCollegeName(@PathVariable String collegeName){
+        Map map = trackService.trackCollegesByCollegeName(collegeName);
+        return Map.of("students",map.get("students"),
+                "studentListStatisticalFormVo",map.get("studentListStatisticalFormVo"),
+                "jobListStatisticalFormVoFavored",map.get("jobListStatisticalFormVoFavored"),
+                "jobListStatisticalFormVoOneWay",map.get("jobListStatisticalFormVoOneWay"),
+                "jobListStatisticalFormVoTwoWay",map.get("jobListStatisticalFormVoTwoWay")
+        );
+
+    }
 }

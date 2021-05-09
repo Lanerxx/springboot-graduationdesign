@@ -19,7 +19,6 @@ public class SpringbootGraduationdesignApplication {
         SpringApplication.run(SpringbootGraduationdesignApplication.class, args);
     }
 
-
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();
@@ -28,6 +27,5 @@ public class SpringbootGraduationdesignApplication {
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
-
     }
 }
