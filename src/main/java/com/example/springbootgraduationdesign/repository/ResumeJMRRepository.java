@@ -24,4 +24,8 @@ public interface ResumeJMRRepository extends BaseRepository<ResumeJMR, Integer>{
 
     @Query("SELECT jmr FROM ResumeJMR  jmr WHERE jmr.jmr_resume.r_id = :rid")
     Optional<List<ResumeJMR>> getResumeJMRsByResume (@Param("rid")int rid);
+
+    @Query("SELECT jmr FROM ResumeJMR  jmr WHERE jmr.jmr_job.j_id = :jid")
+    Optional<List<ResumeJMR>> getResumeJMRsByJob (@Param("jid")int jid);
+
 }

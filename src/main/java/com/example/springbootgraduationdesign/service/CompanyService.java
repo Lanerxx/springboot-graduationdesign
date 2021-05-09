@@ -83,6 +83,14 @@ public class CompanyService {
     public void deleteCompany(int cid){
         companyRepository.deleteById(cid);
     }
+    public void deleteCompanyAndRelated(int cid){
+        companyService.deleteCompanyFavoredResumesByCompany(cid);
+        List<Job> jobs = companyService.getJobsByCompany(cid);
+        for (Job job : jobs) {
+            companyService.deleteJobAndRelated(job);
+        }
+        companyService.deleteCompany(cid);
+    }
     public void deleteAllCompanies(){
         companyRepository.deleteAll();
     }
@@ -164,11 +172,13 @@ public class CompanyService {
     public void deleteJobAndRelated(Job job){
         int jid = job.getJ_id();
         if (job.isPosted()){
-            studentService.deleteResumeJMRsByJob(jid);
-            companyService.deleteJobSMRsByJob(jid);
+            studentService.deleteResumeJMRsAndResumeJMRBasesByJob(jid);
+            companyService.deleteJobSMRsAndJobSMRBasesByJob(jid);
             companyService.deleteCompanyJobByJob(jid);
         }
+        companyService.deleteJobResumesByJob(jid);
         companyService.deleteJobProfessionsByJob(jid);
+        studentService.deleteStudentFavoredJobsByJob(jid);
         companyService.deleteJob(jid);
     }
     public void deleteAllJobs(){
@@ -388,6 +398,9 @@ public class CompanyService {
     }
     public List<JobSMR> getJobSMRsByJob(int jid){
         return jobSMRRepository.getJobSMRsByJob(jid).orElse(new ArrayList<>());
+    }
+    public List<JobSMR> getJobSMRsByResume(int rid){
+        return jobSMRRepository.getJobSMRsByResume(rid).orElse(new ArrayList<>());
     }
     public JobSMR getJobSMRByJobAndResume(int jid, int rid){
         return jobSMRRepository.getJobSMRByJobAndResume(jid, rid).orElse(null);
@@ -756,6 +769,17 @@ public class CompanyService {
         return kMeansComponent.getDegreeByKMeans(listMap, k,0);
     }
 
+    /*---------企业匹配的学生信息（JobSMR）---------
+    -------检索：管理员，公司，就业专员
+    -------更新：服务器
+    -------创建：服务器
+    -------删除：服务器
+    --------------------------------------------------*/
+
+    public void deleteJobSMR(int id){
+        jobSMRRepository.deleteById(id);
+    }
+
     /*---------企业匹配的学生信息的各项数值（JobSMRBase）---------
     -------检索：管理员，公司，就业专员
     -------更新：服务器
@@ -766,6 +790,27 @@ public class CompanyService {
         jobSMRBaseRepository.save(jobSMRBase);
         return jobSMRBase;
     }
+
+    public void deleteJobSMRsAndJobSMRBasesByJob(int jid){
+        List<JobSMR> jobSMRs = companyService.getJobSMRsByJob(jid);
+        for (JobSMR jobSMR : jobSMRs) {
+            int baseId = jobSMR.getSmr_base().getSmr_b_id();
+            companyService.deleteJobSMR(jobSMR.getSmr_id());
+            companyService.deleteJobSMRBase(baseId);
+        }
+    }
+    public void deleteJobSMRsAndJobSMRBasesByResume(int rid){
+        List<JobSMR> jobSMRs = companyService.getJobSMRsByResume(rid);
+        for (JobSMR jobSMR : jobSMRs) {
+            int baseId = jobSMR.getSmr_base().getSmr_b_id();
+            companyService.deleteJobSMR(jobSMR.getSmr_id());
+            companyService.deleteJobSMRBase(baseId);
+        }
+    }
+    public void deleteJobSMRBase(int id){
+        jobSMRBaseRepository.deleteById(id);
+    }
+
     public JobSMRBase getJobSMRBaseById(int jmbid){
         return jobSMRBaseRepository.findById(jmbid).orElse(null);
     }
@@ -777,6 +822,10 @@ public class CompanyService {
         return jobResume;
     }
 
+    public void deleteJobResumesByJob(int jid){
+        jobResumeRepository.deleteJobResumesByJob(jid);
+    }
+
     public JobResume updateJobResume(JobResume jobResume){
         jobResumeRepository.save(jobResume);
         return jobResume;
@@ -785,7 +834,6 @@ public class CompanyService {
     public JobResume getJobResumeByJob(int jid){
         return jobResumeRepository.getJobResumesByJob(jid).orElse(null);
     }
-
     public List<JobResume> getJobResumesByJobs(List<Job> jobs){
         List<JobResume> jobResumes = new ArrayList<>();
         jobs.forEach(j -> {
@@ -876,6 +924,13 @@ public class CompanyService {
      public void deleteCompanyFavoredResumeByCompanyAndResume(int cid, int rid){
          companyFavoredResumeRepository.deleteCompanyFavoredResumeByCompanyAndResume(cid, rid);
      }
+     public void deleteCompanyFavoredResumesByCompany(int cid){
+         companyFavoredResumeRepository.deleteCompanyFavoredResumeByCompany(cid);
+     }
+     public void deleteCompanyFavoredResumeByResume(int rid){
+         companyFavoredResumeRepository.deleteCompanyFavoredResumeByResume(rid);
+     }
+
 
      public List<CompanyFavoredResume> getCompanyFavoredResumesByCompany(int cid){
          return companyFavoredResumeRepository.getCompanyFavoredResumesByCompany(cid).orElse(new ArrayList<>());
@@ -900,7 +955,7 @@ public class CompanyService {
          }
         return jobs;
     }
-    public CompanyFavoredResume getCompanyFavoredResumeByCompanyAndResume(int cid, int rid){
+     public CompanyFavoredResume getCompanyFavoredResumeByCompanyAndResume(int cid, int rid){
          return companyFavoredResumeRepository.getCompanyFavoredResumeByCompanyAndResume(cid,rid).orElse(null);
     }
 

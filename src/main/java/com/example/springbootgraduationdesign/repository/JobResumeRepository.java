@@ -3,6 +3,7 @@ package com.example.springbootgraduationdesign.repository;
 import com.example.springbootgraduationdesign.entity.Job;
 import com.example.springbootgraduationdesign.entity.JobResume;
 import com.example.springbootgraduationdesign.entity.Resume;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -43,9 +44,17 @@ public interface JobResumeRepository extends BaseRepository<JobResume,Integer>{
     @Query("SELECT jr FROM JobResume  jr WHERE jr.jobResumePK.jr_job.j_id=:jid AND jr.jobResumePK.jr_resume.r_id=:rid")
     Optional<JobResume> getJobResumeByJobAndResume (@Param("jid")int jid,@Param("rid")int rid);
 
-
     //resumeToJob = true 获取某job被resumes选中的JobResumes
     @Query("SELECT jr FROM JobResume  jr WHERE jr.jobResumePK.jr_job.j_id=:jid AND jr.resumeToJob=:resumeToJob")
     Optional<List<JobResume>> getJobResumesByJob_ResumeToJob (@Param("jid")int jid, @Param("resumeToJob") boolean resumeToJob);
+
+
+    @Modifying
+    @Query("DELETE  FROM JobResume  jr WHERE jr.jobResumePK.jr_job.j_id=:jid ")
+    void deleteJobResumesByJob (@Param("jid")int jid);
+
+    @Modifying
+    @Query("DELETE  FROM JobResume  jr WHERE jr.jobResumePK.jr_resume.r_id=:rid ")
+    void deleteJobResumesByResume (@Param("rid")int rid);
 
 }

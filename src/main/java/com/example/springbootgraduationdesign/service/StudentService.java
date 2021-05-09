@@ -86,6 +86,16 @@ public class StudentService {
     public void deleteStudent(int sid){
         studentRepository.deleteById(sid);
     }
+    public void deleteStudentAndRelated(int sid){
+        studentService.deleteStudentFavoredJobByStudent(sid);
+        studentService.deleteStudentPositionsByStudent(sid);
+        studentService.deleteStudentIndustriesByStudent(sid);
+        List<Resume> resumes = studentService.getResumesByStudentId(sid);
+        for (Resume resume : resumes) {
+            studentService.deleteResumeAndRelated(resume);
+        }
+        studentRepository.deleteById(sid);
+    }
     public void deleteAllStudents(){
         studentRepository.deleteAll();
     }
@@ -251,10 +261,12 @@ public class StudentService {
     public void deleteResumeAndRelated(Resume resume){
         int rid = resume.getR_id();
         if (resume.isPosted()){
-            companyService.deleteJobSMRsByResume(rid);
-            studentService.deleteResumeJMRsByResume(rid);
+            companyService.deleteJobSMRsAndJobSMRBasesByResume(rid);
+            studentService.deleteResumeJMRsAndResumeJMRBasesByResume(rid);
             studentService.deleteStudentResumeByResume(rid);
         }
+        studentService.deleteJobResumesByResume(rid);
+        companyService.deleteCompanyFavoredResumeByResume(rid);
         studentService.deleteResume(rid);
     }
 
@@ -368,8 +380,27 @@ public class StudentService {
         return resumeJMR;
     }
 
+    public void deleteResumeJMR(int id){
+        resumeJMRRepository.deleteById(id);
+    }
     public void deleteResumeJMRsByJob(int jid){
         resumeJMRRepository.deleteResumeJMRsByJob(jid);
+    }
+    public void deleteResumeJMRsAndResumeJMRBasesByJob(int jid){
+        List<ResumeJMR> resumeJMRs = studentService.getResumeJMRsByJob(jid);
+        for (ResumeJMR resumeJMR : resumeJMRs) {
+            int baseId = resumeJMR.getJmr_base().getJmr_b_id();
+            studentService.deleteResumeJMR(resumeJMR.getJmr_id());
+            studentService.deleteResumeJMRBase(baseId);
+        }
+    }
+    public void deleteResumeJMRsAndResumeJMRBasesByResume(int rid){
+        List<ResumeJMR> resumeJMRs = studentService.getResumeJMRsByResume(rid);
+        for (ResumeJMR resumeJMR : resumeJMRs) {
+            int baseId = resumeJMR.getJmr_base().getJmr_b_id();
+            studentService.deleteResumeJMR(resumeJMR.getJmr_id());
+            studentService.deleteResumeJMRBase(baseId);
+        }
     }
     public void deleteResumeJMRsByResume(int rid){
         resumeJMRRepository.deleteResumeJMRsByResume(rid);
@@ -384,7 +415,9 @@ public class StudentService {
     public List<ResumeJMR> getResumeJMRsByResume(int rid){
         return resumeJMRRepository.getResumeJMRsByResume(rid).orElse(new ArrayList<>());
     }
-
+    public List<ResumeJMR> getResumeJMRsByJob(int jid){
+        return resumeJMRRepository.getResumeJMRsByJob(jid).orElse(new ArrayList<>());
+    }
     //定时执行，匹配每一个岗位相对于每个简历的条件符合值
     public void getResumeJMR_Match(){
         resumeJMRRepository.deleteAll();
@@ -730,6 +763,10 @@ public class StudentService {
         return resumeJMRBase;
     }
 
+    public void deleteResumeJMRBase(int id){
+        resumeJMRBaseRepository.deleteById(id);
+    }
+
     /*--------学生意向行业（StudentIndustry）----------
     --------------------------------------------------*/
     public StudentIndustry addStudentIndustry(StudentIndustry studentIndustry){
@@ -754,6 +791,10 @@ public class StudentService {
     public JobResume updateJobResume(JobResume jobResume){
         jobResumeRepository.save(jobResume);
         return jobResume;
+    }
+
+    public void deleteJobResumesByResume(int rid){
+        jobResumeRepository.deleteJobResumesByResume(rid);
     }
 
     public List<JobResume> getJobResumesByResume_ResumeToJob(int rid, boolean resumeToJob){
@@ -825,6 +866,13 @@ public class StudentService {
     }
     public void deleteStudentFavoredJobByStudentAndJob(int sid, int jid){
         studentFavoredJobRepository.deleteStudentFavoredJobByStudentAndJob(sid, jid);
+    }
+    public void deleteStudentFavoredJobsByJob(int jid){
+        studentFavoredJobRepository.deleteStudentFavoredJobsByJob(jid);
+
+    }
+    public void deleteStudentFavoredJobByStudent(int sid){
+        studentFavoredJobRepository.deleteStudentFavoredJobByStudent(sid);
     }
 
     public List<StudentFavoredJob> getAllStudentFavoredJobs(){

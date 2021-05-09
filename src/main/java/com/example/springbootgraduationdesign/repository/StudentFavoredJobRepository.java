@@ -22,4 +22,13 @@ public interface StudentFavoredJobRepository extends BaseRepository<StudentFavor
     @Query("DELETE FROM StudentFavoredJob sfj WHERE sfj.studentFavoredJobPK.sfj_student.s_id=:sid And sfj.studentFavoredJobPK.sfj_job.j_id=:jid")
     void deleteStudentFavoredJobByStudentAndJob(@Param("sid")int sid,@Param("jid")int jid);
 
+    @Modifying
+    @Query("DELETE FROM StudentFavoredJob sfj WHERE sfj.studentFavoredJobPK.sfj_job.j_id=:jid")
+    void deleteStudentFavoredJobsByJob(@Param("jid")int jid);
+
+    @Modifying
+    @Query("DELETE FROM StudentFavoredJob sfj WHERE sfj.studentFavoredJobPK.sfj_student.s_id=:sid")
+    void deleteStudentFavoredJobByStudent(@Param("sid")int sid);
+
+
 }

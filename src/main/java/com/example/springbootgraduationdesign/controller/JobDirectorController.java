@@ -6,10 +6,14 @@ import com.example.springbootgraduationdesign.entity.*;
 import com.example.springbootgraduationdesign.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,6 +106,48 @@ public class JobDirectorController {
 //        );
 //    }
 
+    @PostMapping("companies")
+    public Map addCompanies(@RequestBody List<Company> companies){
+        LocalDateTime localDateTime = LocalDateTime.now();
+        for (Company company : companies) {
+            company.setInsertTime(localDateTime);
+            company.setUpdateTime(localDateTime);
+            Industry industry = industryService.getIndustry(company.getC_industry().getI_name());
+            if (industry == null){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "您输入的行业：" + company.getC_industry().getI_name() + "不存在！");
+            }
+            company.setC_industry(industry);
+            if (checkIsNullComponent.objCheckIsNull(company)){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "您还有未填写的信息！");
+            }
+            if (companyService.getCompanyByTelephone(company.getC_f_telephone())!=null){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "该手机号：" + company.getC_f_telephone() + "已注册！");
+            }
+            companyService.addCompany(company);
+            companies = companyService.getAllCompanies();
+        }
+        return Map.of(
+                "companies",companies
+        );
+    }
+
+    @DeleteMapping("company/{cid}")
+    public Map deleteCompany(@PathVariable int cid){
+        Company company = companyService.getCompany(cid);
+        if (company == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想删除的企业不存在！");
+        }
+        companyService.deleteCompanyAndRelated(cid);
+        List<Company> companies = companyService.getAllCompanies();
+        return Map.of(
+                "companies",companies
+        );
+    }
+
     @GetMapping("companies")
     public Map getCompanies(){
         List<Company> companies = companyService.getAllCompanies();
@@ -127,6 +173,21 @@ public class JobDirectorController {
                 "companyJobs",companyJobs
         );
     }
+
+    @DeleteMapping("student/{sid}")
+    public Map deleteStudent(@PathVariable int sid){
+        Student student = studentService.getStudent(sid);
+        if (student == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "您想删除的学生不存在！");
+        }
+        studentService.deleteStudentAndRelated(sid);
+        List<Student> students = studentService.getAllStudents();
+        return Map.of(
+                "students",students
+        );
+    }
+
 
 //    @GetMapping("smr/{cid}")
 //    public Map getSmr(@PathVariable int cid){

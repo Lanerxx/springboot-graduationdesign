@@ -21,4 +21,14 @@ public interface CompanyFavoredResumeRepository  extends BaseRepository<CompanyF
     @Query("DELETE FROM CompanyFavoredResume cfr WHERE cfr.companyFavoredResumePK.cfr_company.c_id=:cid AND cfr.companyFavoredResumePK.cfr_resume.r_id=:rid")
     void deleteCompanyFavoredResumeByCompanyAndResume(@Param("cid")int cid, @Param("rid")int rid);
 
+
+    @Modifying
+    @Query("DELETE FROM CompanyFavoredResume cfr WHERE cfr.companyFavoredResumePK.cfr_resume.r_id=:rid")
+    void deleteCompanyFavoredResumeByResume(@Param("rid")int rid);
+
+
+    @Modifying
+    @Query("DELETE FROM CompanyFavoredResume cfr WHERE cfr.companyFavoredResumePK.cfr_company.c_id=:cid")
+    void deleteCompanyFavoredResumeByCompany(@Param("cid")int cid);
+
 }

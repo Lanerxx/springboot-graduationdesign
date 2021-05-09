@@ -14,6 +14,10 @@ public interface JobSMRRepository extends BaseRepository<JobSMR, Integer>{
     @Query("SELECT smr FROM JobSMR smr WHERE smr.smr_job.j_id=:jid")
     Optional<List<JobSMR>> getJobSMRsByJob (@Param("jid")int jid);
 
+    @Query("SELECT smr FROM JobSMR smr WHERE smr.smr_resume.r_id=:rid")
+    Optional<List<JobSMR>> getJobSMRsByResume (@Param("rid")int rid);
+
+
     @Query("SELECT smr FROM JobSMR  smr WHERE smr.smr_job.j_id=:jid AND smr.smr_resume.r_id=:rid")
     Optional<JobSMR> getJobSMRByJobAndResume (@Param("jid")int jid, @Param("rid") int rid);
 
